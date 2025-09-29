@@ -1,4 +1,4 @@
-# FastAPI Project Cookiecutter Template
+# Clean Architecture FastAPI Project Cookiecutter Template
 
 A comprehensive cookiecutter template for creating modern FastAPI applications with clean architecture, Docker support, and best practices included.
 
