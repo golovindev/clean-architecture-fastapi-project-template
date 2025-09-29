@@ -28,15 +28,15 @@ A comprehensive cookiecutter template for creating modern FastAPI applications w
 ### Basic Usage
 
 ```bash
-cookiecutter https://github.com/your-username/fastapi-template.git
+cookiecutter https://github.com/Peopl3s/clean-architecture-fastapi-project-template.git
 ```
 
 ### Local Usage
 
 ```bash
 # Clone the template
-git clone https://github.com/your-username/fastapi-template.git
-cd fastapi-template
+git clone https://github.com/Peopl3s/clean-architecture-fastapi-project-template.git
+cd clean-architecture-fastapi-project-template
 
 # Use the template
 cookiecutter .
