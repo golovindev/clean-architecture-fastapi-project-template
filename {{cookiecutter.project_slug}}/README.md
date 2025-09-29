@@ -37,7 +37,8 @@
 {% if cookiecutter.use_database == "mysql" %}- 🗄️ **Reliable Data Storage** in MySQL with transaction support{% endif %}
 {% if cookiecutter.add_docker == "y" %}- 🐳 **Containerization** with Docker for easy deployment and scaling{% endif %}
 - 📊 **Automatic API Documentation** with Swagger UI and ReDoc
-- 🔒 **Strict Data Validation** using Pydantic
+- 🔒 **Strict Data Validation** using dataclasses with custom validation (Pydantic-free in application layer)
+- 🔄 **Clean DTO Architecture** with separation between application and infrastructure layers
 {% if cookiecutter.add_tests == "y" %}- 🧪 **Comprehensive Testing** with pytest and high code coverage{% endif %}
 
 ---
@@ -48,7 +49,7 @@
 - **Language**: Python {{ cookiecutter.python_version }}+ with modern features
 - **Framework**: FastAPI for high-performance APIs
 - **ORM**: SQLAlchemy 2.0 with async support
-- **Validation**: Pydantic for strict data validation
+- **Validation**: Custom validation in dataclasses (application layer) + Pydantic (infrastructure layer)
 - **DI Container**: Dishka for dependency management
 
 {% if cookiecutter.use_database == "postgresql" %}
@@ -287,7 +288,8 @@ Below is a detailed directory tree reflecting the architectural structure:
 │   │   │   │   └── artifact.py      # "Artifact" model
 │   │   │   ├── 📁 repositories/     # Repositories
 │   │   │   │   └── artifact.py      # "Artifact" repository
-│   │   │   ├── uow.py               # SQLAlchemy Unit of Work
+│   │   └── 📁 dtos/                 # DTO c Pydantic
+│   │   │   ├── uow.py               # SQLAlchemy Unit of 
 │   │   │   ├── exceptions.py        # Database exceptions
 │   │   │   ├── session.py           # Database session management
 │   │   │   └── __init__.py
@@ -388,13 +390,14 @@ Below is a detailed directory tree reflecting the architectural structure:
   - Example: `src/application/use_cases/get_artifact.py`
 - **`dtos/`**: Data Transfer Objects.
   - Used for data transfer between layers, especially in APIs.
+  - **Pydantic-free DTOs** using plain dataclasses with validation in `__post_init__` methods.
   - Example: `src/application/dtos/artifact.py`
 - **`interfaces/`**: Interfaces (ports) that define contracts for infrastructure implementations.
   - `repositories.py`: Defines interfaces for data access (e.g., `ArtifactRepository`).
   - `cache.py`: Defines interfaces for caching.
   - `message_broker.py`: Defines interfaces for working with message brokers.
   - `http_clients.py`: Defines interfaces for external HTTP calls.
-- **`mappers.py`**: Objects for transforming data between domain entities and DTO/database models.
+- **`mappers.py`**: Objects for transforming data between domain entities and DTOs.
 - **`exceptions.py`**: Application-level exceptions.
 
 **Principles**:
@@ -433,9 +436,13 @@ Below is a detailed directory tree reflecting the architectural structure:
 - **`cache/`**: Caching implementation.
   - `redis_client.py`: Specific caching implementation using Redis, implementing the `application/interfaces/cache.py` interface.
 - **`http/`**: HTTP clients for interacting with external services.
-  - `clients.py`: Client implementations implementing `application/interfaces/http_clients.py`.
+  - `clients.py`: Client implementations implementing `application/interfaces/http_clients.py` using Pydantic models for external communication.
 - **`broker/`**: Working with message brokers (RabbitMQ, Kafka, etc.).
-  - `publisher.py`: Message publishing implementation.
+  - `publisher.py`: Message publishing implementation using Pydantic models for serialization.
+- **`dtos/`**: Infrastructure-specific Pydantic models for external communication.
+  - `artifact.py`: Pydantic models for external API communication and serialization.
+- **`mappers/`**: Infrastructure mappers for converting between application DTOs and Pydantic models.
+  - `artifact.py`: Mapper for DTO ↔ Pydantic conversion.
 
 **Principles**:
 - **Implementation**: Contains "dirty" work for interacting with external systems.

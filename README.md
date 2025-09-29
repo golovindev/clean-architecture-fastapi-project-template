@@ -112,6 +112,7 @@ cookiecutter . --no-input \
 │   │   ├── 📁 db/                   # Database implementations
 │   │   ├── 📁 cache/                # Cache implementations
 │   │   └── 📁 broker/               # Message broker implementations
+│   │   └── 📁 dtos/                 # DTO c Pydantic
 │   └── 📁 config/                   # Configuration
 │       └── 📁 ioc/                  # Dependency injection
 ├── 📁 tests/                        # Test suite
@@ -238,10 +239,10 @@ The template follows **Clean Architecture** principles with clear separation of 
 
 ### Application Layer
 - **Use Cases**: Application-specific business rules
-- **DTOs**: Data transfer objects for communication
+- **DTOs**: Data transfer objects using plain dataclasses with validation logic (Pydantic-free)
 - **Interfaces**: Abstractions for infrastructure implementations
 - **Unit of Work**: Transaction management and coordination
-- **Mappers**: Convert between domain and DTO objects
+- **Mappers**: Convert between domain entities and DTO objects
 
 ### Presentation Layer
 - **API Controllers**: Handle HTTP requests
@@ -251,8 +252,10 @@ The template follows **Clean Architecture** principles with clear separation of 
 ### Infrastructure Layer
 - **Repositories**: Data access implementations
 - **Cache**: Caching service implementations
-- **Message Brokers**: External service integrations
-- **HTTP Clients**: External API integrations
+- **Message Brokers**: External service integrations using Pydantic models
+- **HTTP Clients**: External API integrations using Pydantic models
+- **Infrastructure DTOs**: Pydantic models for external communication and serialization
+- **Infrastructure Mappers**: Convert between application DTOs and infrastructure Pydantic models
 
 ## 🔧 Configuration
 
@@ -343,15 +346,17 @@ The template includes comprehensive implementation examples that demonstrate bes
 
 #### Application Layer Examples
 - **Use Cases**: `src/application/use_cases/get_artifact.py` - Shows how to implement business logic using dependency injection
-- **DTOs**: `src/application/dtos/artifact.py` - Data transfer objects with Pydantic validation
+- **DTOs**: `src/application/dtos/artifact.py` - Data transfer objects using plain dataclasses with validation in `__post_init__` methods (Pydantic-free)
 - **Interfaces**: Complete interface definitions for repositories, cache, HTTP clients, and message brokers
 - **Mappers**: Examples of converting between domain entities and DTOs
 
 #### Infrastructure Layer Examples
 - **Repository Implementation**: `src/infrastructures/db/repositories/artifact.py` - Shows how to implement repository pattern with SQLAlchemy
 - **Cache Implementation**: `src/infrastructures/cache/redis_client.py` - Redis caching implementation with error handling
-- **HTTP Clients**: `src/infrastructures/http/clients.py` - External API integration examples
+- **HTTP Clients**: `src/infrastructures/http/clients.py` - External API integration examples using Pydantic models for external communication
 - **Database Models**: `src/infrastructures/db/models/artifact.py` - SQLAlchemy model examples
+- **Infrastructure DTOs**: `src/infrastructures/dtos/artifact.py` - Pydantic models for external API communication and serialization
+- **Infrastructure Mappers**: `src/infrastructures/mappers/artifact.py` - Mappers for converting between application DTOs and infrastructure Pydantic models
 
 #### Presentation Layer Examples
 - **REST Controllers**: `src/presentation/api/rest/v1/controllers/artifact_controller.py` - API endpoint implementation
