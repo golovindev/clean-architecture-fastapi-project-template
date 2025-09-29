@@ -24,6 +24,7 @@ from src.application.interfaces.http_clients import (
 from src.application.interfaces.mappers import DtoEntityMapperProtocol
 from src.application.interfaces.message_broker import MessageBrokerPublisherProtocol
 from src.application.interfaces.repositories import ArtifactRepositoryProtocol
+from src.application.interfaces.uow import UnitOfWorkProtocol
 
 if TYPE_CHECKING:
     from src.domain.entities.artifact import ArtifactEntity
@@ -33,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class GetArtifactUseCase:
-    repository: ArtifactRepositoryProtocol
+    uow: UnitOfWorkProtocol
     museum_api_client: ExternalMuseumAPIProtocol
     catalog_api_client: PublicCatalogAPIProtocol
     message_broker: MessageBrokerPublisherProtocol
@@ -53,7 +54,7 @@ class GetArtifactUseCase:
 
         artifact_entity: (
             ArtifactEntity | None
-        ) = await self.repository.get_by_inventory_id(inventory_id_str)
+        ) = await self.uow.repository.get_by_inventory_id(inventory_id_str)
         if artifact_entity:
             artifact_dto = self.artifact_mapper.to_dto(artifact_entity)
             await self.cache_client.set(
@@ -82,9 +83,10 @@ class GetArtifactUseCase:
                 "Could not fetch artifact from external service", str(e)
             ) from e
 
-        artifact_entity = self.artifact_mapper.to_entity(artifact_dto)
-        await self.repository.save(artifact_entity)
-        await self.cache_client.set(inventory_id_str, artifact_dto.model_dump_json())
+        async with self.uow:
+            artifact_entity = self.artifact_mapper.to_entity(artifact_dto)
+            await self.uow.repository.save(artifact_entity)
+            await self.cache_client.set(inventory_id_str, artifact_dto.model_dump_json())
 
         try:
             notification_dto = ArtifactAdmissionNotificationDTO(

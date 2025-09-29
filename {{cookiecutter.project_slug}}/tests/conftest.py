@@ -24,6 +24,7 @@ from src.application.interfaces.http_clients import (
 from src.application.interfaces.mappers import DtoEntityMapperProtocol
 from src.application.interfaces.message_broker import MessageBrokerPublisherProtocol
 from src.application.interfaces.repositories import ArtifactRepositoryProtocol
+from src.application.interfaces.uow import UnitOfWorkProtocol
 from src.application.use_cases.get_artifact import GetArtifactUseCase
 from src.config.ioc.di import get_providers
 from src.domain.entities.artifact import ArtifactEntity
@@ -109,6 +110,13 @@ def mock_repository() -> AsyncMock:
 
 
 @pytest.fixture
+def mock_uow() -> AsyncMock:
+    mock = AsyncMock(spec=UnitOfWorkProtocol)
+    mock.repositories = mock_repository()
+    return mock
+
+
+@pytest.fixture
 def mock_museum_api() -> AsyncMock:
     mock = AsyncMock(spec=ExternalMuseumAPIProtocol)
     return mock
@@ -142,7 +150,7 @@ def mock_cache_client() -> AsyncMock:
 
 @pytest.fixture
 def get_artifact_use_case(
-    mock_repository: AsyncMock,
+    mock_uow: AsyncMock,
     mock_museum_api: AsyncMock,
     mock_catalog_api: AsyncMock,
     mock_message_broker: AsyncMock,
@@ -150,7 +158,7 @@ def get_artifact_use_case(
     mock_cache_client: AsyncMock,
 ) -> GetArtifactUseCase:
     return GetArtifactUseCase(
-        repository=mock_repository,
+        uow=mock_uow,
         museum_api_client=mock_museum_api,
         catalog_api_client=mock_catalog_api,
         message_broker=mock_message_broker,

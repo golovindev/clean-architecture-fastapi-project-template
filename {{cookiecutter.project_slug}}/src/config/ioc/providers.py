@@ -16,6 +16,7 @@ from src.infrastructures.broker.publisher import KafkaPublisher
 from src.infrastructures.cache.redis_client import RedisCacheClient
 from src.infrastructures.db.repositories.artifact import ArtifactRepositorySQLAlchemy
 from src.infrastructures.db.session import create_engine, get_session_factory
+from src.infrastructures.db.uow import UnitOfWorkSQLAlchemy
 from src.infrastructures.http.clients import (
     ExternalMuseumAPIClient,
     PublicCatalogAPIClient,
@@ -76,6 +77,16 @@ class RepositoryProvider(Provider):
         return ArtifactRepositorySQLAlchemy(session=session)
 
 
+class UnitOfWorkProvider(Provider):
+    @provide(scope=Scope.REQUEST)
+    def get_unit_of_work(
+        self,
+        session: AsyncSession,
+        repository: ArtifactRepositorySQLAlchemy,
+    ) -> UnitOfWorkSQLAlchemy:
+        return UnitOfWorkSQLAlchemy(session=session, repository=repository)
+
+
 class ServiceProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_external_museum_api_client(
@@ -134,7 +145,7 @@ class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_register_artifact_use_case(
         self,
-        repository: ArtifactRepositorySQLAlchemy,
+        uow: UnitOfWorkSQLAlchemy,
         museum_api_client: ExternalMuseumAPIClient,
         catalog_api_client: PublicCatalogAPIClient,
         message_broker: KafkaPublisher,
@@ -142,7 +153,7 @@ class UseCaseProvider(Provider):
         cache_client: RedisCacheClient,
     ) -> GetArtifactUseCase:
         return GetArtifactUseCase(
-            repository=repository,
+            uow=uow,
             museum_api_client=museum_api_client,
             catalog_api_client=catalog_api_client,
             message_broker=message_broker,

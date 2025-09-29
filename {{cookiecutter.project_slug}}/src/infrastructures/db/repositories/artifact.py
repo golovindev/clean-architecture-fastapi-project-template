@@ -56,19 +56,15 @@ class ArtifactRepositorySQLAlchemy(ArtifactRepositoryProtocol):
                 model = ArtifactModel.from_dataclass(artifact)
 
             self.session.add(model)
-            await self.session.commit()
         except IntegrityError as e:
-            await self.session.rollback()
             raise RepositoryConflictError(
                 f"Conflict while saving artifact '{artifact.inventory_id}': {e}"
             ) from e
         except SQLAlchemyError as e:
-            await self.session.rollback()
             raise RepositorySaveError(
                 f"Failed to save artifact '{artifact.inventory_id}': {e}"
             ) from e
         except Exception as e:
-            await self.session.rollback()
             raise RepositorySaveError(
                 f"Unexpected error while saving artifact '{artifact.inventory_id}': {e}"
             ) from e
