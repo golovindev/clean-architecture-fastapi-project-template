@@ -1,4 +1,3 @@
-from typing import Annotated
 from uuid import UUID
 
 from dishka import FromDishka
@@ -32,7 +31,7 @@ router = APIRouter(prefix="/v1/artifacts", tags=["Artifacts"])
 @inject
 async def get_artifact(
     inventory_id: str | UUID,
-    use_case: Annotated[GetArtifactUseCase, FromDishka()],
+    use_case: FromDishka[GetArtifactUseCase],
 ) -> ArtifactDTO:
     try:
         return await use_case.execute(inventory_id)
