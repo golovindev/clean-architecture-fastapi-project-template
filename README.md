@@ -1,4 +1,4 @@
-# FastAPI Project Cookiecutter Template
+# Clean Architecture FastAPI Project Cookiecutter Template
 
 A comprehensive cookiecutter template for creating modern FastAPI applications with clean architecture, Docker support, and best practices included.
 
@@ -28,15 +28,15 @@ A comprehensive cookiecutter template for creating modern FastAPI applications w
 ### Basic Usage
 
 ```bash
-cookiecutter https://github.com/your-username/fastapi-template.git
+cookiecutter https://github.com/Peopl3s/clean-architecture-fastapi-project-template.git
 ```
 
 ### Local Usage
 
 ```bash
 # Clone the template
-git clone https://github.com/your-username/fastapi-template.git
-cd fastapi-template
+git clone https://github.com/Peopl3s/clean-architecture-fastapi-project-template.git
+cd clean-architecture-fastapi-project-template
 
 # Use the template
 cookiecutter .
@@ -73,7 +73,6 @@ cookiecutter . --no-input \
 | `author_email` | Author's email | "your.email@example.com" | Yes |
 | `github_username` | GitHub username | "yourusername" | Yes |
 | `version` | Project version | "0.1.0" | No |
-| `python_version` | Python version to use | "3.12" | No |
 | `database_name` | Database name | `{project_slug}` | No |
 | `database_user` | Database username | `{project_slug}_user` | No |
 | `database_password` | Database password | `{project_slug}_password` | No |
@@ -105,10 +104,10 @@ cookiecutter . --no-input \
 │   │   ├── 📁 use_cases/            # Use cases
 │   │   ├── 📁 dtos/                 # Data transfer objects
 │   │   ├── 📁 interfaces/           # Application interfaces
-│   │   ├── 📁 uow/                  # Unit of Work pattern
 │   │   └── exceptions.py            # Application exceptions
 │   ├── 📁 presentation/             # Presentation layer
 │   │   └── 📁 api/                  # API endpoints
+│   │   └── 📁 cli/                  # CLI endpoints
 │   ├── 📁 infrastructures/          # Infrastructure layer
 │   │   ├── 📁 db/                   # Database implementations
 │   │   ├── 📁 cache/                # Cache implementations
@@ -133,7 +132,7 @@ cookiecutter . --no-input \
 ### 1. Create Your Project
 
 ```bash
-cookiecutter https://github.com/your-username/fastapi-template.git
+cookiecutter https://github.com/Peopl3s/clean-architecture-fastapi-project-template.git
 ```
 
 ### 2. Navigate to Your Project
@@ -407,6 +406,7 @@ This template is available under the MIT License. See the [LICENSE](LICENSE) fil
 - [FastAPI](https://fastapi.tiangolo.com/) for the excellent web framework
 - [SQLAlchemy](https://www.sqlalchemy.org/) for the powerful ORM
 - [Dishka](https://github.com/reagento/dishka) for dependency injection
+- [Faststream](https://github.com/ag2ai/faststream) for the convenient work with message brokers
 - [Cookiecutter](https://cookiecutter.readthedocs.io/) for project templating
 
 ## 📞 Support
