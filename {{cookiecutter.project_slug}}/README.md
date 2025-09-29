@@ -258,6 +258,7 @@ Below is a detailed directory tree reflecting the architectural structure:
 │   │   │   ├── mappers.py           # Mapper interfaces
 │   │   │   ├── message_broker.py    # Message broker interfaces
 │   │   │   └── repositories.py      # Repository interfaces
+│   │   │   └── uow.py               # Unit of Work interfaces
 │   │   ├── 📁 use_cases/            # Use cases (interactors)
 │   │   │   └── get_artifact.py      # "Get Artifact" use case
 │   │   ├── exceptions.py            # Application exceptions
@@ -286,6 +287,7 @@ Below is a detailed directory tree reflecting the architectural structure:
 │   │   │   │   └── artifact.py      # "Artifact" model
 │   │   │   ├── 📁 repositories/     # Repositories
 │   │   │   │   └── artifact.py      # "Artifact" repository
+│   │   │   ├── uow.py               # SQLAlchemy Unit of Work
 │   │   │   ├── exceptions.py        # Database exceptions
 │   │   │   ├── session.py           # Database session management
 │   │   │   └── __init__.py
