@@ -73,7 +73,6 @@ cookiecutter . --no-input \
 | `author_email` | Author's email | "your.email@example.com" | Yes |
 | `github_username` | GitHub username | "yourusername" | Yes |
 | `version` | Project version | "0.1.0" | No |
-| `python_version` | Python version to use | "3.12" | No |
 | `database_name` | Database name | `{project_slug}` | No |
 | `database_user` | Database username | `{project_slug}_user` | No |
 | `database_password` | Database password | `{project_slug}_password` | No |
