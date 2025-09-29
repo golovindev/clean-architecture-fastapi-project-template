@@ -407,6 +407,7 @@ This template is available under the MIT License. See the [LICENSE](LICENSE) fil
 - [FastAPI](https://fastapi.tiangolo.com/) for the excellent web framework
 - [SQLAlchemy](https://www.sqlalchemy.org/) for the powerful ORM
 - [Dishka](https://github.com/reagento/dishka) for dependency injection
+- [Faststream](https://github.com/ag2ai/faststream) for the convenient work with message brokers
 - [Cookiecutter](https://cookiecutter.readthedocs.io/) for project templating
 
 ## 📞 Support
