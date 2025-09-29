@@ -1,119 +1,119 @@
-# Использование Ruff в проекте Antiques
+# Using Ruff in the Antiques project
 
-## Установка
+## Installation
 
 ```bash
-# Установка dev зависимостей (включая Ruff)
+# Install dev dependencies (including Ruff)
 uv sync --dev
 
-# Или установка только Ruff
+# Or install only Ruff
 uv add --dev ruff
 ```
 
-## Основные команды
+## Main commands
 
-### Проверка кода (linting)
+### Linting
 
 ```bash
-# Проверить весь проект
+# Lint the entire project
 uv run ruff check src/ tests/
 
-# Проверить конкретный файл
+# Lint a specific file
 uv run ruff check src/main.py
 
-# Проверить с подробным выводом
+# Lint with verbose output
 uv run ruff check src/ tests/ --verbose
 
-# Проверить только определенные правила
+# Lint only with specific rules
 uv run ruff check src/ --select E,F,W
 
-# Игнорировать определенные правила
+# Ignore specific rules
 uv run ruff check src/ --ignore E501,W503
 ```
 
-### Автоматическое исправление
+### Automatic fixing
 
 ```bash
-# Исправить все автоматически исправляемые проблемы
+# Fix all automatically fixable issues
 uv run ruff check --fix src/ tests/
 
-# Исправить только определенные правила
+# Fix only specific rules
 uv run ruff check --fix --select E,F src/
 
-# Показать, что будет исправлено, без фактического исправления
+# Show what would be fixed without actually fixing
 uv run ruff check --fix --diff src/
 ```
 
-### Форматирование кода
+### Code formatting
 
 ```bash
-# Отформатировать весь проект
+# Format the entire project
 uv run ruff format src/ tests/
 
-# Проверить форматирование без изменений
+# Check formatting without making changes
 uv run ruff format --check src/ tests/
 
-# Показать diff форматирования
+# Show formatting diff
 uv run ruff format --diff src/
 ```
 
-### Комплексная проверка
+### Full check
 
 ```bash
-# Проверить и исправить все проблемы
+# Check and fix all issues
 uv run ruff check --fix src/ tests/
 uv run ruff format src/ tests/
 
-# Или одной командой (если настроено в pyproject.toml)
+# Or with a single command (if configured in pyproject.toml)
 uv run ruff check --fix src/ tests/ && uv run ruff format src/ tests/
 ```
 
-## Использование Makefile
+## Using Makefile
 
 ```bash
-# Показать все доступные команды
+# Show all available commands
 make help
 
-# Установить dev зависимости
+# Install dev dependencies
 make install-dev
 
-# Проверить код
+# Lint code
 make lint
 
-# Исправить проблемы автоматически
+# Automatically fix issues
 make lint-fix
 
-# Отформатировать код
+# Format code
 make format
 
-# Запустить все проверки
+# Run all checks
 make check
 
-# Запустить тесты
+# Run tests
 make test
 
-# Запустить тесты с покрытием
+# Run tests with coverage
 make test-cov
 
-# Очистить кэш
+# Clean cache
 make clean
 
-# Настроить dev окружение
+# Set up dev environment
 make dev-setup
 
-# Запустить CI pipeline
+# Run CI pipeline
 make ci
 ```
 
 ## Pre-commit hooks
 
 ```bash
-# Установить pre-commit hooks
+# Install pre-commit hooks
 pre-commit install
 
-# Запустить hooks на всех файлах
+# Run hooks on all files
 pre-commit run --all-files
 
-# Обновить hooks
+# Update hooks
 pre-commit autoupdate
 ```

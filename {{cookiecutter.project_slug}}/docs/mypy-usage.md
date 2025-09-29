@@ -1,68 +1,68 @@
-# Использование MyPy в проекте Antiques
+# Using MyPy in the Antiques project
 
-## Установка
+## Installation
 
 ```bash
-# Установка dev зависимостей (включая MyPy)
+# Install dev dependencies (including MyPy)
 uv sync --dev
 
-# Или установка только MyPy
+# Or install only MyPy
 uv add --dev mypy
 ```
 
-## Основные команды
+## Main commands
 
-### Проверка типов
+### Type checking
 
 ```bash
-# Проверить весь проект
+# Check the entire project
 uv run mypy src/
 
-# Проверить конкретный файл
+# Check a specific file
 uv run mypy src/main.py
 
-# Проверить с подробным выводом
+# Check with detailed error codes
 uv run mypy src/ --show-error-codes
 
-# Проверить с показом контекста ошибок
+# Check with error context
 uv run mypy src/ --show-error-context
 
-# Проверить только определенные модули
+# Check only specific modules
 uv run mypy src/application/ src/domain/
 ```
 
-### Использование Makefile
+### Using Makefile
 
 ```bash
-# Показать все доступные команды
+# Show all available commands
 make help
 
-# Проверить типы
+# Run type checking
 make type-check
 
-# Запустить все проверки (lint + format + type check)
+# Run all checks (lint + format + type check)
 make check
 
-# Запустить CI pipeline
+# Run CI pipeline
 make ci
 ```
 
-## Конфигурация MyPy
+## MyPy configuration
 
-Основная конфигурация MyPy находится в `pyproject.toml` в секции `[tool.mypy]`.
+The main MyPy configuration is located in `pyproject.toml` under the `[tool.mypy]` section.
 
-### Основные настройки
+### Core settings
 
 - **python_version**: Python 3.12
-- **strict**: false (мягкая проверка для начала)
-- **ignore_missing_imports**: true (игнорировать отсутствующие импорты)
-- **warn_return_any**: true (предупреждать о возврате Any)
-- **no_implicit_optional**: true (требовать явного Optional)
+- **strict**: false (soft checking by default)
+- **ignore_missing_imports**: true (ignore missing imports)
+- **warn_return_any**: true (warn on returning Any)
+- **no_implicit_optional**: true (require explicit Optional)
 
-### Per-module настройки
+### Per-module settings
 
 ```toml
-# Более мягкие правила для тестов и примеров
+# More softer rules for tests and examples
 [[tool.mypy.overrides]]
 module = [
     "tests.*",
@@ -72,7 +72,7 @@ disallow_untyped_defs = false
 disallow_incomplete_defs = false
 check_untyped_defs = false
 
-# Игнорировать отсутствующие импорты для внешних библиотек
+# Ignore missing imports for external libraries
 [[tool.mypy.overrides]]
 module = [
     "faststream.*",
@@ -82,17 +82,17 @@ module = [
 ignore_missing_imports = true
 ```
 
-## Pre-commit интеграция
+## Pre-commit integration
 
-MyPy автоматически запускается при коммите через pre-commit hooks:
+MyPy is automatically run on commit via pre-commit hooks:
 
 ```bash
-# Установить pre-commit hooks
+# Install pre-commit hooks
 pre-commit install
 
-# Запустить hooks на всех файлах
+# Run hooks on all files
 pre-commit run --all-files
 
-# Запустить только mypy
+# Run only mypy
 pre-commit run mypy
 ```

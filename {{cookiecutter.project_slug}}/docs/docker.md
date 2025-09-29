@@ -1,133 +1,193 @@
-# Docker Setup для Antiques
+# Docker Setup for Antiques project
 
-Этот документ описывает настройку и использование Docker для приложения Antiques.
+This document describes how to set up and use Docker for the Antiques application.
 
-## Команды Docker
+{% if cookiecutter.add_docker != "y" %}
+> Docker support was not enabled for this project when it was generated.
+>
+> See the non-Docker run instructions in the main README.
+{% else %}
 
-### Сборка образов
+## Docker Commands
+
+### Building images
 
 ```bash
-# Production образ
+# Production image
 make docker-build
 
-# Development образ
+# Development image
 make docker-build-dev
 
-# Testing образ
+# Testing image
 make docker-build-test
 ```
 
-### Запуск сервисов
+### Starting services
 
 ```bash
-# Запуск всех сервисов (production)
+# Start all services (production)
 make docker-up
 
-# Запуск development окружения
+# Start development environment
 make docker-up-dev
 
-# Остановка всех сервисов
+# Stop all services
 make docker-down
 ```
 
-### Работа с базой данных
+### Database operations
 
 ```bash
-# Запуск миграций
+# Run all database migrations
 make docker-migrate
-
-# Подключение к базе данных
-docker-compose exec postgres psql -U antiques_user -d antiques
 ```
 
-### Тестирование
+{% if cookiecutter.use_database == "postgresql" %}
+```bash
+# Connect to PostgreSQL
+docker-compose exec postgres psql -U antiques_user -d antiques
+```
+{% elif cookiecutter.use_database == "mysql" %}
+```bash
+# Connect to MySQL
+docker-compose exec mysql mysql -u antiques_user -p antiques
+```
+{% elif cookiecutter.use_database == "sqlite" %}
+```bash
+# Connect to SQLite if needed
+docker-compose exec sqlite sqlite3 /data/{{ cookiecutter.database_name }}.db
+```
+{% endif %}
+
+### Testing
 
 ```bash
-# Запуск тестов в Docker
+# Run tests in Docker
 make docker-test
 
-# Просмотр отчетов о покрытии
+# View test coverage reports
 docker-compose --profile test run --rm test
 ```
 
-### Отладка
+### Debugging
 
 ```bash
-# Просмотр логов
+# View logs
 make docker-logs
 
-# Логи только приложения
+# Logs for the application only
 make docker-logs-app
 
-# Подключение к контейнеру
+# Open a shell in the container
 make docker-shell
 ```
 
 ## Docker Compose Profiles
 
-### production (по умолчанию)
+### production (default)
 - app (production)
+{% if cookiecutter.use_database == "postgresql" %}
 - postgres
-- redis
+{% elif cookiecutter.use_database == "mysql" %}
+- mysql
+{% elif cookiecutter.use_database == "sqlite" %}
+- sqlite
+{% endif %}
+{% if cookiecutter.use_cache in ["redis", "keydb", "tarantool", "dragonfly"] %}
+- {{ cookiecutter.use_cache }}
+{% endif %}
 
 ### dev
-- app-dev (с hot reload)
-- postgres (с exposed портами)
-- redis (с exposed портами)
+- app-dev (with hot reload)
+{% if cookiecutter.use_database == "postgresql" %}
+- postgres (with exposed ports)
+{% elif cookiecutter.use_database == "mysql" %}
+- mysql (with exposed ports)
+{% elif cookiecutter.use_database == "sqlite" %}
+- sqlite (with exposed ports)
+{% endif %}
+{% if cookiecutter.use_cache in ["redis", "keydb", "tarantool", "dragonfly"] %}
+- {{ cookiecutter.use_cache }} (with exposed ports)
+{% endif %}
 
 ### migrate
-- migrate (запуск миграций)
+- migrate (run migrations)
 
 ### test
-- test (запуск тестов)
+- test (run tests)
 
 ### dev-tools
-- adminer (веб-интерфейс для БД)
+- adminer (web interface for DB)
 
-## Переменные окружения
+## Environment Variables
 
-### Обязательные
-- `DATABASE_URL` - URL подключения к PostgreSQL
-- `REDIS_URL` - URL подключения к Redis
+### Required
+{% if cookiecutter.use_database == "postgresql" %}
+- DATABASE_URL - PostgreSQL connection URL
+{% elif cookiecutter.use_database == "mysql" %}
+- DATABASE_URL - MySQL connection URL
+{% elif cookiecutter.use_database == "sqlite" %}
+- DATABASE_URL - SQLite DB path
+{% endif %}
+{% if cookiecutter.use_cache in ["redis", "keydb", "tarantool", "dragonfly"] %}
+- {{ cookiecutter.use_cache | upper }}_URL - {{ cookiecutter.use_cache | capitalize }} connection URL
+{% endif %}
 
 ### Опциональные
-- `ENVIRONMENT` - окружение (production/development/testing)
-- `LOG_LEVEL` - уровень логирования
-- `API_HOST` - хост для API
-- `API_PORT` - порт для API
-- `API_WORKERS` - количество worker процессов
+- `ENVIRONMENT` - environment (production/development/testing)
+- `LOG_LEVEL` - logging level
+- `API_HOST` - API host
+- `API_PORT` - API port
+- `API_WORKERS` - number of worker processes
 
 ## Volumes
 
 ### Named Volumes
-- `postgres_data` - данные PostgreSQL
-- `redis_data` - данные Redis
-- `app_logs` - логи приложения
-- `test_reports` - отчеты тестов
+{% if cookiecutter.use_database == "postgresql" %}
+- postgres_data - PostgreSQL data
+{% elif cookiecutter.use_database == "mysql" %}
+- mysql_data - MySQL data
+{% elif cookiecutter.use_database == "sqlite" %}
+- sqlite_data - SQLite DB file
+{% endif %}
+{% if cookiecutter.use_cache in ["redis", "keydb", "tarantool", "dragonfly"] %}
+- {{ cookiecutter.use_cache }}_data - cache data
+{% endif %}
+- app_logs - application logs
+- test_reports - test reports
 
 ### Bind Mounts (development)
-- `./src:/app/src` - исходный код
-- `./tests:/app/tests` - тесты
-- `./alembic:/app/alembic` - миграции
+- `./src:/app/src` - source code
+- `./tests:/app/tests` - tests
+- `./alembic:/app/alembic` - migrations
 
-## Сетевые настройки
+## Network
 
-Все сервисы подключены к сети `antiques-network` для изоляции.
+All services are connected to the `antiques-network` for isolation.
 
 ## Health Checks
 
 Все сервисы имеют health checks:
-- **app**: HTTP запрос к `/api/docs`
-- **postgres**: `pg_isready`
-- **redis**: `redis-cli ping`
+- **app**: HTTP request to /api/docs
+{% if cookiecutter.use_database == "postgresql" %}
+- **postgres**: pg_isready
+{% elif cookiecutter.use_database == "mysql" %}
+- **mysql**: mysqladmin ping
+{% elif cookiecutter.use_database == "sqlite" %}
+- **sqlite**: ensure DB file exists
+{% endif %}
+{% if cookiecutter.use_cache in ["redis", "keydb", "tarantool", "dragonfly"] %}
+- **{{ cookiecutter.use_cache }}**: {{ cookiecutter.use_cache }}-cli ping
+{% endif %}
 
-## Мониторинг
+## Monitoring
 
-### Логи
+### Logs
 ```bash
-# Все сервисы
+# All services
 docker-compose logs -f
 
-# Конкретный сервис
+# Application only
 docker-compose logs -f app
 ```
