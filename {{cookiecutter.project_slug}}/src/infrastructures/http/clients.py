@@ -6,12 +6,20 @@ from uuid import UUID
 import httpx
 import stamina
 
-from src.application.dtos.artifact import ArtifactCatalogPublicationDTO, ArtifactDTO
+from src.application.dtos.artifact import (
+    ArtifactCatalogPublicationDTO,
+    ArtifactDTO,
+)
 from src.application.exceptions import ArtifactNotFoundError
 from src.application.interfaces.http_clients import (
     ExternalMuseumAPIProtocol,
     PublicCatalogAPIProtocol,
 )
+from src.infrastructures.dtos.artifact import (
+    ArtifactCatalogPublicationPydanticDTO,
+    ArtifactPydanticDTO,
+)
+from src.infrastructures.mappers.artifact import InfrastructureArtifactMapper
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +29,7 @@ logger = logging.getLogger(__name__)
 class ExternalMuseumAPIClient(ExternalMuseumAPIProtocol):
     base_url: str
     client: httpx.AsyncClient
+    mapper: InfrastructureArtifactMapper
 
     @stamina.retry(
         on=(httpx.HTTPError, httpx.RequestError),
@@ -46,17 +55,10 @@ class ExternalMuseumAPIClient(ExternalMuseumAPIProtocol):
             response.raise_for_status()
             data = response.json()
 
-            artifact = ArtifactDTO(
-                inventory_id=data["inventory_id"],
-                name=data["name"],
-                era=data["era"],
-                material=data["material"],
-                description=data["description"],
-                acquisition_date=data["acquisition_date"],
-                department=data["department"],
-            )
-            logger.debug("Successfully fetched artifact: %s", artifact)
-            return artifact
+            pydantic_artifact = ArtifactPydanticDTO.model_validate(data)
+            logger.debug("Successfully fetched artifact: %s", pydantic_artifact)
+            
+            return self.mapper.from_pydantic_dto(pydantic_artifact)
 
         except (httpx.HTTPStatusError, httpx.RequestError) as e:
             logger.exception(
@@ -80,6 +82,7 @@ class ExternalMuseumAPIClient(ExternalMuseumAPIProtocol):
 class PublicCatalogAPIClient(PublicCatalogAPIProtocol):
     base_url: str
     client: httpx.AsyncClient
+    mapper: InfrastructureArtifactMapper
 
     @stamina.retry(
         on=(httpx.HTTPError, httpx.RequestError),
@@ -88,14 +91,10 @@ class PublicCatalogAPIClient(PublicCatalogAPIProtocol):
         wait_jitter=1.0,
     )
     async def publish_artifact(self, artifact: ArtifactCatalogPublicationDTO) -> str:
+        pydantic_artifact = self.mapper.to_catalog_publication_pydantic(artifact)
+        
         url = f"{self.base_url}/items"
-        payload = {
-            "inventory_id": artifact.inventory_id,
-            "name": artifact.name,
-            "era": artifact.era,
-            "material": artifact.material,
-            "description": artifact.description,
-        }
+        payload = pydantic_artifact.model_dump()
         logger.debug("Publishing artifact to URL %s with payload: %s", url, payload)
 
         try:

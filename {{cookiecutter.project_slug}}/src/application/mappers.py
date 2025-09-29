@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import final
 
-from src.application.dtos.artifact import ArtifactDTO
+from src.application.dtos.artifact import ArtifactDTO, EraDTO, MaterialDTO
 from src.application.interfaces.mappers import DtoEntityMapperProtocol
 from src.domain.entities.artifact import ArtifactEntity
 from src.domain.value_objects.era import Era
@@ -12,7 +12,16 @@ from src.domain.value_objects.material import Material
 @dataclass(frozen=True, slots=True)
 class ArtifactMapper(DtoEntityMapperProtocol):
     def to_dto(self, entity: ArtifactEntity) -> ArtifactDTO:
-        return ArtifactDTO.model_validate(entity)
+        return ArtifactDTO(
+            inventory_id=entity.inventory_id,
+            created_at=entity.created_at,
+            acquisition_date=entity.acquisition_date,
+            name=entity.name,
+            department=entity.department,
+            era=EraDTO(value=entity.era.value),
+            material=MaterialDTO(value=entity.material.value),
+            description=entity.description,
+        )
 
     def to_entity(self, dto: ArtifactDTO) -> ArtifactEntity:
         return ArtifactEntity(

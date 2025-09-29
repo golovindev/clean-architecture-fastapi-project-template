@@ -21,6 +21,7 @@ from src.infrastructures.http.clients import (
     ExternalMuseumAPIClient,
     PublicCatalogAPIClient,
 )
+from src.infrastructures.mappers.artifact import InfrastructureArtifactMapper
 
 
 class SettingsProvider(Provider):
@@ -93,28 +94,47 @@ class ServiceProvider(Provider):
         self,
         client: AsyncClient,
         settings: Settings,
+        infrastructure_mapper: InfrastructureArtifactMapper,
     ) -> ExternalMuseumAPIClient:
         return ExternalMuseumAPIClient(
-            base_url=settings.external_api_base_url, client=client
+            base_url=settings.external_api_base_url, 
+            client=client,
+            mapper=infrastructure_mapper,
         )
 
     @provide(scope=Scope.REQUEST)
     def get_public_catalog_api_client(
-        self, client: AsyncClient, settings: Settings
+        self, 
+        client: AsyncClient, 
+        settings: Settings,
+        infrastructure_mapper: InfrastructureArtifactMapper,
     ) -> PublicCatalogAPIClient:
         return PublicCatalogAPIClient(
-            base_url=settings.catalog_api_base_url, client=client
+            base_url=settings.catalog_api_base_url, 
+            client=client,
+            mapper=infrastructure_mapper,
         )
 
     @provide(scope=Scope.REQUEST)
-    def get_message_broker(self, broker: KafkaBroker) -> KafkaPublisher:
-        return KafkaPublisher(broker=broker)
+    def get_message_broker(
+        self, 
+        broker: KafkaBroker,
+        infrastructure_mapper: InfrastructureArtifactMapper,
+    ) -> KafkaPublisher:
+        return KafkaPublisher(
+            broker=broker,
+            mapper=infrastructure_mapper,
+        )
 
 
 class MapperProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_artifact_mapper(self) -> ArtifactMapper:
         return ArtifactMapper()
+
+    @provide(scope=Scope.REQUEST)
+    def get_infrastructure_artifact_mapper(self) -> InfrastructureArtifactMapper:
+        return InfrastructureArtifactMapper()
 
 
 class CacheProvider(Provider):

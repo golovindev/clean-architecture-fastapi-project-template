@@ -1,0 +1,111 @@
+from datetime import datetime
+from typing import Literal
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+
+class MaterialPydanticDTO(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+        str_strip_whitespace=True,
+    )
+    value: Literal[
+        "ceramic",
+        "metal",
+        "stone",
+        "glass",
+        "bone",
+        "wood",
+        "textile",
+        "other",
+    ]
+
+
+class EraPydanticDTO(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+        str_strip_whitespace=True,
+    )
+    value: Literal[
+        "paleolithic",
+        "neolithic",
+        "bronze_age",
+        "iron_age",
+        "antiquity",
+        "middle_ages",
+        "modern",
+    ]
+
+
+class ArtifactPydanticDTO(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+        str_strip_whitespace=True,
+        from_attributes=True,
+        validate_default=True,
+    )
+
+    inventory_id: UUID = Field(..., description="Unique identifier of the artifact")
+    created_at: datetime = Field(
+        description="Timestamp when the artifact record was created (UTC)",
+    )
+    acquisition_date: datetime = Field(
+        ..., description="Date when the artifact was acquired"
+    )
+    name: str = Field(
+        ..., min_length=2, max_length=100, description="Name of the artifact"
+    )
+    department: str = Field(
+        ...,
+        min_length=2,
+        max_length=100,
+        description="Department responsible for the artifact",
+    )
+    era: EraPydanticDTO = Field(..., description="Historical era of the artifact")
+    material: MaterialPydanticDTO = Field(..., description="Material of the artifact")
+    description: str | None = Field(
+        None, max_length=1000, description="Optional description of the artifact"
+    )
+
+    @field_validator("acquisition_date")
+    @classmethod
+    def validate_acquisition_date(cls, value: datetime) -> datetime:
+        from datetime import UTC
+        if value > datetime.now(UTC):
+            raise ValueError("Acquisition date cannot be in the future")
+        return value
+
+    @model_validator(mode="after")
+    def validate_dates(self) -> "ArtifactPydanticDTO":
+        if self.acquisition_date > self.created_at:
+            raise ValueError("Acquisition date cannot be later than created_at")
+        return self
+
+
+class ArtifactAdmissionNotificationPydanticDTO(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+        str_strip_whitespace=True,
+    )
+    inventory_id: UUID
+    name: str
+    acquisition_date: datetime
+    department: str
+
+
+class ArtifactCatalogPublicationPydanticDTO(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+        str_strip_whitespace=True,
+    )
+    inventory_id: UUID
+    name: str
+    era: EraPydanticDTO
+    material: MaterialPydanticDTO
+    description: str | None = None

@@ -1,17 +1,12 @@
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Literal, final
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-
 
 @final
-class MaterialDTO(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-        extra="forbid",
-        str_strip_whitespace=True,
-    )
+@dataclass(frozen=True, slots=True, kw_only=True)
+class MaterialDTO:
     value: Literal[
         "ceramic",
         "metal",
@@ -25,12 +20,8 @@ class MaterialDTO(BaseModel):
 
 
 @final
-class EraDTO(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-        extra="forbid",
-        str_strip_whitespace=True,
-    )
+@dataclass(frozen=True, slots=True, kw_only=True)
+class EraDTO:
     value: Literal[
         "paleolithic",
         "neolithic",
@@ -43,59 +34,33 @@ class EraDTO(BaseModel):
 
 
 @final
-class ArtifactDTO(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-        extra="forbid",
-        str_strip_whitespace=True,
-        from_attributes=True,
-        validate_default=True,
-    )
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ArtifactDTO:
+    inventory_id: UUID
+    acquisition_date: datetime
+    name: str
+    department: str
+    era: EraDTO
+    material: MaterialDTO
+    description: str | None = None
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
-    inventory_id: UUID = Field(..., description="Unique identifier of the artifact")
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(UTC),
-        description="Timestamp when the artifact record was created (UTC)",
-    )
-    acquisition_date: datetime = Field(
-        ..., description="Date when the artifact was acquired"
-    )
-    name: str = Field(
-        ..., min_length=2, max_length=100, description="Name of the artifact"
-    )
-    department: str = Field(
-        ...,
-        min_length=2,
-        max_length=100,
-        description="Department responsible for the artifact",
-    )
-    era: EraDTO = Field(..., description="Historical era of the artifact")
-    material: MaterialDTO = Field(..., description="Material of the artifact")
-    description: str | None = Field(
-        None, max_length=1000, description="Optional description of the artifact"
-    )
-
-    @field_validator("acquisition_date")
-    @classmethod
-    def validate_acquisition_date(cls, value: datetime) -> datetime:
-        if value > datetime.now(UTC):
+    def __post_init__(self) -> None:
+        if self.acquisition_date > datetime.now(UTC):
             raise ValueError("Acquisition date cannot be in the future")
-        return value
-
-    @model_validator(mode="after")
-    def validate_dates(self) -> "ArtifactDTO":
         if self.acquisition_date > self.created_at:
             raise ValueError("Acquisition date cannot be later than created_at")
-        return self
+        if len(self.name) < 2 or len(self.name) > 100:
+            raise ValueError("Name must be between 2 and 100 characters")
+        if len(self.department) < 2 or len(self.department) > 100:
+            raise ValueError("Department must be between 2 and 100 characters")
+        if self.description is not None and len(self.description) > 1000:
+            raise ValueError("Description must be at most 1000 characters")
 
 
 @final
-class ArtifactAdmissionNotificationDTO(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-        extra="forbid",
-        str_strip_whitespace=True,
-    )
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ArtifactAdmissionNotificationDTO:
     inventory_id: UUID
     name: str
     acquisition_date: datetime
@@ -103,12 +68,8 @@ class ArtifactAdmissionNotificationDTO(BaseModel):
 
 
 @final
-class ArtifactCatalogPublicationDTO(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-        extra="forbid",
-        str_strip_whitespace=True,
-    )
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ArtifactCatalogPublicationDTO:
     inventory_id: UUID
     name: str
     era: EraDTO
