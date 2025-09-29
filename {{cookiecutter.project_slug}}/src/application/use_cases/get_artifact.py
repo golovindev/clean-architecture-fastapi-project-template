@@ -48,7 +48,7 @@ class GetArtifactUseCase:
 
         cached_artifact_data: dict | None = await self.cache_client.get(inventory_id_str)
         if cached_artifact_data:
-            return self._dict_to_artifact_dto(cached_artifact_data)
+            return self.artifact_mapper.from_dict(cached_artifact_data)
 
         artifact_entity: (
             ArtifactEntity | None
@@ -56,7 +56,7 @@ class GetArtifactUseCase:
         if artifact_entity:
             artifact_dto = self.artifact_mapper.to_dto(artifact_entity)
             await self.cache_client.set(
-                inventory_id_str, self._artifact_dto_to_dict(artifact_dto)
+                inventory_id_str, self.artifact_mapper.to_dict(artifact_dto)
             )
             return artifact_dto
 
@@ -84,7 +84,7 @@ class GetArtifactUseCase:
         async with self.uow:
             artifact_entity = self.artifact_mapper.to_entity(artifact_dto)
             await self.uow.repository.save(artifact_entity)
-            await self.cache_client.set(inventory_id_str, self._artifact_dto_to_dict(artifact_dto))
+            await self.cache_client.set(inventory_id_str, self.artifact_mapper.to_dict(artifact_dto))
 
         try:
             notification_dto = ArtifactAdmissionNotificationDTO(
@@ -139,32 +139,6 @@ class GetArtifactUseCase:
         )
         return artifact_dto
 
-    def _artifact_dto_to_dict(self, dto: ArtifactDTO) -> dict:
-        return {
-            "inventory_id": str(dto.inventory_id),
-            "created_at": dto.created_at.isoformat(),
-            "acquisition_date": dto.acquisition_date.isoformat(),
-            "name": dto.name,
-            "department": dto.department,
-            "era": {"value": dto.era.value},
-            "material": {"value": dto.material.value},
-            "description": dto.description,
-        }
-
-    def _dict_to_artifact_dto(self, data: dict) -> ArtifactDTO:
-        from datetime import datetime
-        from uuid import UUID
-
-        return ArtifactDTO(
-            inventory_id=UUID(data["inventory_id"]),
-            created_at=datetime.fromisoformat(data["created_at"]),
-            acquisition_date=datetime.fromisoformat(data["acquisition_date"]),
-            name=data["name"],
-            department=data["department"],
-            era=EraDTO(value=data["era"]["value"]),
-            material=MaterialDTO(value=data["material"]["value"]),
-            description=data.get("description"),
-        )
 
     def _validate_era(
         self, value: str
