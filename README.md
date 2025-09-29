@@ -133,7 +133,7 @@ cookiecutter . --no-input \
 ### 1. Create Your Project
 
 ```bash
-cookiecutter https://github.com/your-username/fastapi-template.git
+cookiecutter https://github.com/Peopl3s/clean-architecture-fastapi-project-template.git
 ```
 
 ### 2. Navigate to Your Project
