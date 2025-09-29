@@ -105,10 +105,10 @@ cookiecutter . --no-input \
 │   │   ├── 📁 use_cases/            # Use cases
 │   │   ├── 📁 dtos/                 # Data transfer objects
 │   │   ├── 📁 interfaces/           # Application interfaces
-│   │   ├── 📁 uow/                  # Unit of Work pattern
 │   │   └── exceptions.py            # Application exceptions
 │   ├── 📁 presentation/             # Presentation layer
 │   │   └── 📁 api/                  # API endpoints
+│   │   └── 📁 cli/                  # CLI endpoints
 │   ├── 📁 infrastructures/          # Infrastructure layer
 │   │   ├── 📁 db/                   # Database implementations
 │   │   ├── 📁 cache/                # Cache implementations
