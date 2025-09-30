@@ -1094,40 +1094,9 @@ make docker-dev
 
 ---
 
-## 🤝 Contributing to the Project
-
-We welcome contributions to the project development! Please familiarize yourself with our rules:
-
-### 📋 Change Process
-
-1. **Fork the repository**
-2. **Create a branch** for your feature (`git checkout -b feature/amazing-feature`)
-3. **Make changes** and follow code standards
-4. **Run tests** (`make lint && make docker-test`)
-5. **Create a commit** (`git commit -m 'Add amazing feature'`)
-6. **Push changes** (`git push origin feature/amazing-feature`)
-7. **Create a Pull Request**
-
-### 📝 Code Requirements
-
-- Follow PEP 8 and our linting rules
-- Write tests for new functionality
-- Update documentation when necessary
-- Use meaningful commit messages
-
----
-
 ## 📄 License
 
 The project is distributed under the MIT license. See the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- The **FastAPI** team for the excellent framework
-- The **Python** community for inspiration
-- All contributors who have contributed to the project development
 
 ---
 
