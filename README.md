@@ -81,9 +81,9 @@ cookiecutter . --no-input \
 | `api_version` | API version | "1.0.0" | No |
 | `api_description` | API description | "API for {project_description}" | No |
 | `domain_name` | Domain name for APIs | "example.com" | Yes |
-| `use_broker` | Choose message broker type | "none" | No |
-| `use_cache` | Choose caching system type | "none" | No |
-| `use_database` | Choose database type (none/postgresql/sqlite/mysql) | "none" | No |
+| `use_broker` | Choose message broker type | `["none", "kafka", "rabbitmq", "nats"]` | No |
+| `use_cache` | Choose caching system type | `["none", "redis", "keydb", "tarantool", "dragonfly"]` | No |
+| `use_database` | Choose database type | `["none", "postgresql", "sqlite", "mysql"]` | No |
 | `add_docker` | Add Docker configuration | "y" | No |
 | `add_tests` | Add test suite | "y" | No |
 | `add_docs` | Add documentation | "y" | No |
