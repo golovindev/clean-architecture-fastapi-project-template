@@ -12,7 +12,6 @@
 {% if cookiecutter.use_cache == "tarantool" %}[![Tarantool](https://img.shields.io/badge/Tarantool-2+-red.svg)](https://www.tarantool.io/){% endif %}
 {% if cookiecutter.use_cache == "dragonfly" %}[![Dragonfly](https://img.shields.io/badge/Dragonfly-1+-red.svg)](https://dragonflydb.io/){% endif %}
 {% if cookiecutter.add_docker == "y" %}[![Docker](https://img.shields.io/badge/Docker-24+-blue.svg)](https://www.docker.com/){% endif %}
-{% if cookiecutter.license_type != "None" %}[![License](https://img.shields.io/badge/License-{{ cookiecutter.license_type }}-green.svg)](LICENSE){% endif %}
 
 **{{ cookiecutter.project_description }}**
 
@@ -1205,12 +1204,6 @@ make docker-build-dev
 # Run in dev mode
 make docker-dev
 ```
-
----
-
-## 📄 License
-
-The project is distributed under the MIT license. See the [LICENSE](LICENSE) file for details.
 
 ---
 
