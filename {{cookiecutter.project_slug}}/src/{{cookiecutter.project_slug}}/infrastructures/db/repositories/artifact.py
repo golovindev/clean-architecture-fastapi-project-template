@@ -12,28 +12,20 @@ from {{cookiecutter.project_slug}}.infrastructures.db.exceptions import (
     RepositoryConflictError,
     RepositorySaveError,
 )
-from tests.test_infrastructure.test_db.models.test_artifact_model import (
-    TestArtifactModel,
-)
+from {{cookiecutter.project_slug}}.infrastructures.db.models.artifact import ArtifactModel
 
 
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
-class TestArtifactRepositorySQLAlchemy(ArtifactRepositoryProtocol):
-    """SQLite-compatible repository for testing"""
-
+class ArtifactRepositorySQLAlchemy(ArtifactRepositoryProtocol):
     session: AsyncSession
 
     async def get_by_inventory_id(
         self, inventory_id: str | UUID
     ) -> ArtifactEntity | None:
         try:
-            inventory_id_str = (
-                str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
-            )
-
-            stmt = select(TestArtifactModel).where(
-                TestArtifactModel.inventory_id == inventory_id_str
+            stmt = select(ArtifactModel).where(
+                ArtifactModel.inventory_id == inventory_id
             )
             result = await self.session.execute(stmt)
             artifact_model = result.scalar_one_or_none()
@@ -47,10 +39,8 @@ class TestArtifactRepositorySQLAlchemy(ArtifactRepositoryProtocol):
 
     async def save(self, artifact: ArtifactEntity) -> None:
         try:
-            inventory_id_str = str(artifact.inventory_id)
-
-            stmt = select(TestArtifactModel).where(
-                TestArtifactModel.inventory_id == inventory_id_str
+            stmt = select(ArtifactModel).where(
+                ArtifactModel.inventory_id == artifact.inventory_id
             )
             result = await self.session.execute(stmt)
             model = result.scalar_one_or_none()
@@ -63,22 +53,18 @@ class TestArtifactRepositorySQLAlchemy(ArtifactRepositoryProtocol):
                 model.acquisition_date = artifact.acquisition_date
                 model.department = artifact.department
             else:
-                model = TestArtifactModel.from_dataclass(artifact)
+                model = ArtifactModel.from_dataclass(artifact)
 
             self.session.add(model)
-            await self.session.commit()
         except IntegrityError as e:
-            await self.session.rollback()
             raise RepositoryConflictError(
                 f"Conflict while saving artifact '{artifact.inventory_id}': {e}"
             ) from e
         except SQLAlchemyError as e:
-            await self.session.rollback()
             raise RepositorySaveError(
                 f"Failed to save artifact '{artifact.inventory_id}': {e}"
             ) from e
         except Exception as e:
-            await self.session.rollback()
             raise RepositorySaveError(
                 f"Unexpected error while saving artifact '{artifact.inventory_id}': {e}"
             ) from e

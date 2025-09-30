@@ -1,7 +1,7 @@
 import pytest
 
-from src.domain.exceptions import InvalidEraException
-from src.domain.value_objects.era import Era
+from {{cookiecutter.project_slug}}.domain.exceptions import InvalidEraException
+from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
 
 
 class TestEra:

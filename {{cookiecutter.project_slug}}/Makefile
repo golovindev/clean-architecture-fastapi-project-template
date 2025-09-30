@@ -11,27 +11,27 @@ install-dev: ## Install development dependencies
 	uv sync --dev
 
 lint: ## Run linting with ruff
-	uv run ruff check src/
+	uv run ruff check src/{{cookiecutter.project_slug}}/
 
 lint-fix: ## Run linting with ruff and fix auto-fixable issues
-	uv run ruff check --fix src/
+	uv run ruff check --fix src/{{cookiecutter.project_slug}}/
 
 format: ## Format code with ruff
-	uv run ruff format src/
+	uv run ruff format src/{{cookiecutter.project_slug}}/
 
 type-check: ## Run type checking with mypy
-	uv run mypy src/
+	uv run mypy src/{{cookiecutter.project_slug}}/
 
 check: ## Run all checks (lint + format check + type check)
-	uv run ruff check src/
-	uv run ruff format --check src/
-	uv run mypy src/
+	uv run ruff check src/{{cookiecutter.project_slug}}/
+	uv run ruff format --check src/{{cookiecutter.project_slug}}/
+	uv run mypy src/{{cookiecutter.project_slug}}/
 
 test: ## Run tests
 	uv run pytest tests/ -v
 
 test-cov: ## Run tests with coverage
-	uv run pytest tests/ -v --cov=src --cov-report=html --cov-report=term
+	uv run pytest tests/ -v --cov=src/{{cookiecutter.project_slug}} --cov-report=html --cov-report=term
 
 clean: ## Clean up cache and temporary files
 	find . -type d -name "__pycache__" -exec rm -rf {} +

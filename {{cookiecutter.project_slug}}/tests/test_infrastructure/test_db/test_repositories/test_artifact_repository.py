@@ -5,9 +5,9 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domain.entities.artifact import ArtifactEntity
-from src.domain.value_objects.era import Era
-from src.domain.value_objects.material import Material
+from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
+from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
+from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
 from tests.test_infrastructure.test_db.models.test_artifact_model import (
     TestArtifactModel,
 )

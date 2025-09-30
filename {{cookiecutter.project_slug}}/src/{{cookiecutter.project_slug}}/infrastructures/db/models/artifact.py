@@ -2,18 +2,18 @@ from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy import DateTime, Index, String, Text, func
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, registry
 
 from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
 from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
 from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
 
-test_mapper_registry = registry()
+mapper_registry = registry()
 
 
-@test_mapper_registry.mapped
-class TestArtifactModel:
-    """SQLite-compatible artifact model for testing"""
+@mapper_registry.mapped
+class ArtifactModel:
     __tablename__ = "artifacts"
     __table_args__ = (
         Index("ix_artifacts_name", "name"),
@@ -23,7 +23,7 @@ class TestArtifactModel:
     def __init__(
             self,
             *,
-            inventory_id: str | UUID,
+            inventory_id: UUID,
             created_at: datetime,
             acquisition_date: datetime,
             name: str,
@@ -32,7 +32,7 @@ class TestArtifactModel:
             material: str,
             description: str | None = None,
     ) -> None:
-        self.inventory_id = str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
+        self.inventory_id = inventory_id
         self.created_at = created_at
         self.acquisition_date = acquisition_date
         self.name = name
@@ -41,8 +41,8 @@ class TestArtifactModel:
         self.material = material
         self.description = description
 
-    inventory_id: Mapped[str] = mapped_column(
-        String(length=36),
+    inventory_id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
         primary_key=True,
         nullable=False,
     )
@@ -63,13 +63,13 @@ class TestArtifactModel:
 
     def __repr__(self) -> str:
         return (
-            f"<TestArtifactModel(inventory_id={self.inventory_id!s}, "
+            f"<ArtifactModel(inventory_id={self.inventory_id!s}, "
             f"name={self.name!r}, department={self.department!r})>"
         )
 
     def to_dataclass(self) -> ArtifactEntity:
         return ArtifactEntity(
-            inventory_id=UUID(self.inventory_id),
+            inventory_id=self.inventory_id,
             created_at=self.created_at,
             acquisition_date=self.acquisition_date,
             name=self.name,
@@ -81,10 +81,10 @@ class TestArtifactModel:
 
     @classmethod
     def from_dataclass(
-        cls: type["TestArtifactModel"], artifact: ArtifactEntity
-    ) -> "TestArtifactModel":
+        cls: type["ArtifactModel"], artifact: ArtifactEntity
+    ) -> "ArtifactModel":
         return cls(
-            inventory_id=str(artifact.inventory_id),
+            inventory_id=artifact.inventory_id,
             created_at=artifact.created_at,
             acquisition_date=artifact.acquisition_date,
             name=artifact.name,

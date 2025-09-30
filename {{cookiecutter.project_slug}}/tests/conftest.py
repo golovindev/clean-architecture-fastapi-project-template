@@ -9,28 +9,28 @@ from fastapi.testclient import TestClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from src.application.dtos.artifact import (
+from {{cookiecutter.project_slug}}.application.dtos.artifact import (
     ArtifactAdmissionNotificationDTO,
     ArtifactCatalogPublicationDTO,
     ArtifactDTO,
     EraDTO,
     MaterialDTO,
 )
-from src.application.interfaces.cache import CacheProtocol
-from src.application.interfaces.http_clients import (
+from {{cookiecutter.project_slug}}.application.interfaces.cache import CacheProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.http_clients import (
     ExternalMuseumAPIProtocol,
     PublicCatalogAPIProtocol,
 )
-from src.application.interfaces.mappers import DtoEntityMapperProtocol
-from src.application.interfaces.message_broker import MessageBrokerPublisherProtocol
-from src.application.interfaces.repositories import ArtifactRepositoryProtocol
-from src.application.interfaces.uow import UnitOfWorkProtocol
-from src.application.use_cases.get_artifact import GetArtifactUseCase
-from src.config.ioc.di import get_providers
-from src.domain.entities.artifact import ArtifactEntity
-from src.domain.value_objects.era import Era
-from src.domain.value_objects.material import Material
-from src.main import create_app
+from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEntityMapperProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.config.ioc.di import get_providers
+from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
+from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
+from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
+from {{cookiecutter.project_slug}}.main import create_app
 from tests.test_infrastructure.test_db.models.test_artifact_model import (
     test_mapper_registry,
 )
