@@ -1,15 +1,16 @@
-# Настройка окружения
+# Environment setup
 
-## Обзор
+## Overview
 
-Приложение использует переменные окружения для конфигурации. Все переменные определены в файле `.env` и могут быть настроены под различные окружения.
+The application uses environment variables for configuration.  
+All variables are defined in the `.env` file and can be customized for different environments.
 
-## Создание файла .env
+## Creating the .env file
 
 ```bash
-# Скопировать из шаблона
+# Copy from the template
 make setup-env
 
-# Или скопировать вручную
+# Or copy manually
 cp env.template .env
 ```

@@ -1,57 +1,57 @@
-# Миграции базы данных
+# Database migrations
 
-Этот проект использует Alembic для управления миграциями базы данных PostgreSQL.
+This project uses Alembic to manage PostgreSQL database migrations.
 
-## Команды для работы с миграциями
+## Migration commands
 
-### Создание новой миграции
+### Creating a new migration
 ```bash
-# Создать миграцию с автогенерацией (требует подключения к БД)
-make migration msg="Описание изменений"
+# Create a migration with autogeneration (requires DB connection)
+make migration msg="Description of changes"
 
-# Или напрямую через alembic
-uv run alembic revision --autogenerate -m "Описание изменений"
+# Or directly with alembic
+uv run alembic revision --autogenerate -m "Description of changes"
 ```
 
-### Применение миграций
+### Applying migrations
 ```bash
-# Применить все ожидающие миграции
+# Apply all pending migrations
 make migrate
 
-# Или напрямую
+# Or directly
 uv run alembic upgrade head
 ```
 
-### Откат миграций
+### Rolling back migrations
 ```bash
-# Откатить на одну миграцию назад
+# Roll back one migration
 make migrate-downgrade
 
-# Или напрямую
+# Or directly
 uv run alembic downgrade -1
 ```
 
-### Просмотр истории миграций
+### Viewing migration history
 ```bash
-# Показать историю миграций
+# Show migration history
 make migrate-history
 
-# Показать текущую миграцию
+# Show the current migration
 make migrate-current
 ```
 
-### Другие полезные команды
+### Other useful commands
 ```bash
-# Отметить БД как находящуюся на определенной миграции (без применения)
+# Mark the DB as being at a specific migration (without applying it)
 make migrate-stamp
 
-# Показать SQL для миграции (без применения)
+# Show SQL for a migration (without applying it)
 uv run alembic upgrade head --sql
 ```
 
-## Структура файлов
+## File structure
 
-- `alembic.ini` - конфигурация Alembic
-- `alembic/env.py` - настройки окружения для миграций
-- `alembic/versions/` - директория с файлами миграций
-- `alembic/script.py.mako` - шаблон для новых миграций
+- `alembic.ini` - Alembic configuration
+- `alembic/env.py` - migration environment settings
+- `alembic/versions/` - directory with migration files
+- `alembic/script.py.mako` - template for new migrations
