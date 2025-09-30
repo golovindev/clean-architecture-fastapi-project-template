@@ -2,19 +2,19 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from src.application.dtos.artifact import (
+from {{cookiecutter.project_slug}}.application.dtos.artifact import (
     ArtifactAdmissionNotificationDTO,
     ArtifactCatalogPublicationDTO,
     ArtifactDTO,
 )
-from src.application.exceptions import (
+from {{cookiecutter.project_slug}}.application.exceptions import (
     ArtifactNotFoundError,
     FailedFetchArtifactMuseumAPIException,
     FailedPublishArtifactInCatalogException,
     FailedPublishArtifactMessageBrokerException,
 )
-from src.application.use_cases.get_artifact import GetArtifactUseCase
-from src.domain.entities.artifact import ArtifactEntity
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
 
 
 class TestGetArtifactUseCase:

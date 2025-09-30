@@ -3,9 +3,9 @@ from uuid import uuid4
 
 import pytest
 
-from src.domain.entities.artifact import ArtifactEntity
-from src.domain.value_objects.era import Era
-from src.domain.value_objects.material import Material
+from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
+from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
+from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
 
 
 class TestArtifactEntity:

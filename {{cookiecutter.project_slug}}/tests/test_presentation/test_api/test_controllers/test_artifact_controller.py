@@ -4,14 +4,14 @@ from uuid import uuid4
 from fastapi import HTTPException, status
 import pytest
 
-from src.application.dtos.artifact import ArtifactDTO, EraDTO, MaterialDTO
-from src.application.exceptions import (
+from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactDTO, EraDTO, MaterialDTO
+from {{cookiecutter.project_slug}}.application.exceptions import (
     ArtifactNotFoundError,
     FailedFetchArtifactMuseumAPIException,
     FailedPublishArtifactInCatalogException,
     FailedPublishArtifactMessageBrokerException,
 )
-from src.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
 
 
 class TestArtifactController:

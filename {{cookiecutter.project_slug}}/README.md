@@ -20,6 +20,115 @@
 
 ---
 
+## 🔄 Project Restructuring
+
+### 🎯 Overview
+
+This project has been restructured to follow Python best practices for package organization and distribution. The restructuring transforms the project from a simple `src/` layout to a proper distributable package structure that aligns with modern Python packaging standards.
+
+### 📁 Structure Changes
+
+**Before (Simple Layout):**
+```
+{{cookiecutter.project_slug}}/
+├── src/
+│   ├── main.py
+│   ├── application/
+│   ├── config/
+│   ├── domain/
+│   ├── infrastructures/
+│   └── presentation/
+```
+
+**After (Distributable Package Layout):**
+```
+{{cookiecutter.project_slug}}/
+├── src/
+│   └── {{cookiecutter.project_slug}}/  # Main package
+│       ├── __init__.py
+│       ├── main.py
+│       ├── application/
+│       ├── config/
+│       ├── domain/
+│       ├── infrastructures/
+│       └── presentation/
+```
+
+### ✅ Benefits of New Structure
+
+1. **📦 Distribution Ready**: The package can be easily installed via `pip install -e .` and distributed to PyPI
+2. **🚀 Multiple Run Methods**: Application can be run in several ways:
+   - `python -m {{cookiecutter.project_slug}}.main` (module execution)
+   - `{{cookiecutter.project_slug}}` (entry point script after installation)
+   - Direct import as a library
+3. **🔒 No Name Conflicts**: Package name prevents conflicts with built-in or third-party modules
+4. **📈 Predictable Imports**: All imports use consistent package structure
+5. **🛠️ Development Friendly**: Supports editable installs for development
+6. **📊 Better Tooling Integration**: Improved integration with linters, type checkers, and testing tools
+
+### 🔄 Import Changes
+
+**Before:**
+```python
+from src.application.use_cases.get_artifact import GetArtifactUseCase
+from src.domain.entities.artifact import ArtifactEntity
+```
+
+**After:**
+```python
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
+```
+
+### 🚀 Running the Application
+
+**New ways to run the application:**
+
+```bash
+# Method 1: Module execution (recommended for development)
+uv run python -m {{cookiecutter.project_slug}}.main
+
+# Method 2: Entry point script (after installation)
+uv sync  # Install the package
+{{cookiecutter.project_slug}}  # Run using entry point
+
+# Method 3: Direct execution (if main.py has shebang)
+./src/{{cookiecutter.project_slug}}/main.py
+```
+
+### 🛠️ Development Commands Updated
+
+All development commands have been updated to work with the new package structure:
+
+```bash
+# Code quality checks now target the package
+make lint        # Checks src/{{cookiecutter.project_slug}}/
+make format      # Formats src/{{cookiecutter.project_slug}}/
+make type-check  # Type checks src/{{cookiecutter.project_slug}}/
+
+# Testing with updated coverage paths
+make test-cov    # Coverage for src/{{cookiecutter.project_slug}}/
+```
+
+### 📦 Installation and Distribution
+
+The project can now be easily installed and distributed:
+
+```bash
+# Development installation
+pip install -e .
+
+# Build distribution
+python -m build
+
+# Upload to PyPI (when ready)
+twine upload dist/*
+```
+
+This restructuring ensures the project follows modern Python packaging standards while maintaining the clean architecture principles and making the codebase more maintainable and distributable.
+
+---
+
 ## 📖 Project Description
 
 **{{ cookiecutter.project_name }}** is an elegant and scalable web application developed for {{ cookiecutter.project_description.lower() }}. The system is built using modern architectural patterns and cutting-edge technologies, ensuring high performance, reliability, and ease of operation.
@@ -152,8 +261,11 @@ make docker-up-dev
 # Apply migrations
 make migrate
 
-# Start the application
-uv run python -m src.main
+# Start the application (new package structure)
+uv run python -m {{cookiecutter.project_slug}}.main
+
+# Alternative: run using the entry point script after installation
+{{cookiecutter.project_slug}}
 ```
 {% endif %}
 
@@ -235,75 +347,77 @@ The application follows **Clean Architecture** principles, ensuring clear separa
 
 ### 📁 Project Structure
 
-Below is a detailed directory tree reflecting the architectural structure:
+Below is a detailed directory tree reflecting the architectural structure with the new distributable package layout:
 
 ```
 .
-├── 📁 src/                          # Application source code
-│   ├── 📁 domain/                   # Domain layer (business logic)
-│   │   ├── 📁 entities/             # Domain entities
-│   │   │   └── artifact.py          # "Artifact" entity
-│   │   ├── 📁 services/             # Domain services
-│   │   ├── 📁 value_objects/        # Value objects
-│   │   │   ├── era.py               # "Era" value object
-│   │   │   └── material.py          # "Material" value object
-│   │   ├── exceptions.py            # Domain exceptions
-│   │   └── __init__.py
-│   │
-│   ├── 📁 application/              # Application layer
-│   │   ├── 📁 dtos/                 # Data Transfer Objects
-│   │   │   └── artifact.py          # DTO for "Artifact"
-│   │   ├── 📁 interfaces/           # Interfaces (ports)
-│   │   │   ├── cache.py             # Caching interface
-│   │   │   ├── http_clients.py      # HTTP client interfaces
-│   │   │   ├── mappers.py           # Mapper interfaces
-│   │   │   ├── message_broker.py    # Message broker interfaces
-│   │   │   └── repositories.py      # Repository interfaces
-│   │   │   └── uow.py               # Unit of Work interfaces
-│   │   ├── 📁 use_cases/            # Use cases (interactors)
-│   │   │   └── get_artifact.py      # "Get Artifact" use case
-│   │   ├── exceptions.py            # Application exceptions
-│   │   ├── mappers.py               # Data mappers
-│   │   └── __init__.py
-│   │
-│   ├── 📁 presentation/             # Presentation layer
-│   │   ├── 📁 api/                  # API
-│   │   │   └── 📁 rest/             # REST API
-│   │   │       ├── 📁 v1/           # API version v1
-│   │   │       │   ├── 📁 controllers/ # Controllers
-│   │   │       │   │   └── artifact_controller.py
-│   │   │       │   ├── exceptions.py   # API exception handlers
-│   │   │       │   └── routers.py      # Router
-│   │   │       └── middlewares.py   # Middleware layers
-│   │   └── 📁 cli/                  # CLI interface
-│   │   └── __init__.py
-│   │
-│   ├── 📁 infrastructures/          # Infrastructure layer
-│   │   ├── 📁 broker/               # Message broker
-│   │   │   └── publisher.py         # Message publisher
-│   │   ├── 📁 cache/                # Caching
-│   │   │   └── redis_client.py      # Redis client
-│   │   ├── 📁 db/                   # Database operations
-│   │   │   ├── 📁 models/           # ORM models
-│   │   │   │   └── artifact.py      # "Artifact" model
-│   │   │   ├── 📁 repositories/     # Repositories
-│   │   │   │   └── artifact.py      # "Artifact" repository
-│   │   └── 📁 dtos/                 # DTO c Pydantic
-│   │   │   ├── uow.py               # SQLAlchemy Unit of 
-│   │   │   ├── exceptions.py        # Database exceptions
-│   │   │   ├── session.py           # Database session management
-│   │   │   └── __init__.py
-│   │   ├── 📁 http/                 # HTTP clients
-│   │   │   └── clients.py           # HTTP client implementations
-│   │   └── __init__.py
-│   │
-│   └── 📁 config/                   # Configuration
-│       ├── 📁 ioc/                  # Dependency Injection
-│       │   ├── di.py                # DI container setup
-│       │   └── providers.py         # Dependency providers
-│       ├── base.py                  # Base configuration
-│       ├── logging.py               # Logging configuration
-│       └── __init__.py
+├── 📁 src/                          # Source code root
+│   └── 📁 {{cookiecutter.project_slug}}/  # Main application package
+│       ├── 📁 domain/               # Domain layer (business logic)
+│       │   ├── 📁 entities/         # Domain entities
+│       │   │   └── artifact.py      # "Artifact" entity
+│       │   ├── 📁 services/         # Domain services
+│       │   ├── 📁 value_objects/    # Value objects
+│       │   │   ├── era.py           # "Era" value object
+│       │   │   └── material.py      # "Material" value object
+│       │   ├── exceptions.py        # Domain exceptions
+│       │   └── __init__.py
+│       │
+│       ├── 📁 application/          # Application layer
+│       │   ├── 📁 dtos/             # Data Transfer Objects
+│       │   │   └── artifact.py      # DTO for "Artifact"
+│       │   ├── 📁 interfaces/      # Interfaces (ports)
+│       │   │   ├── cache.py         # Caching interface
+│       │   │   ├── http_clients.py  # HTTP client interfaces
+│       │   │   ├── mappers.py       # Mapper interfaces
+│       │   │   ├── message_broker.py # Message broker interfaces
+│       │   │   └── repositories.py # Repository interfaces
+│       │   │   └── uow.py          # Unit of Work interfaces
+│       │   ├── 📁 use_cases/       # Use cases (interactors)
+│       │   │   └── get_artifact.py # "Get Artifact" use case
+│       │   ├── exceptions.py        # Application exceptions
+│       │   ├── mappers.py           # Data mappers
+│       │   └── __init__.py
+│       │
+│       ├── 📁 presentation/        # Presentation layer
+│       │   ├── 📁 api/             # API
+│       │   │   └── 📁 rest/        # REST API
+│       │   │       ├── 📁 v1/      # API version v1
+│       │   │       │   ├── 📁 controllers/ # Controllers
+│       │   │       │   │   └── artifact_controller.py
+│       │   │       │   ├── exceptions.py   # API exception handlers
+│       │   │       │   └── routers.py      # Router
+│       │   │       └── middlewares.py   # Middleware layers
+│       │   └── 📁 cli/            # CLI interface
+│       │   └── __init__.py
+│       │
+│       ├── 📁 infrastructures/     # Infrastructure layer
+│       │   ├── 📁 broker/          # Message broker
+│       │   │   └── publisher.py    # Message publisher
+│       │   ├── 📁 cache/           # Caching
+│       │   │   └── redis_client.py # Redis client
+│       │   ├── 📁 db/              # Database operations
+│       │   │   ├── 📁 models/      # ORM models
+│       │   │   │   └── artifact.py # "Artifact" model
+│       │   │   ├── 📁 repositories/ # Repositories
+│       │   │   │   └── artifact.py # "Artifact" repository
+│       │   │   ├── uow.py          # SQLAlchemy Unit of Work
+│       │   │   ├── exceptions.py   # Database exceptions
+│       │   │   ├── session.py      # Database session management
+│       │   │   └── __init__.py
+│       │   ├── 📁 http/            # HTTP clients
+│       │   │   └── clients.py      # HTTP client implementations
+│       │   └── __init__.py
+│       │
+│       ├── 📁 config/             # Configuration
+│       │   ├── 📁 ioc/            # Dependency Injection
+│       │   │   ├── di.py          # DI container setup
+│       │   │   └── providers.py   # Dependency providers
+│       │   ├── base.py            # Base configuration
+│       │   ├── logging.py         # Logging configuration
+│       │   └── __init__.py
+│       │
+│       └── main.py                # Application entry point
 │
 ├── 📁 tests/                        # Test suite
 │   ├── 📁 test_application/         # Application layer tests
@@ -1027,19 +1141,19 @@ class GetArtifactUseCaseWithIdentityMap:
 
 ### 🧹 Code Quality
 ```bash
-# Code checking
-make lint                    # Check code style
-make lint-fix               # Auto-fix issues
-make format                 # Format code
-make type-check             # Type checking
-make check                  # Run all checks
+# Code checking (new package structure)
+make lint                    # Check code style in src/{{cookiecutter.project_slug}}/
+make lint-fix               # Auto-fix issues in src/{{cookiecutter.project_slug}}/
+make format                 # Format code in src/{{cookiecutter.project_slug}}/
+make type-check             # Type checking in src/{{cookiecutter.project_slug}}/
+make check                  # Run all checks on src/{{cookiecutter.project_slug}}/
 ```
 
 ### 🧪 Testing
 ```bash
-# Run tests
-make test                   # Basic test run
-make test-cov               # Run tests with coverage
+# Run tests (new package structure)
+make test                   # Basic test run with updated imports
+make test-cov               # Run tests with coverage on src/{{cookiecutter.project_slug}}/
 make docker-test            # Run in Docker environment
 ```
 
