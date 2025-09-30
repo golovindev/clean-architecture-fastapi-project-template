@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import logging
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import (
@@ -25,6 +25,8 @@ from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEnti
 from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
+from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
+from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
 
 if TYPE_CHECKING:
     from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
@@ -111,10 +113,8 @@ class GetArtifactUseCase:
             publication_dto = ArtifactCatalogPublicationDTO(
                 inventory_id=artifact_entity.inventory_id,
                 name=artifact_entity.name,
-                era=EraDTO(value=self._validate_era(artifact_entity.era.value)),
-                material=MaterialDTO(
-                    value=self._validate_material(artifact_entity.material.value)
-                ),
+                era=EraDTO(value=str(artifact_entity.era)),
+                material=MaterialDTO(value=str(artifact_entity.material)),
                 description=artifact_entity.description,
             )
             public_id: str = await self.catalog_api_client.publish_artifact(
@@ -138,47 +138,3 @@ class GetArtifactUseCase:
             extra={"inventory_id": inventory_id_str},
         )
         return artifact_dto
-
-
-    def _validate_era(
-        self, value: str
-    ) -> Literal[
-        "paleolithic",
-        "neolithic",
-        "bronze_age",
-        "iron_age",
-        "antiquity",
-        "middle_ages",
-        "modern",
-    ]:
-        allowed = {
-            "paleolithic",
-            "neolithic",
-            "bronze_age",
-            "iron_age",
-            "antiquity",
-            "middle_ages",
-            "modern",
-        }
-        if value not in allowed:
-            raise ValueError(f"Invalid era value: {value}")
-        return value  # type: ignore[return-value]
-
-    def _validate_material(
-        self, value: str
-    ) -> Literal[
-        "ceramic", "metal", "stone", "glass", "bone", "wood", "textile", "other"
-    ]:
-        allowed = {
-            "ceramic",
-            "metal",
-            "stone",
-            "glass",
-            "bone",
-            "wood",
-            "textile",
-            "other",
-        }
-        if value not in allowed:
-            raise ValueError(f"Invalid material value: {value}")
-        return value  # type: ignore[return-value]
