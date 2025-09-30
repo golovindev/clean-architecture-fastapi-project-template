@@ -191,3 +191,4 @@ docker-compose logs -f
 # Application only
 docker-compose logs -f app
 ```
+{% endif %}
