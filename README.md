@@ -19,7 +19,7 @@ A comprehensive cookiecutter template for creating modern FastAPI applications w
 
 ## 📋 Prerequisites
 
-- Python 3.12+
+- Python 3.12
 - Cookiecutter: `pip install cookiecutter`
 - Docker and Docker Compose (optional, for containerized development)
 
