@@ -1,31 +1,49 @@
 version: '3.8'
 
+# YAML Anchors for development overrides
+x-dev-environment: &dev-environment
+  ENVIRONMENT: development
+  LOG_LEVEL: DEBUG
+
+x-dev-volumes: &dev-volumes
+  - ./src:/app/src
+  - ./tests:/app/tests
+  - ./alembic:/app/alembic
+  - ./alembic.ini:/app/alembic.ini
+
+x-dev-command: &dev-command
+  command: ["uv", "run", "granian", "--target", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--workers", "1"]
+
+x-dev-database-env: &dev-database-env
+  POSTGRES_DB: antiques_dev
+  POSTGRES_USER: dev_user
+  POSTGRES_PASSWORD: dev_password
+
+x-dev-cache-command: &dev-cache-command
+  command: redis-server --appendonly yes
+
+# Network configuration is handled individually per service
+
 services:
   app:
     build:
       target: development
     environment:
-      ENVIRONMENT: development
-      LOG_LEVEL: DEBUG
+      <<: *dev-environment
     volumes:
-      - ./src:/app/src
-      - ./tests:/app/tests
-      - ./alembic:/app/alembic
-      - ./alembic.ini:/app/alembic.ini
-    command: ["uv", "run", "granian", "--target", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--workers", "1"]
+      <<: *dev-volumes
+    <<: *dev-command
 
   postgres:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: antiques_dev
-      POSTGRES_USER: dev_user
-      POSTGRES_PASSWORD: dev_password
+      <<: *dev-database-env
 
   redis:
     ports:
       - "6379:6379"
-    command: redis-server --appendonly yes
+    <<: *dev-cache-command
 
   adminer:
     image: adminer:latest
