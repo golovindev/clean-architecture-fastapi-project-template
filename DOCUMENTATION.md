@@ -140,7 +140,6 @@ make clean
 
 - **[Code Quality](docs/development/code-quality.rst)** - Standards and tools
 - **[Contributing](docs/development/contributing.rst)** - How to contribute
-- **[Best Practices](docs/advanced/best-practices.rst)** - Advanced patterns
 
 ## 🛠️ Maintaining Documentation
 
