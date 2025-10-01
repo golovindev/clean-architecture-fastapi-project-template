@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-import logging
 from typing import TYPE_CHECKING
 from uuid import UUID
+
+import structlog
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import (
     ArtifactAdmissionNotificationDTO,
@@ -31,7 +32,7 @@ from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
 if TYPE_CHECKING:
     from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -64,20 +65,22 @@ class GetArtifactUseCase:
 
         logger.info(
             "Artifact not found locally, fetching from external museum API...",
-            extra={"inventory_id": inventory_id_str},
+            inventory_id=inventory_id_str,
         )
         try:
             artifact_dto = await self.museum_api_client.fetch_artifact(inventory_id)
         except ArtifactNotFoundError as e:
             logger.error(
                 "Artifact not found in external museum API",
-                extra={"inventory_id": inventory_id_str, "error": str(e)},
+                inventory_id=inventory_id_str,
+                error=str(e),
             )
             raise
         except Exception as e:
             logger.exception(
                 "Failed to fetch artifact from external museum API",
-                extra={"inventory_id": inventory_id_str, "error": str(e)},
+                inventory_id=inventory_id_str,
+                error=str(e),
             )
             raise FailedFetchArtifactMuseumAPIException(
                 "Could not fetch artifact from external service", str(e)
@@ -98,12 +101,13 @@ class GetArtifactUseCase:
             await self.message_broker.publish_new_artifact(notification_dto)
             logger.info(
                 "Published new artifact event to message broker",
-                extra={"inventory_id": inventory_id_str},
+                inventory_id=inventory_id_str,
             )
         except Exception as e:
             logger.warning(
                 "Failed to publish artifact notification to message broker (non-critical)",
-                extra={"inventory_id": inventory_id_str, "error": str(e)},
+                inventory_id=inventory_id_str,
+                error=str(e),
             )
             raise FailedPublishArtifactMessageBrokerException(
                 "Failed to publish message to broker", str(e)
@@ -122,12 +126,14 @@ class GetArtifactUseCase:
             )
             logger.info(
                 "Artifact published to public catalog",
-                extra={"inventory_id": inventory_id_str, "public_id": public_id},
+                inventory_id=inventory_id_str,
+                public_id=public_id,
             )
         except Exception as e:
             logger.exception(
                 "Failed to publish artifact to catalog",
-                extra={"inventory_id": inventory_id_str, "error": str(e)},
+                inventory_id=inventory_id_str,
+                error=str(e),
             )
             raise FailedPublishArtifactInCatalogException(
                 "Could not publish artifact to catalog", str(e)
@@ -135,6 +141,6 @@ class GetArtifactUseCase:
 
         logger.info(
             "Artifact successfully fetched and processed",
-            extra={"inventory_id": inventory_id_str},
+            inventory_id=inventory_id_str,
         )
         return artifact_dto

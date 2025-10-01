@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 import json
-import logging
 from typing import final
 
+import structlog
 from faststream.kafka import KafkaBroker
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactAdmissionNotificationDTO
@@ -31,5 +31,6 @@ class KafkaPublisher(MessageBrokerPublisherProtocol):
                 topic=self.topic,
             )
         except Exception as e:
-            logging.error("Failed to publish artifact: %s", e)
+            logger = structlog.get_logger(__name__)
+            logger.error("Failed to publish artifact", error=str(e))
             raise
