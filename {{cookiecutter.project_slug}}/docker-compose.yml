@@ -1,5 +1,59 @@
 version: '3.8'
 
+# YAML Anchors for common configurations
+x-common-healthcheck: &common-healthcheck
+  interval: 10s
+  timeout: 5s
+  retries: 5
+
+# Network configuration is handled individually per service
+
+x-common-volume: &common-volume
+  driver: local
+
+x-app-build: &app-build
+  build:
+    context: .
+    dockerfile: Dockerfile
+
+x-app-environment: &app-environment
+  ENVIRONMENT: ${ENVIRONMENT:-production}
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
+  DEBUG: ${DEBUG:-false}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SERVER: ${POSTGRES_SERVER}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_DB: ${POSTGRES_DB}
+  MUSEUM_API_BASE: ${MUSEUM_API_BASE}
+  CATALOG_API_BASE: ${CATALOG_API_BASE}
+  HTTP_TIMEOUT: ${HTTP_TIMEOUT}
+  BROKER_URL: ${BROKER_URL}
+  BROKER_NEW_ARTIFACT_QUEUE: ${BROKER_NEW_ARTIFACT_QUEUE}
+  PUBLISH_RETRIES: ${PUBLISH_RETRIES}
+  PUBLISH_RETRY_BACKOFF: ${PUBLISH_RETRY_BACKOFF}
+
+x-app-dev-environment: &app-dev-environment
+  ENVIRONMENT: ${ENVIRONMENT:-dev}
+  LOG_LEVEL: ${LOG_LEVEL:-DEBUG}
+  DEBUG: ${DEBUG:-true}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_SERVER: ${POSTGRES_SERVER}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_DB: ${POSTGRES_DB}
+  MUSEUM_API_BASE: ${MUSEUM_API_BASE}
+  CATALOG_API_BASE: ${CATALOG_API_BASE}
+  HTTP_TIMEOUT: ${HTTP_TIMEOUT}
+  BROKER_URL: ${BROKER_URL}
+  BROKER_NEW_ARTIFACT_QUEUE: ${BROKER_NEW_ARTIFACT_QUEUE}
+  PUBLISH_RETRIES: ${PUBLISH_RETRIES}
+  PUBLISH_RETRY_BACKOFF: ${PUBLISH_RETRY_BACKOFF}
+
+# Test environment configuration is handled individually per service
+
+# Migration configuration is handled individually per service
+
 services:
 {% if cookiecutter.use_database == "postgresql" %}
   postgres:
@@ -17,9 +71,7 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      <<: *common-healthcheck
     networks:
       - {{ cookiecutter.project_slug }}-network
 
@@ -35,9 +87,7 @@ services:
       - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U {{ cookiecutter.database_user }} -d {{ cookiecutter.database_name }}_test"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      <<: *common-healthcheck
     networks:
       - {{ cookiecutter.project_slug }}-network
     profiles:
@@ -60,9 +110,7 @@ services:
       - "${MYSQL_PORT:-3306}:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      <<: *common-healthcheck
     networks:
       - {{ cookiecutter.project_slug }}-network
 
@@ -78,9 +126,7 @@ services:
       - "3307:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "{{ cookiecutter.database_user }}", "-p{{ cookiecutter.database_password }}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      <<: *common-healthcheck
     networks:
       - {{ cookiecutter.project_slug }}-network
     profiles:
@@ -151,9 +197,7 @@ services:
       - "${TARANTOOL_PORT:-3301}:3301"
     healthcheck:
       test: ["CMD", "tarantool", "eval", "return box.info.status == 'running'"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      <<: *common-healthcheck
     networks:
       - {{ cookiecutter.project_slug }}-network
 {% endif %}
@@ -264,35 +308,11 @@ services:
 {% if cookiecutter.add_docker == "y" %}
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      <<: *app-build
       target: production
     container_name: {{ cookiecutter.project_slug }}-app
     environment:
-      # Application
-      ENVIRONMENT: ${ENVIRONMENT:-production}
-      LOG_LEVEL: ${LOG_LEVEL:-INFO}
-      DEBUG: ${DEBUG:-false}
-      
-      # Database Configuration
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_SERVER: ${POSTGRES_SERVER}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_DB: ${POSTGRES_DB}
-      
-      # External APIs
-      MUSEUM_API_BASE: ${MUSEUM_API_BASE}
-      CATALOG_API_BASE: ${CATALOG_API_BASE}
-      HTTP_TIMEOUT: ${HTTP_TIMEOUT}
-      
-      # Message Broker (Kafka)
-      BROKER_URL: ${BROKER_URL}
-      BROKER_NEW_ARTIFACT_QUEUE: ${BROKER_NEW_ARTIFACT_QUEUE}
-      
-      # Retry Configuration
-      PUBLISH_RETRIES: ${PUBLISH_RETRIES}
-      PUBLISH_RETRY_BACKOFF: ${PUBLISH_RETRY_BACKOFF}
+      <<: *app-environment
     depends_on:
 {% if cookiecutter.use_database == "postgresql" %}
       postgres:
@@ -350,30 +370,11 @@ services:
 
   app-dev:
     build:
-      context: .
-      dockerfile: Dockerfile
+      <<: *app-build
       target: development
     container_name: {{ cookiecutter.project_slug }}-app-dev
     environment:
-      ENVIRONMENT: ${ENVIRONMENT:-dev}
-      LOG_LEVEL: ${LOG_LEVEL:-DEBUG}
-      DEBUG: ${DEBUG:-true}
-      
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_SERVER: ${POSTGRES_SERVER}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_DB: ${POSTGRES_DB}
-      
-      MUSEUM_API_BASE: ${MUSEUM_API_BASE}
-      CATALOG_API_BASE: ${CATALOG_API_BASE}
-      HTTP_TIMEOUT: ${HTTP_TIMEOUT}
-      
-      BROKER_URL: ${BROKER_URL}
-      BROKER_NEW_ARTIFACT_QUEUE: ${BROKER_NEW_ARTIFACT_QUEUE}
-      
-      PUBLISH_RETRIES: ${PUBLISH_RETRIES}
-      PUBLISH_RETRY_BACKOFF: ${PUBLISH_RETRY_BACKOFF}
+      <<: *app-dev-environment
     depends_on:
 {% if cookiecutter.use_database == "postgresql" %}
       postgres:
@@ -496,29 +497,23 @@ services:
 {% if cookiecutter.add_tests == "y" %}
   test:
     build:
-      context: .
-      dockerfile: Dockerfile
+      <<: *app-build
       target: testing
     container_name: {{ cookiecutter.project_slug }}-test
     environment:
       ENVIRONMENT: ${ENVIRONMENT:-testing}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       DEBUG: ${DEBUG:-false}
-      
-      # Test database configuration
       POSTGRES_USER: {{ cookiecutter.database_user }}
       POSTGRES_PASSWORD: {{ cookiecutter.database_password }}
       POSTGRES_SERVER: postgres-test
       POSTGRES_PORT: 5432
       POSTGRES_DB: {{ cookiecutter.database_name }}_test
-      
       MUSEUM_API_BASE: ${MUSEUM_API_BASE}
       CATALOG_API_BASE: ${CATALOG_API_BASE}
       HTTP_TIMEOUT: ${HTTP_TIMEOUT}
-      
       BROKER_URL: ${BROKER_URL}
       BROKER_NEW_ARTIFACT_QUEUE: ${BROKER_NEW_ARTIFACT_QUEUE}
-      
       PUBLISH_RETRIES: ${PUBLISH_RETRIES}
       PUBLISH_RETRY_BACKOFF: ${PUBLISH_RETRY_BACKOFF}
     depends_on:
@@ -566,53 +561,53 @@ services:
 volumes:
 {% if cookiecutter.use_database == "postgresql" %}
   postgres_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_database == "mysql" %}
   mysql_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_database == "sqlite" %}
   sqlite_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_cache == "redis" %}
   redis_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_cache == "keydb" %}
   keydb_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_cache == "tarantool" %}
   tarantool_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_cache == "dragonfly" %}
   dragonfly_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_broker == "kafka" %}
   zookeeper_data:
-    driver: local
+    <<: *common-volume
   kafka_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_broker == "rabbitmq" %}
   rabbitmq_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.use_broker == "nats" %}
   nats_data:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.add_docker == "y" %}
   app_logs:
-    driver: local
+    <<: *common-volume
 {% endif %}
 {% if cookiecutter.add_tests == "y" %}
   test_reports:
-    driver: local
+    <<: *common-volume
 {% endif %}
 
 networks:
