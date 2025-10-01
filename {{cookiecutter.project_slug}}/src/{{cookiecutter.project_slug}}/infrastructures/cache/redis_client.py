@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 import json
-import logging
 from typing import Any, final
 
+import structlog
 from redis.asyncio import Redis
 import redis.exceptions
 
 from {{cookiecutter.project_slug}}.application.interfaces.cache import CacheProtocol
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 @final
@@ -25,12 +25,12 @@ class RedisCacheClient(CacheProtocol):
             return json.loads(value)
         except (ConnectionError, redis.exceptions.RedisError) as e:
             logger.error(
-                "Redis get operation failed", extra={"key": key, "error": str(e)}
+                "Redis get operation failed", key=key, error=str(e)
             )
             return None
         except (json.JSONDecodeError, TypeError) as e:
             logger.warning(
-                "Failed to decode cached value", extra={"key": key, "error": str(e)}
+                "Failed to decode cached value", key=key, error=str(e)
             )
             return None
 
@@ -46,13 +46,14 @@ class RedisCacheClient(CacheProtocol):
             return True
         except (ConnectionError, redis.exceptions.RedisError) as e:
             logger.error(
-                "Redis set operation failed", extra={"key": key, "error": str(e)}
+                "Redis set operation failed", key=key, error=str(e)
             )
             return False
         except (TypeError, ValueError) as e:
             logger.error(
                 "Failed to serialize value for cache",
-                extra={"key": key, "error": str(e)},
+                key=key,
+                error=str(e),
             )
             return False
 
@@ -62,7 +63,7 @@ class RedisCacheClient(CacheProtocol):
             return result > 0
         except (ConnectionError, redis.exceptions.RedisError) as e:
             logger.error(
-                "Redis delete operation failed", extra={"key": key, "error": str(e)}
+                "Redis delete operation failed", key=key, error=str(e)
             )
             return False
 
@@ -71,7 +72,7 @@ class RedisCacheClient(CacheProtocol):
             return bool(await self.client.exists(key))
         except (ConnectionError, redis.exceptions.RedisError) as e:
             logger.error(
-                "Redis exists operation failed", extra={"key": key, "error": str(e)}
+                "Redis exists operation failed", key=key, error=str(e)
             )
             return False
 
@@ -84,14 +85,16 @@ class RedisCacheClient(CacheProtocol):
                 deleted_count = await self.client.delete(*keys)
                 logger.info(
                     "Cleared cache keys matching pattern",
-                    extra={"pattern": pattern, "count": deleted_count},
+                    pattern=pattern,
+                    count=deleted_count,
                 )
                 return deleted_count
             return 0
         except (ConnectionError, redis.exceptions.RedisError) as e:
             logger.error(
                 "Redis clear pattern operation failed",
-                extra={"pattern": pattern, "error": str(e)},
+                pattern=pattern,
+                error=str(e),
             )
             return 0
 
@@ -100,4 +103,4 @@ class RedisCacheClient(CacheProtocol):
             await self.client.close()
             logger.info("Redis connection closed")
         except (ConnectionError, redis.exceptions.RedisError) as e:
-            logger.error("Failed to close Redis connection", extra={"error": str(e)})
+            logger.error("Failed to close Redis connection", error=str(e))

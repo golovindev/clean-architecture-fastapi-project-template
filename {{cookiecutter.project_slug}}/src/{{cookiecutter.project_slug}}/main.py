@@ -1,7 +1,7 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-import logging
 
+import structlog
 from dishka import AsyncContainer, make_async_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
@@ -12,7 +12,7 @@ from {{cookiecutter.project_slug}}.config.logging import setup_logging
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.routers import api_v1_router
 
 setup_logging()
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 @asynccontextmanager
