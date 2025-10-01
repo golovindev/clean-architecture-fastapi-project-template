@@ -17,6 +17,38 @@ A comprehensive cookiecutter template for creating modern FastAPI applications w
 - **Pre-commit**: Git hooks for code quality
 - **Documentation**: Auto-generated API docs with Swagger/OpenAPI
 
+## 📦 Dependency Management
+
+The template uses **strict version pinning** for all dependencies to ensure reproducible builds and prevent breaking changes from automatic updates.
+
+### Dependency Structure
+
+- **Main Dependencies**: Production dependencies with exact versions (`==`)
+- **Dev Dependencies**: Development tools organized in `[dependency-groups]`:
+  - 🎨 **Linting & Formatting**: ruff, black, isort
+  - 🔍 **Type Checking**: mypy, types-* packages
+  - 🧪 **Testing**: pytest and extensions
+
+### Installing Dependencies
+
+```bash
+# Install main dependencies
+pip install -e .
+
+# Install development dependencies
+pip install --dependency-group dev
+
+# Or install everything at once
+pip install -e ".[dev]"  # Alternative syntax
+```
+
+### Benefits of Strict Versioning
+
+- ✅ **Reproducible builds** across all environments
+- ✅ **Prevents breaking changes** from automatic updates
+- ✅ **Stable development environment** for all team members
+- ⚠️ **Manual updates required** for security patches and bug fixes
+
 ## 📋 Prerequisites
 
 - Python 3.12
@@ -157,6 +189,9 @@ uv sync
 
 # Or using pip
 pip install -e .
+
+# Install development dependencies
+pip install --dependency-group dev
 ```
 
 ### 5. Run with Docker (Recommended)
@@ -191,6 +226,22 @@ Once your application is running, access the API documentation at:
 - **OpenAPI Schema**: `http://localhost:8000/api/openapi.json`
 
 ## 🛠️ Development Commands
+
+### Dependencies
+
+```bash
+# Install main dependencies
+pip install -e .
+
+# Install development dependencies
+pip install --dependency-group dev
+
+# Install all dependencies (alternative)
+pip install -e ".[dev]"
+
+# Check dependency versions
+pip list
+```
 
 ### Code Quality
 
@@ -376,15 +427,44 @@ The template includes comprehensive implementation examples that demonstrate bes
 
 ### Adding New Dependencies
 
-Add dependencies to `pyproject.toml`:
+The template uses **strict version pinning** for all dependencies. Add new dependencies to `pyproject.toml`:
 
+**For production dependencies:**
 ```toml
 [project]
 dependencies = [
-    "existing-dependency",
-    "new-dependency>=1.0.0",
+    "existing-dependency==1.2.3",
+    "new-dependency==2.0.0",  # Use exact version
 ]
 ```
+
+**For development dependencies:**
+```toml
+[dependency-groups]
+dev = [
+    # Linting and formatting
+    "ruff==0.13.1",
+    "black==23.0.0",
+    "isort==5.12.0",
+
+    # Type checking
+    "mypy==1.5.0",
+    "types-requests==2.31.0",
+
+    # Testing
+    "pytest==8.4.2",
+    "pytest-asyncio==0.21.0",
+    "pytest-cov==4.1.0",
+
+    # Add new dev dependency
+    "new-dev-tool==1.0.0",  # Use exact version
+]
+```
+
+**Important Notes:**
+- Always use exact versions (`==`) for reproducible builds
+- Update dependencies manually when needed
+- Test thoroughly after dependency updates
 
 ### Customizing Docker
 
