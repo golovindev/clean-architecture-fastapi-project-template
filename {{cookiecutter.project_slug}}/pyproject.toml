@@ -5,40 +5,40 @@ description = "{{ cookiecutter.project_description }}"
 readme = "README.md"
 requires-python = ">={{ cookiecutter.python_version }}"
 dependencies = [
-    "alembic>=1.16.5",
-{% if cookiecutter.use_cache == "redis" %}    "redis>=5.0.0",{% endif %}
-{% if cookiecutter.use_cache == "keydb" %}    "redis>=5.0.0",{% endif %}
-{% if cookiecutter.use_cache == "tarantool" %}    "tarantool>=2.8.0",{% endif %}
-{% if cookiecutter.use_cache == "dragonfly" %}    "redis>=5.0.0",{% endif %}
-    "dishka>=1.7.2",
-    "fastapi>=0.117.1",
-{% if cookiecutter.use_broker == "kafka" %}    "faststream[kafka]>=0.5.48",{% endif %}
-{% if cookiecutter.use_broker == "rabbitmq" %}    "faststream[rabbit]>=0.5.48",{% endif %}
-{% if cookiecutter.use_broker == "nats" %}    "faststream[nats]>=0.5.48",{% endif %}
-    "granian>=2.5.4",
-    "httpx>=0.28.1",
-{% if cookiecutter.use_database == "postgresql" %}    "asyncpg>=0.29.0",{% endif %}
-{% if cookiecutter.use_database == "sqlite" %}    "aiosqlite>=0.20.0",{% endif %}
-{% if cookiecutter.use_database == "mysql" %}    "aiomysql>=0.2.0",{% endif %}
-    "greenlet>=3.0.0",
-    "pydantic>=2.11.9",
-    "pydantic-settings>=2.11.0",
-{% if cookiecutter.add_tests == "y" %}    "pytest>=8.4.2",{% endif %}
-    "sqlalchemy>=2.0.43",
-    "stamina>=25.1.0",
-    "watchfiles>=1.1.0",
-    "uvicorn[standard]>=0.24.0",
+    "alembic==1.16.5",
+{% if cookiecutter.use_cache == "redis" %}    "redis==5.0.0",{% endif %}
+{% if cookiecutter.use_cache == "keydb" %}    "redis==5.0.0",{% endif %}
+{% if cookiecutter.use_cache == "tarantool" %}    "tarantool==2.8.0",{% endif %}
+{% if cookiecutter.use_cache == "dragonfly" %}    "redis==5.0.0",{% endif %}
+    "dishka==1.7.2",
+    "fastapi==0.117.1",
+{% if cookiecutter.use_broker == "kafka" %}    "faststream[kafka]==0.5.48",{% endif %}
+{% if cookiecutter.use_broker == "rabbitmq" %}    "faststream[rabbit]==0.5.48",{% endif %}
+{% if cookiecutter.use_broker == "nats" %}    "faststream[nats]==0.5.48",{% endif %}
+    "granian==2.5.4",
+    "httpx==0.28.1",
+{% if cookiecutter.use_database == "postgresql" %}    "asyncpg==0.29.0",{% endif %}
+{% if cookiecutter.use_database == "sqlite" %}    "aiosqlite==0.20.0",{% endif %}
+{% if cookiecutter.use_database == "mysql" %}    "aiomysql==0.2.0",{% endif %}
+    "greenlet==3.0.0",
+    "pydantic==2.11.9",
+    "pydantic-settings==2.11.0",
+{% if cookiecutter.add_tests == "y" %}    "pytest==8.4.2",{% endif %}
+    "sqlalchemy==2.0.43",
+    "stamina==25.1.0",
+    "watchfiles==1.1.0",
+    "uvicorn[standard]==0.24.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "ruff>=0.1.0",
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-cov>=4.1.0",
-    "mypy>=1.5.0",
-    "black>=23.0.0",
-    "isort>=5.12.0",
+    "ruff==0.1.0",
+    "pytest==7.4.0",
+    "pytest-asyncio==0.21.0",
+    "pytest-cov==4.1.0",
+    "mypy==1.5.0",
+    "black==23.0.0",
+    "isort==5.12.0",
 ]
 
 [build-system]
@@ -331,9 +331,9 @@ filterwarnings = [
 
 [dependency-groups]
 dev = [
-    "ruff>=0.13.1",
-    "mypy>=1.5.0",
-    "types-requests>=2.31.0",
-    "types-redis>=4.6.0",
-    "types-setuptools>=68.0.0",
+    "ruff==0.13.1",
+    "mypy==1.5.0",
+    "types-requests==2.31.0",
+    "types-redis==4.6.0",
+    "types-setuptools==68.0.0",
 ]
