@@ -38,10 +38,8 @@ xdg-open _build/html/index.html  # Linux
 ### Documentation Contents
 
 - **Getting Started**: Installation, quickstart, template variables
-- **User Guide**: Architecture, project structure, configuration, database, testing
-- **Development**: Code quality, Docker, migrations, contributing
+- **User Guide**: Architecture, project structure
 - **Reference**: Makefile commands, environment variables, FAQ
-- **Advanced**: Customization, hooks, CI/CD, best practices
 
 ## 📦 Dependency Management
 
