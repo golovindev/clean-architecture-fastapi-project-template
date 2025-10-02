@@ -10,6 +10,8 @@ from {{cookiecutter.project_slug}}.application.dtos.artifact import (
     EraDTO,
     MaterialDTO,
 )
+from {{cookiecutter.project_slug}}.application.interfaces.pydantic_mappers import PydanticMapperProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.serialization import SerializationMapperProtocol
 from {{cookiecutter.project_slug}}.infrastructures.dtos.artifact import (
     ArtifactAdmissionNotificationPydanticDTO,
     ArtifactCatalogPublicationPydanticDTO,
@@ -21,12 +23,12 @@ from {{cookiecutter.project_slug}}.infrastructures.dtos.artifact import (
 
 @final
 @dataclass(frozen=True, slots=True)
-class InfrastructureArtifactMapper:
+class InfrastructureArtifactMapper(PydanticMapperProtocol, SerializationMapperProtocol):
     """Mapper for converting between Application DTOs and Infrastructure Pydantic models.
 
-    This mapper handles:
-    - Conversion to/from Pydantic models for external APIs
-    - JSON serialization/deserialization for caching
+    This mapper implements both:
+    - PydanticMapperProtocol: Conversion to/from Pydantic models for external APIs
+    - SerializationMapperProtocol: JSON serialization/deserialization for caching
     """
 
     def to_pydantic_dto(self, dto: ArtifactDTO) -> ArtifactPydanticDTO:

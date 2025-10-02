@@ -17,7 +17,7 @@ class RedisCacheClient(CacheProtocol):
     client: Redis
     ttl: int | None = None
 
-    async def get(self, key: str) -> Any | None:
+    async def get(self, key: str) -> dict[str, Any] | None:
         try:
             value = await self.client.get(key)
             if value is None:
@@ -34,7 +34,7 @@ class RedisCacheClient(CacheProtocol):
             )
             return None
 
-    async def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
+    async def set(self, key: str, value: dict[str, Any], ttl: int | None = None) -> bool:
         try:
             serialized_value = json.dumps(value, default=str)
             if ttl is not None:

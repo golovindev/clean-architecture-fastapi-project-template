@@ -21,7 +21,7 @@ class Material:
 
     def __post_init__(self) -> None:
         if self.value not in self._allowed_values:
-            raise InvalidMaterialException("Invalid material: %s", self.value)
+            raise InvalidMaterialException(f"Invalid material: {self.value}")
 
     def __str__(self) -> str:
         return self.value

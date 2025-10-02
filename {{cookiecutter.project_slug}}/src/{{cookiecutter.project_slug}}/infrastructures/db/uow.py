@@ -1,9 +1,12 @@
+import logging
 from dataclasses import dataclass
 from typing import final
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
 from {{cookiecutter.project_slug}}.infrastructures.db.repositories.artifact import ArtifactRepositorySQLAlchemy
+
+logger = logging.getLogger(__name__)
 
 
 @final
@@ -25,4 +28,5 @@ class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
         await self.session.commit()
 
     async def rollback(self) -> None:
+        logger.debug("Rolling back transaction")
         await self.session.rollback()

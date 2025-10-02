@@ -20,7 +20,7 @@ class Era:
 
     def __post_init__(self) -> None:
         if self.value not in self._allowed_values:
-            raise InvalidEraException("Invalid era: %s", self.value)
+            raise InvalidEraException(f"Invalid era: {self.value}")
 
     def __str__(self) -> str:
         return self.value
