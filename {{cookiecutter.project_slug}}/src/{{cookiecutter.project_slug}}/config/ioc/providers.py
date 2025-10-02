@@ -14,6 +14,7 @@ from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import Get
 from {{cookiecutter.project_slug}}.config.base import Settings
 from {{cookiecutter.project_slug}}.infrastructures.broker.publisher import KafkaPublisher
 from {{cookiecutter.project_slug}}.infrastructures.cache.redis_client import RedisCacheClient
+from {{cookiecutter.project_slug}}.infrastructures.db.mappers.artifact_db_mapper import ArtifactDBMapper
 from {{cookiecutter.project_slug}}.infrastructures.db.repositories.artifact import ArtifactRepositorySQLAlchemy
 from {{cookiecutter.project_slug}}.infrastructures.db.session import create_engine, get_session_factory
 from {{cookiecutter.project_slug}}.infrastructures.db.uow import UnitOfWorkSQLAlchemy
@@ -74,9 +75,9 @@ class BrokerProvider(Provider):
 class RepositoryProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_artifact_repository(
-        self, session: AsyncSession
+        self, session: AsyncSession, db_mapper: ArtifactDBMapper
     ) -> ArtifactRepositorySQLAlchemy:
-        return ArtifactRepositorySQLAlchemy(session=session)
+        return ArtifactRepositorySQLAlchemy(session=session, mapper=db_mapper)
 
 
 class UnitOfWorkProvider(Provider):
@@ -131,14 +132,22 @@ class ServiceProvider(Provider):
 class MapperProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_artifact_mapper(self) -> ArtifactMapper:
+        """Provide Application layer mapper (Domain Entity <-> Application DTO)."""
         return ArtifactMapper()
 
     @provide(scope=Scope.REQUEST)
+    def get_db_mapper(self) -> ArtifactDBMapper:
+        """Provide Database mapper (Domain Entity <-> SQLAlchemy Model)."""
+        return ArtifactDBMapper()
+
+    @provide(scope=Scope.REQUEST)
     def get_infrastructure_artifact_mapper(self) -> InfrastructureArtifactMapper:
+        """Provide Infrastructure mapper (Application DTO <-> Pydantic/JSON)."""
         return InfrastructureArtifactMapper()
 
     @provide(scope=Scope.REQUEST)
     def get_presentation_artifact_mapper(self) -> ArtifactPresentationMapper:
+        """Provide Presentation mapper (Application DTO -> Response Schema)."""
         return ArtifactPresentationMapper()
 
 

@@ -1,14 +1,9 @@
-from typing import Protocol
+from typing import Any, Protocol
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import (
     ArtifactAdmissionNotificationDTO,
     ArtifactCatalogPublicationDTO,
     ArtifactDTO,
-)
-from {{cookiecutter.project_slug}}.infrastructures.dtos.artifact import (
-    ArtifactAdmissionNotificationPydanticDTO,
-    ArtifactCatalogPublicationPydanticDTO,
-    ArtifactPydanticDTO,
 )
 
 
@@ -17,24 +12,46 @@ class PydanticMapperProtocol(Protocol):
 
     This interface is used by Infrastructure components (HTTP clients, message brokers)
     that need to work with Pydantic models for external communication.
+
+    Note: Return types use Any to avoid importing Infrastructure layer types,
+    maintaining Clean Architecture dependency rules (Application should not depend on Infrastructure).
     """
 
-    def to_pydantic_dto(self, dto: ArtifactDTO) -> ArtifactPydanticDTO:
-        """Convert Application DTO to Pydantic DTO."""
+    def to_pydantic_dto(self, dto: ArtifactDTO) -> Any:
+        """Convert Application DTO to Pydantic DTO.
+
+        Returns:
+            Pydantic model (ArtifactPydanticDTO) for external API communication.
+        """
         ...
 
-    def from_pydantic_dto(self, pydantic_dto: ArtifactPydanticDTO) -> ArtifactDTO:
-        """Convert Pydantic DTO to Application DTO."""
+    def from_pydantic_dto(self, pydantic_dto: Any) -> ArtifactDTO:
+        """Convert Pydantic DTO to Application DTO.
+
+        Args:
+            pydantic_dto: Pydantic model (ArtifactPydanticDTO) from external API.
+
+        Returns:
+            Application DTO for use in business logic.
+        """
         ...
 
     def to_admission_notification_pydantic(
         self, dto: ArtifactAdmissionNotificationDTO
-    ) -> ArtifactAdmissionNotificationPydanticDTO:
-        """Convert notification DTO to Pydantic format for message broker."""
+    ) -> Any:
+        """Convert notification DTO to Pydantic format for message broker.
+
+        Returns:
+            Pydantic model (ArtifactAdmissionNotificationPydanticDTO).
+        """
         ...
 
     def to_catalog_publication_pydantic(
         self, dto: ArtifactCatalogPublicationDTO
-    ) -> ArtifactCatalogPublicationPydanticDTO:
-        """Convert publication DTO to Pydantic format for external API."""
+    ) -> Any:
+        """Convert publication DTO to Pydantic format for external API.
+
+        Returns:
+            Pydantic model (ArtifactCatalogPublicationPydanticDTO).
+        """
         ...

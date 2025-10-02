@@ -1,10 +1,11 @@
 import logging
 from dataclasses import dataclass
 from typing import final
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
-from {{cookiecutter.project_slug}}.infrastructures.db.repositories.artifact import ArtifactRepositorySQLAlchemy
 
 logger = logging.getLogger(__name__)
 
@@ -12,8 +13,15 @@ logger = logging.getLogger(__name__)
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
+    """SQLAlchemy implementation of Unit of Work pattern.
+
+    This class coordinates database transactions and provides access to repositories.
+    Uses Protocol types instead of concrete implementations for better testability
+    and adherence to Dependency Inversion Principle.
+    """
+
     session: AsyncSession
-    repository: ArtifactRepositorySQLAlchemy
+    repository: ArtifactRepositoryProtocol
 
     async def __aenter__(self) -> "UnitOfWorkSQLAlchemy":
         return self
