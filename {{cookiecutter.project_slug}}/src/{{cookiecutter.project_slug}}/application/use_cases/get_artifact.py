@@ -29,7 +29,7 @@ logger = structlog.get_logger(__name__)
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class GetArtifactUseCase:
+class GetArtifactUseCase: # TODO: split on use cases
     uow: UnitOfWorkProtocol
     museum_api_client: ExternalMuseumAPIProtocol
     catalog_api_client: PublicCatalogAPIProtocol

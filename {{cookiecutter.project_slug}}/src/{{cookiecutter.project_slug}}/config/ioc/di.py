@@ -10,6 +10,7 @@ from {{cookiecutter.project_slug}}.config.ioc.providers import (
     ServiceProvider,
     SettingsProvider,
     UseCaseProvider,
+    UnitOfWorkProvider,
 )
 
 
@@ -24,4 +25,5 @@ def get_providers() -> list[Provider]:
         MapperProvider(),
         CacheProvider(),
         UseCaseProvider(),
+        UnitOfWorkProvider(),
     ]

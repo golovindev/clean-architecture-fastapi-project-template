@@ -130,7 +130,7 @@ class ServiceProvider(Provider):
 
 
 class MapperProvider(Provider):
-    @provide(scope=Scope.REQUEST)
+    @provide(scope=Scope.APP)
     def get_artifact_mapper(self) -> ArtifactMapper:
         """Provide Application layer mapper (Domain Entity <-> Application DTO)."""
         return ArtifactMapper()
