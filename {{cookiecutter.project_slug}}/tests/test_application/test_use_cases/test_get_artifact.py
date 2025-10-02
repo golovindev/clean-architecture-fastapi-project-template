@@ -54,20 +54,20 @@ class TestGetArtifactUseCase:
     ):
         """Test successful execution when artifact is fetched from external API"""
         inventory_id = str(sample_artifact_entity.inventory_id)
-        
+
         # Simulate artifact not found in local repository
         mock_uow.repository.get_by_inventory_id.return_value = None
-        
+
         # Simulate successful fetch from external API
         mock_museum_api = get_artifact_use_case.museum_api_client
         mock_museum_api.fetch_artifact.return_value = sample_artifact_dto
-        
+
         # Configure mapper
         mock_mapper.to_entity.return_value = sample_artifact_entity
         mock_mapper.to_notification_dto.return_value = sample_notification_dto
         mock_mapper.to_publication_dto.return_value = sample_publication_dto
         mock_mapper.to_dict.return_value = {"test": "data"}
-        
+
         # Configure catalog API
         mock_catalog_api = get_artifact_use_case.catalog_api_client
         mock_catalog_api.publish_artifact.return_value = "public-123"
@@ -80,11 +80,11 @@ class TestGetArtifactUseCase:
         mock_museum_api.fetch_artifact.assert_called_once()
         mock_mapper.to_entity.assert_called_once_with(sample_artifact_dto)
         mock_uow.repository.save.assert_called_once_with(sample_artifact_entity)
-        
+
         # Verify mapper methods were called correctly
         mock_mapper.to_notification_dto.assert_called_once_with(sample_artifact_entity)
         mock_mapper.to_publication_dto.assert_called_once_with(sample_artifact_entity)
-        
+
         # Verify external services were called
         mock_message_broker = get_artifact_use_case.message_broker
         mock_message_broker.publish_new_artifact.assert_called_once_with(
