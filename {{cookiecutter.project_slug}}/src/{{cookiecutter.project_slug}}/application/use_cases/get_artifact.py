@@ -4,13 +4,7 @@ from uuid import UUID
 
 import structlog
 
-from {{cookiecutter.project_slug}}.application.dtos.artifact import (
-    ArtifactAdmissionNotificationDTO,
-    ArtifactCatalogPublicationDTO,
-    ArtifactDTO,
-    EraDTO,
-    MaterialDTO,
-)
+from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactDTO
 from {{cookiecutter.project_slug}}.application.exceptions import (
     ArtifactNotFoundError,
     FailedFetchArtifactMuseumAPIException,
@@ -26,8 +20,6 @@ from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEnti
 from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
-from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
-from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
 
 if TYPE_CHECKING:
     from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
@@ -92,11 +84,8 @@ class GetArtifactUseCase:
             await self.cache_client.set(inventory_id_str, self.artifact_mapper.to_dict(artifact_dto))
 
         try:
-            notification_dto = ArtifactAdmissionNotificationDTO(
-                inventory_id=artifact_entity.inventory_id,
-                name=artifact_entity.name,
-                acquisition_date=artifact_entity.acquisition_date,
-                department=artifact_entity.department,
+            notification_dto = self.artifact_mapper.to_notification_dto(
+                artifact_entity
             )
             await self.message_broker.publish_new_artifact(notification_dto)
             logger.info(
@@ -114,13 +103,7 @@ class GetArtifactUseCase:
             ) from e
 
         try:
-            publication_dto = ArtifactCatalogPublicationDTO(
-                inventory_id=artifact_entity.inventory_id,
-                name=artifact_entity.name,
-                era=EraDTO(value=str(artifact_entity.era)),
-                material=MaterialDTO(value=str(artifact_entity.material)),
-                description=artifact_entity.description,
-            )
+            publication_dto = self.artifact_mapper.to_publication_dto(artifact_entity)
             public_id: str = await self.catalog_api_client.publish_artifact(
                 publication_dto
             )

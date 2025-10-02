@@ -3,7 +3,13 @@ from datetime import datetime
 from typing import final
 from uuid import UUID
 
-from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactDTO, EraDTO, MaterialDTO
+from {{cookiecutter.project_slug}}.application.dtos.artifact import (
+    ArtifactAdmissionNotificationDTO,
+    ArtifactCatalogPublicationDTO,
+    ArtifactDTO,
+    EraDTO,
+    MaterialDTO,
+)
 from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEntityMapperProtocol
 from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
 from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
@@ -58,4 +64,25 @@ class ArtifactMapper(DtoEntityMapperProtocol):
             era=EraDTO(value=data["era"]["value"]),
             material=MaterialDTO(value=data["material"]["value"]),
             description=data.get("description"),
+        )
+
+    def to_notification_dto(
+        self, entity: ArtifactEntity
+    ) -> ArtifactAdmissionNotificationDTO:
+        return ArtifactAdmissionNotificationDTO(
+            inventory_id=entity.inventory_id,
+            name=entity.name,
+            acquisition_date=entity.acquisition_date,
+            department=entity.department,
+        )
+
+    def to_publication_dto(
+        self, entity: ArtifactEntity
+    ) -> ArtifactCatalogPublicationDTO:
+        return ArtifactCatalogPublicationDTO(
+            inventory_id=entity.inventory_id,
+            name=entity.name,
+            era=EraDTO(value=entity.era.value),
+            material=MaterialDTO(value=entity.material.value),
+            description=entity.description,
         )

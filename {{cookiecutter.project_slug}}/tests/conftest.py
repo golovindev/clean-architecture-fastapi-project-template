@@ -135,8 +135,15 @@ def mock_message_broker() -> AsyncMock:
 
 
 @pytest.fixture
-def mock_mapper() -> MagicMock:
+def mock_mapper(
+    sample_notification_dto: ArtifactAdmissionNotificationDTO,
+    sample_publication_dto: ArtifactCatalogPublicationDTO,
+) -> MagicMock:
     mock = MagicMock(spec=DtoEntityMapperProtocol)
+    # Configure default return values for new methods
+    mock.to_notification_dto.return_value = sample_notification_dto
+    mock.to_publication_dto.return_value = sample_publication_dto
+    mock.to_dict.return_value = {}
     return mock
 
 
