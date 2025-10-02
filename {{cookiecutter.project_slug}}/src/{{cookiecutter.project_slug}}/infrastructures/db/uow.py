@@ -1,9 +1,3 @@
-from dataclasses import dataclass
-from typing import final
-
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
 from {{cookiecutter.project_slug}}.infrastructures.db.repositories.artifact import ArtifactRepositorySQLAlchemy
 
@@ -12,7 +6,6 @@ from {{cookiecutter.project_slug}}.infrastructures.db.repositories.artifact impo
 @dataclass(frozen=True, slots=True, kw_only=True)
 class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
     session: AsyncSession
-    repository: ArtifactRepositoryProtocol
 
     async def __aenter__(self) -> "UnitOfWorkSQLAlchemy":
         return self
