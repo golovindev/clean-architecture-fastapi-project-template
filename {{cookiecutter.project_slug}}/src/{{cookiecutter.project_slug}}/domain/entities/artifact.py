@@ -12,7 +12,7 @@ from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ArtifactEntity:
     """Domain Entity representing an artifact with business invariants.
-    
+
     This entity enforces business rules and maintains data integrity
     at the domain level, ensuring that invalid artifacts cannot exist.
     """
@@ -27,7 +27,7 @@ class ArtifactEntity:
 
     def __post_init__(self) -> None:
         """Validate business invariants.
-        
+
         Domain entities must protect their invariants and ensure
         that invalid state cannot exist in the domain model.
         """

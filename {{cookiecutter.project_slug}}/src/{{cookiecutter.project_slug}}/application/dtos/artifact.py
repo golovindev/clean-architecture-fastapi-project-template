@@ -37,7 +37,7 @@ class EraDTO:
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ArtifactDTO:
     """Application DTO for transferring artifact data between layers.
-    
+
     Note: This DTO does NOT perform business validation.
     Business rules are enforced by the Domain Entity (ArtifactEntity).
     DTOs are simple data carriers for inter-layer communication.
