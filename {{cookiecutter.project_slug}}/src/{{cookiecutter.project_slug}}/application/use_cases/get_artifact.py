@@ -81,7 +81,10 @@ class GetArtifactUseCase:
         async with self.uow:
             artifact_entity = self.artifact_mapper.to_entity(artifact_dto)
             await self.uow.repository.save(artifact_entity)
-            await self.cache_client.set(inventory_id_str, self.artifact_mapper.to_dict(artifact_dto))
+        await self.cache_client.set(
+            inventory_id_str,
+            self.artifact_mapper.to_dict(artifact_dto),
+        )
 
         try:
             notification_dto = self.artifact_mapper.to_notification_dto(
