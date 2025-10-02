@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class MaterialPydanticDTO(BaseModel):
@@ -70,20 +70,6 @@ class ArtifactPydanticDTO(BaseModel):
     description: str | None = Field(
         None, max_length=1000, description="Optional description of the artifact"
     )
-
-    @field_validator("acquisition_date")
-    @classmethod
-    def validate_acquisition_date(cls, value: datetime) -> datetime:
-        from datetime import UTC
-        if value > datetime.now(UTC):
-            raise ValueError("Acquisition date cannot be in the future")
-        return value
-
-    @model_validator(mode="after")
-    def validate_dates(self) -> "ArtifactPydanticDTO":
-        if self.acquisition_date > self.created_at:
-            raise ValueError("Acquisition date cannot be later than created_at")
-        return self
 
 
 class ArtifactAdmissionNotificationPydanticDTO(BaseModel):

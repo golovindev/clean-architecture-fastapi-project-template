@@ -20,6 +20,7 @@ from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEnti
 from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
+from {{cookiecutter.project_slug}}.infrastructures.mappers.artifact import InfrastructureArtifactMapper
 
 if TYPE_CHECKING:
     from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
@@ -34,6 +35,7 @@ class GetArtifactUseCase:
     catalog_api_client: PublicCatalogAPIProtocol
     message_broker: MessageBrokerPublisherProtocol
     artifact_mapper: DtoEntityMapperProtocol
+    infrastructure_mapper: InfrastructureArtifactMapper
     cache_client: CacheProtocol
 
     async def execute(self, inventory_id: str | UUID) -> ArtifactDTO:
@@ -43,7 +45,7 @@ class GetArtifactUseCase:
 
         cached_artifact_data: dict | None = await self.cache_client.get(inventory_id_str)
         if cached_artifact_data:
-            return self.artifact_mapper.from_dict(cached_artifact_data)
+            return self.infrastructure_mapper.from_dict(cached_artifact_data)
 
         artifact_entity: (
             ArtifactEntity | None
@@ -51,7 +53,7 @@ class GetArtifactUseCase:
         if artifact_entity:
             artifact_dto = self.artifact_mapper.to_dto(artifact_entity)
             await self.cache_client.set(
-                inventory_id_str, self.artifact_mapper.to_dict(artifact_dto)
+                inventory_id_str, self.infrastructure_mapper.to_dict(artifact_dto)
             )
             return artifact_dto
 
@@ -83,7 +85,7 @@ class GetArtifactUseCase:
             await self.uow.repository.save(artifact_entity)
         await self.cache_client.set(
             inventory_id_str,
-            self.artifact_mapper.to_dict(artifact_dto),
+            self.infrastructure_mapper.to_dict(artifact_dto),
         )
 
         try:

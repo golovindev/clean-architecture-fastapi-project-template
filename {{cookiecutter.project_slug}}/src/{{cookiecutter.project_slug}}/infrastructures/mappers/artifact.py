@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import final
+from uuid import UUID
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import (
     ArtifactAdmissionNotificationDTO,
@@ -20,6 +22,13 @@ from {{cookiecutter.project_slug}}.infrastructures.dtos.artifact import (
 @final
 @dataclass(frozen=True, slots=True)
 class InfrastructureArtifactMapper:
+    """Mapper for converting between Application DTOs and Infrastructure Pydantic models.
+
+    This mapper handles:
+    - Conversion to/from Pydantic models for external APIs
+    - JSON serialization/deserialization for caching
+    """
+
     def to_pydantic_dto(self, dto: ArtifactDTO) -> ArtifactPydanticDTO:
         return ArtifactPydanticDTO(
             inventory_id=dto.inventory_id,
@@ -63,4 +72,30 @@ class InfrastructureArtifactMapper:
             era=EraPydanticDTO(value=dto.era.value),
             material=MaterialPydanticDTO(value=dto.material.value),
             description=dto.description,
+        )
+
+    def to_dict(self, dto: ArtifactDTO) -> dict:
+        """Convert Application DTO to dict for JSON serialization (e.g., caching)."""
+        return {
+            "inventory_id": str(dto.inventory_id),
+            "created_at": dto.created_at.isoformat(),
+            "acquisition_date": dto.acquisition_date.isoformat(),
+            "name": dto.name,
+            "department": dto.department,
+            "era": {"value": dto.era.value},
+            "material": {"value": dto.material.value},
+            "description": dto.description,
+        }
+
+    def from_dict(self, data: dict) -> ArtifactDTO:
+        """Convert dict from JSON deserialization to Application DTO."""
+        return ArtifactDTO(
+            inventory_id=UUID(data["inventory_id"]),
+            created_at=datetime.fromisoformat(data["created_at"]),
+            acquisition_date=datetime.fromisoformat(data["acquisition_date"]),
+            name=data["name"],
+            department=data["department"],
+            era=EraDTO(value=data["era"]["value"]),
+            material=MaterialDTO(value=data["material"]["value"]),
+            description=data.get("description"),
         )

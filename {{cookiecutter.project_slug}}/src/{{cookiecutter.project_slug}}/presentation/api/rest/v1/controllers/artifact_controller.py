@@ -1,3 +1,8 @@
+from uuid import UUID
+
+from dishka.integrations.fastapi import FromDishka, inject
+from fastapi import APIRouter, HTTPException, status
+
 from {{cookiecutter.project_slug}}.application.exceptions import (
     ArtifactNotFoundError,
     FailedFetchArtifactMuseumAPIException,
@@ -5,6 +10,7 @@ from {{cookiecutter.project_slug}}.application.exceptions import (
     FailedPublishArtifactMessageBrokerException,
 )
 from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.presentation.api.rest.v1.mappers.artifact_mapper import ArtifactPresentationMapper
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.schemas import ArtifactResponse
 
 router = APIRouter(prefix="/v1/artifacts", tags=["Artifacts"])
@@ -26,10 +32,11 @@ router = APIRouter(prefix="/v1/artifacts", tags=["Artifacts"])
 async def get_artifact(
     inventory_id: str | UUID,
     use_case: FromDishka[GetArtifactUseCase],
+    presentation_mapper: FromDishka[ArtifactPresentationMapper],
 ) -> ArtifactResponse:
     try:
         artifact_dto = await use_case.execute(inventory_id)
-        return ArtifactResponse.from_dto(artifact_dto)
+        return presentation_mapper.to_response(artifact_dto)
     except ArtifactNotFoundError as err:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

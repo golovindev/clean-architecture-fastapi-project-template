@@ -19,9 +19,10 @@ from {{cookiecutter.project_slug}}.infrastructures.db.session import create_engi
 from {{cookiecutter.project_slug}}.infrastructures.db.uow import UnitOfWorkSQLAlchemy
 from {{cookiecutter.project_slug}}.infrastructures.http.clients import (
     ExternalMuseumAPIClient,
+    PublicCatalogAPIClient,
 )
-
 from {{cookiecutter.project_slug}}.infrastructures.mappers.artifact import InfrastructureArtifactMapper
+from {{cookiecutter.project_slug}}.presentation.api.rest.v1.mappers.artifact_mapper import ArtifactPresentationMapper
 
 
 class SettingsProvider(Provider):
@@ -97,27 +98,27 @@ class ServiceProvider(Provider):
         infrastructure_mapper: InfrastructureArtifactMapper,
     ) -> ExternalMuseumAPIClient:
         return ExternalMuseumAPIClient(
-            base_url=settings.external_api_base_url, 
+            base_url=settings.external_api_base_url,
             client=client,
             mapper=infrastructure_mapper,
         )
 
     @provide(scope=Scope.REQUEST)
     def get_public_catalog_api_client(
-        self, 
-        client: AsyncClient, 
+        self,
+        client: AsyncClient,
         settings: Settings,
         infrastructure_mapper: InfrastructureArtifactMapper,
     ) -> PublicCatalogAPIClient:
         return PublicCatalogAPIClient(
-            base_url=settings.catalog_api_base_url, 
+            base_url=settings.catalog_api_base_url,
             client=client,
             mapper=infrastructure_mapper,
         )
 
     @provide(scope=Scope.REQUEST)
     def get_message_broker(
-        self, 
+        self,
         broker: KafkaBroker,
         infrastructure_mapper: InfrastructureArtifactMapper,
     ) -> KafkaPublisher:
@@ -135,6 +136,10 @@ class MapperProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_infrastructure_artifact_mapper(self) -> InfrastructureArtifactMapper:
         return InfrastructureArtifactMapper()
+
+    @provide(scope=Scope.REQUEST)
+    def get_presentation_artifact_mapper(self) -> ArtifactPresentationMapper:
+        return ArtifactPresentationMapper()
 
 
 class CacheProvider(Provider):
@@ -170,6 +175,7 @@ class UseCaseProvider(Provider):
         catalog_api_client: PublicCatalogAPIClient,
         message_broker: KafkaPublisher,
         artifact_mapper: ArtifactMapper,
+        infrastructure_mapper: InfrastructureArtifactMapper,
         cache_client: RedisCacheClient,
     ) -> GetArtifactUseCase:
         return GetArtifactUseCase(
@@ -178,5 +184,6 @@ class UseCaseProvider(Provider):
             catalog_api_client=catalog_api_client,
             message_broker=message_broker,
             artifact_mapper=artifact_mapper,
+            infrastructure_mapper=infrastructure_mapper,
             cache_client=cache_client,
         )

@@ -9,13 +9,11 @@ from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntit
 
 
 class DtoEntityMapperProtocol(Protocol):
+    """Protocol for Application layer mapper (Domain Entity <-> Application DTO)."""
+
     def to_dto(self, entity: ArtifactEntity) -> ArtifactDTO: ...
 
     def to_entity(self, dto: ArtifactDTO) -> ArtifactEntity: ...
-
-    def to_dict(self, dto: ArtifactDTO) -> dict: ...
-
-    def from_dict(self, data: dict) -> ArtifactDTO: ...
 
     def to_notification_dto(
         self, entity: ArtifactEntity

@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
 from typing import final
-from uuid import UUID
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import (
     ArtifactAdmissionNotificationDTO,
@@ -19,7 +17,17 @@ from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
 @final
 @dataclass(frozen=True, slots=True)
 class ArtifactMapper(DtoEntityMapperProtocol):
+    """Mapper for converting between Domain Entities and Application DTOs.
+
+    This mapper is part of the Application layer and handles conversions between:
+    - Domain Entities (business logic)
+    - Application DTOs (use case data transfer)
+
+    It does NOT handle infrastructure concerns like JSON serialization.
+    """
+
     def to_dto(self, entity: ArtifactEntity) -> ArtifactDTO:
+        """Convert Domain Entity to Application DTO."""
         return ArtifactDTO(
             inventory_id=entity.inventory_id,
             created_at=entity.created_at,
@@ -32,6 +40,7 @@ class ArtifactMapper(DtoEntityMapperProtocol):
         )
 
     def to_entity(self, dto: ArtifactDTO) -> ArtifactEntity:
+        """Convert Application DTO to Domain Entity."""
         return ArtifactEntity(
             inventory_id=dto.inventory_id,
             name=dto.name,
@@ -42,33 +51,10 @@ class ArtifactMapper(DtoEntityMapperProtocol):
             description=dto.description,
         )
 
-    def to_dict(self, dto: ArtifactDTO) -> dict:
-        return {
-            "inventory_id": str(dto.inventory_id),
-            "created_at": dto.created_at.isoformat(),
-            "acquisition_date": dto.acquisition_date.isoformat(),
-            "name": dto.name,
-            "department": dto.department,
-            "era": {"value": dto.era.value},
-            "material": {"value": dto.material.value},
-            "description": dto.description,
-        }
-
-    def from_dict(self, data: dict) -> ArtifactDTO:
-        return ArtifactDTO(
-            inventory_id=UUID(data["inventory_id"]),
-            created_at=datetime.fromisoformat(data["created_at"]),
-            acquisition_date=datetime.fromisoformat(data["acquisition_date"]),
-            name=data["name"],
-            department=data["department"],
-            era=EraDTO(value=data["era"]["value"]),
-            material=MaterialDTO(value=data["material"]["value"]),
-            description=data.get("description"),
-        )
-
     def to_notification_dto(
         self, entity: ArtifactEntity
     ) -> ArtifactAdmissionNotificationDTO:
+        """Convert Domain Entity to Notification DTO for message broker."""
         return ArtifactAdmissionNotificationDTO(
             inventory_id=entity.inventory_id,
             name=entity.name,
@@ -79,6 +65,7 @@ class ArtifactMapper(DtoEntityMapperProtocol):
     def to_publication_dto(
         self, entity: ArtifactEntity
     ) -> ArtifactCatalogPublicationDTO:
+        """Convert Domain Entity to Publication DTO for external catalog API."""
         return ArtifactCatalogPublicationDTO(
             inventory_id=entity.inventory_id,
             name=entity.name,

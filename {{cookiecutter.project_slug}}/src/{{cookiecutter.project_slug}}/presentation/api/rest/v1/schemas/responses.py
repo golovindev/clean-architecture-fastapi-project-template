@@ -2,9 +2,7 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-
-from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactDTO
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class MaterialResponse(BaseModel):
@@ -72,29 +70,3 @@ class ArtifactResponse(BaseModel):
     description: str | None = Field(
         None, max_length=1000, description="Optional description of the artifact"
     )
-
-    @field_validator("acquisition_date")
-    @classmethod
-    def validate_acquisition_date(cls, value: datetime) -> datetime:
-        from datetime import UTC
-        if value > datetime.now(UTC):
-            raise ValueError("Acquisition date cannot be in the future")
-        return value
-
-    @model_validator(mode="after")
-    def validate_dates(self) -> "ArtifactResponse":
-        if self.acquisition_date > self.created_at:
-            raise ValueError("Acquisition date cannot be later than created_at")
-        return self
-
-    @classmethod
-    def from_dto(cls, dto: ArtifactDTO) -> "ArtifactResponse":
-        return cls(
-            inventory_id=dto.inventory_id,
-            name=dto.name,
-            description=dto.description,
-            era=dto.era,
-            material=dto.material,
-            acquisition_date=dto.acquisition_date,
-            department=dto.department,
-        )
