@@ -17,6 +17,30 @@ A comprehensive cookiecutter template for creating modern FastAPI applications w
 - **Pre-commit**: Git hooks for code quality
 - **Documentation**: Auto-generated API docs with Swagger/OpenAPI
 
+## 📚 Documentation
+
+Comprehensive documentation is available:
+
+- **Online**: [Read the Docs](https://clean-architecture-fastapi-project-template.readthedocs.io/) (coming soon)
+- **Local Build**: See instructions below
+
+### Building Documentation Locally
+
+```bash
+cd docs
+pip install -r requirements.txt
+make html
+open _build/html/index.html  # macOS
+# or
+xdg-open _build/html/index.html  # Linux
+```
+
+### Documentation Contents
+
+- **Getting Started**: Installation, quickstart, template variables
+- **User Guide**: Architecture, project structure
+- **Reference**: Makefile commands, environment variables, FAQ
+
 ## 📦 Dependency Management
 
 The template uses **strict version pinning** for all dependencies to ensure reproducible builds and prevent breaking changes from automatic updates.
