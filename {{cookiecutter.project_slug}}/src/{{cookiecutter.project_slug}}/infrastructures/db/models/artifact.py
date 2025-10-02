@@ -5,10 +5,6 @@ from sqlalchemy import DateTime, Index, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, registry
 
-from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
-from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
-from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
-
 mapper_registry = registry()
 
 
@@ -65,31 +61,4 @@ class ArtifactModel:
         return (
             f"<ArtifactModel(inventory_id={self.inventory_id!s}, "
             f"name={self.name!r}, department={self.department!r})>"
-        )
-
-    def to_dataclass(self) -> ArtifactEntity:
-        return ArtifactEntity(
-            inventory_id=self.inventory_id,
-            created_at=self.created_at,
-            acquisition_date=self.acquisition_date,
-            name=self.name,
-            department=self.department,
-            era=Era(value=self.era),
-            material=Material(value=self.material),
-            description=self.description,
-        )
-
-    @classmethod
-    def from_dataclass(
-        cls: type["ArtifactModel"], artifact: ArtifactEntity
-    ) -> "ArtifactModel":
-        return cls(
-            inventory_id=artifact.inventory_id,
-            created_at=artifact.created_at,
-            acquisition_date=artifact.acquisition_date,
-            name=artifact.name,
-            department=artifact.department,
-            era=str(artifact.era),
-            material=str(artifact.material),
-            description=artifact.description,
         )
