@@ -290,13 +290,15 @@ The template follows **Clean Architecture** principles with clear separation of 
 
 ### Application Layer
 - **Use Cases**: Application-specific business rules
-- **DTOs**: Data transfer objects using plain dataclasses with validation logic (Pydantic-free)
-- **Interfaces**: Abstractions for infrastructure implementations
+- **DTOs**: Data transfer objects using plain dataclasses with validation in `__post_init__` (Pydantic-free)
+- **Interfaces**: Abstractions for infrastructure implementations (repositories, mappers, serialization, etc.)
 - **Unit of Work**: Transaction management and coordination
-- **Mappers**: Convert between domain entities and DTO objects
+- **Mappers**: Convert between domain entities and application DTOs (no serialization logic)
 
 ### Presentation Layer
-- **API Controllers**: Handle HTTP requests
+- **API Controllers**: Handle HTTP requests and responses
+- **Response Schemas**: Pydantic models for API responses (no validation logic)
+- **Presentation Mappers**: Convert application DTOs to response models
 - **Middleware**: Cross-cutting concerns
 - **Routers**: URL routing configuration
 
@@ -305,8 +307,8 @@ The template follows **Clean Architecture** principles with clear separation of 
 - **Cache**: Caching service implementations
 - **Message Brokers**: External service integrations using Pydantic models
 - **HTTP Clients**: External API integrations using Pydantic models
-- **Infrastructure DTOs**: Pydantic models for external communication and serialization
-- **Infrastructure Mappers**: Convert between application DTOs and infrastructure Pydantic models
+- **Infrastructure DTOs**: Pydantic models for external communication (no business validation)
+- **Infrastructure Mappers**: Convert between application DTOs and infrastructure Pydantic models, handle JSON serialization
 
 ## 🔧 Configuration
 
@@ -396,21 +398,23 @@ The template includes comprehensive implementation examples that demonstrate bes
 - **Domain Services**: Examples of business logic that doesn't fit in entities
 
 #### Application Layer Examples
-- **Use Cases**: `src/application/use_cases/get_artifact.py` - Shows how to implement business logic using dependency injection
+- **Use Cases**: `src/application/use_cases/get_artifact.py` - Shows how to implement business logic using dependency injection and Protocol-based dependencies
 - **DTOs**: `src/application/dtos/artifact.py` - Data transfer objects using plain dataclasses with validation in `__post_init__` methods (Pydantic-free)
-- **Interfaces**: Complete interface definitions for repositories, cache, HTTP clients, and message brokers
-- **Mappers**: Examples of converting between domain entities and DTOs
+- **Interfaces**: Complete interface definitions for repositories, cache, HTTP clients, message brokers, mappers, and serialization
+- **Mappers**: `src/application/mappers.py` - Examples of converting between domain entities and DTOs (no serialization logic)
 
 #### Infrastructure Layer Examples
 - **Repository Implementation**: `src/infrastructures/db/repositories/artifact.py` - Shows how to implement repository pattern with SQLAlchemy
 - **Cache Implementation**: `src/infrastructures/cache/redis_client.py` - Redis caching implementation with error handling
 - **HTTP Clients**: `src/infrastructures/http/clients.py` - External API integration examples using Pydantic models for external communication
 - **Database Models**: `src/infrastructures/db/models/artifact.py` - SQLAlchemy model examples
-- **Infrastructure DTOs**: `src/infrastructures/dtos/artifact.py` - Pydantic models for external API communication and serialization
-- **Infrastructure Mappers**: `src/infrastructures/mappers/artifact.py` - Mappers for converting between application DTOs and infrastructure Pydantic models
+- **Infrastructure DTOs**: `src/infrastructures/dtos/artifact.py` - Pydantic models for external API communication (no business validation)
+- **Infrastructure Mappers**: `src/infrastructures/mappers/artifact.py` - Mappers for converting between application DTOs and infrastructure Pydantic models, plus JSON serialization/deserialization
 
 #### Presentation Layer Examples
-- **REST Controllers**: `src/presentation/api/rest/v1/controllers/artifact_controller.py` - API endpoint implementation
+- **REST Controllers**: `src/presentation/api/rest/v1/controllers/artifact_controller.py` - API endpoint implementation with proper dependency injection
+- **Response Schemas**: `src/presentation/api/rest/v1/schemas/responses.py` - Pydantic response models (no validation logic)
+- **Presentation Mappers**: `src/presentation/api/rest/v1/mappers/artifact_mapper.py` - Mappers for converting DTOs to response models
 - **Exception Handling**: `src/presentation/api/rest/v1/exceptions.py` - Custom exception handlers
 - **Middleware**: `src/presentation/api/rest/middlewares.py` - Request/response middleware examples
 

@@ -175,7 +175,7 @@ class UseCaseProvider(Provider):
         catalog_api_client: PublicCatalogAPIClient,
         message_broker: KafkaPublisher,
         artifact_mapper: ArtifactMapper,
-        infrastructure_mapper: InfrastructureArtifactMapper,
+        serialization_mapper: InfrastructureArtifactMapper,
         cache_client: RedisCacheClient,
     ) -> GetArtifactUseCase:
         return GetArtifactUseCase(
@@ -184,6 +184,6 @@ class UseCaseProvider(Provider):
             catalog_api_client=catalog_api_client,
             message_broker=message_broker,
             artifact_mapper=artifact_mapper,
-            infrastructure_mapper=infrastructure_mapper,
+            serialization_mapper=serialization_mapper,
             cache_client=cache_client,
         )
