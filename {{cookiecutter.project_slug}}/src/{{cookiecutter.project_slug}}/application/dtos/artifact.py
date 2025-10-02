@@ -36,6 +36,12 @@ class EraDTO:
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ArtifactDTO:
+    """Application DTO for transferring artifact data between layers.
+    
+    Note: This DTO does NOT perform business validation.
+    Business rules are enforced by the Domain Entity (ArtifactEntity).
+    DTOs are simple data carriers for inter-layer communication.
+    """
     inventory_id: UUID
     acquisition_date: datetime
     name: str
@@ -44,18 +50,6 @@ class ArtifactDTO:
     material: MaterialDTO
     description: str | None = None
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
-
-    def __post_init__(self) -> None:
-        if self.acquisition_date > datetime.now(UTC):
-            raise ValueError("Acquisition date cannot be in the future")
-        if self.acquisition_date > self.created_at:
-            raise ValueError("Acquisition date cannot be later than created_at")
-        if len(self.name) < 2 or len(self.name) > 100:
-            raise ValueError("Name must be between 2 and 100 characters")
-        if len(self.department) < 2 or len(self.department) > 100:
-            raise ValueError("Department must be between 2 and 100 characters")
-        if self.description is not None and len(self.description) > 1000:
-            raise ValueError("Description must be at most 1000 characters")
 
 
 @final
