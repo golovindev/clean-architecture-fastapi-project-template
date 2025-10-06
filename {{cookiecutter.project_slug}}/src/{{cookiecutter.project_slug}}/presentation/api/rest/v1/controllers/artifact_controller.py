@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from dishka.integrations.fastapi import FromDishka, inject
-from fastapi import APIRouter
+from fastapi import APIRouter, Path
 
 from {{cookiecutter.project_slug}}.application.use_cases.process_artifact import ProcessArtifactUseCase
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.mappers.artifact_mapper import ArtifactPresentationMapper
@@ -24,9 +24,9 @@ router = APIRouter(prefix="/v1/artifacts", tags=["Artifacts"])
 )
 @inject
 async def get_artifact(
-    inventory_id: str | UUID,
-    use_case: FromDishka[ProcessArtifactUseCase],
-    presentation_mapper: FromDishka[ArtifactPresentationMapper],
+    inventory_id: UUID = Path(..., description="Artifact UUID"),
+    use_case: FromDishka[ProcessArtifactUseCase] = None,
+    presentation_mapper: FromDishka[ArtifactPresentationMapper] = None,
 ) -> ArtifactResponse:
     artifact_dto = await use_case.execute(inventory_id)
     return presentation_mapper.to_response(artifact_dto)
