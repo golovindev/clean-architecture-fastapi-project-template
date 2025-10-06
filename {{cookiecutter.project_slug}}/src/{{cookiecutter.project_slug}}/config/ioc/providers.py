@@ -10,7 +10,28 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from {{cookiecutter.project_slug}}.application.mappers import ArtifactMapper
+from {{cookiecutter.project_slug}}.application.use_cases.fetch_artifact_from_museum_api import (
+    FetchArtifactFromMuseumAPIUseCase,
+)
 from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact_from_cache import (
+    GetArtifactFromCacheUseCase,
+)
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact_from_repo import (
+    GetArtifactFromRepoUseCase,
+)
+from {{cookiecutter.project_slug}}.application.use_cases.publish_artifact_to_broker import (
+    PublishArtifactToBrokerUseCase,
+)
+from {{cookiecutter.project_slug}}.application.use_cases.publish_artifact_to_catalog import (
+    PublishArtifactToCatalogUseCase,
+)
+from {{cookiecutter.project_slug}}.application.use_cases.save_artifact_to_cache import (
+    SaveArtifactToCacheUseCase,
+)
+from {{cookiecutter.project_slug}}.application.use_cases.save_artifact_to_repo import (
+    SaveArtifactToRepoUseCase,
+)
 from {{cookiecutter.project_slug}}.config.base import Settings
 from {{cookiecutter.project_slug}}.infrastructures.broker.publisher import KafkaPublisher
 from {{cookiecutter.project_slug}}.infrastructures.cache.redis_client import RedisCacheClient
@@ -177,22 +198,81 @@ class CacheProvider(Provider):
 
 class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
-    def get_register_artifact_use_case(
+    def get_get_artifact_from_cache_use_case(
         self,
-        uow: UnitOfWorkSQLAlchemy,
+        cache_client: RedisCacheClient,
+        serialization_mapper: InfrastructureArtifactMapper,
+    ) -> GetArtifactFromCacheUseCase:
+        return GetArtifactFromCacheUseCase(
+            cache_client=cache_client, serialization_mapper=serialization_mapper
+        )
+
+    @provide(scope=Scope.REQUEST)
+    def get_get_artifact_from_repo_use_case(
+        self, uow: UnitOfWorkSQLAlchemy, artifact_mapper: ArtifactMapper
+    ) -> GetArtifactFromRepoUseCase:
+        return GetArtifactFromRepoUseCase(uow=uow, artifact_mapper=artifact_mapper)
+
+    @provide(scope=Scope.REQUEST)
+    def get_fetch_artifact_from_museum_api_use_case(
+        self,
         museum_api_client: ExternalMuseumAPIClient,
-        catalog_api_client: PublicCatalogAPIClient,
+    ) -> FetchArtifactFromMuseumAPIUseCase:
+        return FetchArtifactFromMuseumAPIUseCase(museum_api_client=museum_api_client)
+
+    @provide(scope=Scope.REQUEST)
+    def get_save_artifact_to_repo_use_case(
+        self, uow: UnitOfWorkSQLAlchemy, artifact_mapper: ArtifactMapper
+    ) -> SaveArtifactToRepoUseCase:
+        return SaveArtifactToRepoUseCase(uow=uow, artifact_mapper=artifact_mapper)
+
+    @provide(scope=Scope.REQUEST)
+    def get_save_artifact_to_cache_use_case(
+        self,
+        cache_client: RedisCacheClient,
+        serialization_mapper: InfrastructureArtifactMapper,
+    ) -> SaveArtifactToCacheUseCase:
+        return SaveArtifactToCacheUseCase(
+            cache_client=cache_client, serialization_mapper=serialization_mapper
+        )
+
+    @provide(scope=Scope.REQUEST)
+    def get_publish_artifact_to_broker_use_case(
+        self,
         message_broker: KafkaPublisher,
         artifact_mapper: ArtifactMapper,
-        serialization_mapper: InfrastructureArtifactMapper,
-        cache_client: RedisCacheClient,
+    ) -> PublishArtifactToBrokerUseCase:
+        return PublishArtifactToBrokerUseCase(
+            message_broker=message_broker, artifact_mapper=artifact_mapper
+        )
+
+    @provide(scope=Scope.REQUEST)
+    def get_publish_artifact_to_catalog_use_case(
+        self,
+        catalog_api_client: PublicCatalogAPIClient,
+        artifact_mapper: ArtifactMapper,
+    ) -> PublishArtifactToCatalogUseCase:
+        return PublishArtifactToCatalogUseCase(
+            catalog_api_client=catalog_api_client, artifact_mapper=artifact_mapper
+        )
+
+    @provide(scope=Scope.REQUEST)
+    def get_register_artifact_use_case(
+        self,
+        get_artifact_from_cache_use_case: GetArtifactFromCacheUseCase,
+        get_artifact_from_repo_use_case: GetArtifactFromRepoUseCase,
+        fetch_artifact_from_museum_api_use_case: FetchArtifactFromMuseumAPIUseCase,
+        save_artifact_to_repo_use_case: SaveArtifactToRepoUseCase,
+        save_artifact_to_cache_use_case: SaveArtifactToCacheUseCase,
+        publish_artifact_to_broker_use_case: PublishArtifactToBrokerUseCase,
+        publish_artifact_to_catalog_use_case: PublishArtifactToCatalogUseCase,
     ) -> GetArtifactUseCase:
         return GetArtifactUseCase(
-            uow=uow,
-            museum_api_client=museum_api_client,
-            catalog_api_client=catalog_api_client,
-            message_broker=message_broker,
-            artifact_mapper=artifact_mapper,
-            serialization_mapper=serialization_mapper,
-            cache_client=cache_client,
+            get_artifact_from_cache_use_case=get_artifact_from_cache_use_case,
+            get_artifact_from_repo_use_case=get_artifact_from_repo_use_case,
+            fetch_artifact_from_museum_api_use_case=fetch_artifact_from_museum_api_use_case,
+            save_artifact_to_repo_use_case=save_artifact_to_repo_use_case,
+            save_artifact_to_cache_use_case=save_artifact_to_cache_use_case,
+            publish_artifact_to_broker_use_case=publish_artifact_to_broker_use_case,
+            publish_artifact_to_catalog_use_case=publish_artifact_to_catalog_use_case,
         )

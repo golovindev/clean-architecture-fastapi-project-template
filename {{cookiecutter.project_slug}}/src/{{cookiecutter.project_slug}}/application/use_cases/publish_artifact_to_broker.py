@@ -1,0 +1,39 @@
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
+from uuid import UUID
+
+import structlog
+
+from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactDTO
+from {{cookiecutter.project_slug}}.application.exceptions import FailedPublishArtifactMessageBrokerException
+from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEntityMapperProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
+
+if TYPE_CHECKING:
+    from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
+
+logger = structlog.get_logger(__name__)
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class PublishArtifactToBrokerUseCase:
+    message_broker: MessageBrokerPublisherProtocol
+    artifact_mapper: DtoEntityMapperProtocol
+
+    async def execute(self, artifact_dto: ArtifactDTO) -> None:
+        try:
+            notification_dto = self.artifact_mapper.to_notification_dto(artifact_dto)
+            await self.message_broker.publish_new_artifact(notification_dto)
+            logger.info(
+                "Published new artifact event to message broker",
+                inventory_id=artifact_dto.inventory_id,
+            )
+        except Exception as e:
+            logger.warning(
+                "Failed to publish artifact notification to message broker (non-critical)",
+                inventory_id=artifact_dto.inventory_id,
+                error=str(e),
+            )
+            raise FailedPublishArtifactMessageBrokerException(
+                "Failed to publish message to broker", str(e)
+            ) from e
