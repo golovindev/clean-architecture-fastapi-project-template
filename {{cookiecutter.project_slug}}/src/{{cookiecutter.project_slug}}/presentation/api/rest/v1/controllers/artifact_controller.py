@@ -1,14 +1,8 @@
 from uuid import UUID
 
 from dishka.integrations.fastapi import FromDishka, inject
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 
-from {{cookiecutter.project_slug}}.application.exceptions import (
-    ArtifactNotFoundError,
-    FailedFetchArtifactMuseumAPIException,
-    FailedPublishArtifactInCatalogException,
-    FailedPublishArtifactMessageBrokerException,
-)
 from {{cookiecutter.project_slug}}.application.use_cases.process_artifact import ProcessArtifactUseCase
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.mappers.artifact_mapper import ArtifactPresentationMapper
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.schemas import ArtifactResponse
@@ -34,26 +28,5 @@ async def get_artifact(
     use_case: FromDishka[ProcessArtifactUseCase],
     presentation_mapper: FromDishka[ArtifactPresentationMapper],
 ) -> ArtifactResponse:
-    try:
-        artifact_dto = await use_case.execute(inventory_id)
-        return presentation_mapper.to_response(artifact_dto)
-    except ArtifactNotFoundError as err:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Artifact not found in the system.",
-        ) from err
-    except FailedFetchArtifactMuseumAPIException as err:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Failed to fetch artifact data from the museum API.",
-        ) from err
-    except FailedPublishArtifactInCatalogException as err:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Artifact could not be published in the catalog.",
-        ) from err
-    except FailedPublishArtifactMessageBrokerException as err:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Failed to send notification via message broker.",
-        ) from err
+    artifact_dto = await use_case.execute(inventory_id)
+    return presentation_mapper.to_response(artifact_dto)

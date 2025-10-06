@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from {{cookiecutter.project_slug}}.config.ioc.di import get_providers
 from {{cookiecutter.project_slug}}.config.logging import setup_logging
+from {{cookiecutter.project_slug}}.presentation.api.rest.error_handling import setup_exception_handlers
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.routers import api_v1_router
 
 setup_logging()
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
     container: AsyncContainer = make_async_container(*get_providers())
     setup_dishka(container, app)
 
+    setup_exception_handlers(app)
     app.include_router(api_v1_router, prefix="/api")
 
     return app
