@@ -35,7 +35,7 @@ logger = structlog.get_logger(__name__)
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class GetArtifactUseCase:
+class ProcessArtifactUseCase:
     get_artifact_from_cache_use_case: GetArtifactFromCacheUseCase
     get_artifact_from_repo_use_case: GetArtifactFromRepoUseCase
     fetch_artifact_from_museum_api_use_case: FetchArtifactFromMuseumAPIUseCase

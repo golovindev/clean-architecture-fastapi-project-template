@@ -9,7 +9,7 @@ from {{cookiecutter.project_slug}}.application.exceptions import (
     FailedPublishArtifactInCatalogException,
     FailedPublishArtifactMessageBrokerException,
 )
-from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.process_artifact import ProcessArtifactUseCase
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.mappers.artifact_mapper import ArtifactPresentationMapper
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.schemas import ArtifactResponse
 
@@ -31,7 +31,7 @@ router = APIRouter(prefix="/v1/artifacts", tags=["Artifacts"])
 @inject
 async def get_artifact(
     inventory_id: str | UUID,
-    use_case: FromDishka[GetArtifactUseCase],
+    use_case: FromDishka[ProcessArtifactUseCase],
     presentation_mapper: FromDishka[ArtifactPresentationMapper],
 ) -> ArtifactResponse:
     try:

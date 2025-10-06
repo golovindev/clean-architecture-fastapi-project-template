@@ -13,7 +13,7 @@ from {{cookiecutter.project_slug}}.application.mappers import ArtifactMapper
 from {{cookiecutter.project_slug}}.application.use_cases.fetch_artifact_from_museum_api import (
     FetchArtifactFromMuseumAPIUseCase,
 )
-from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.process_artifact import ProcessArtifactUseCase
 from {{cookiecutter.project_slug}}.application.use_cases.get_artifact_from_cache import (
     GetArtifactFromCacheUseCase,
 )
@@ -266,8 +266,8 @@ class UseCaseProvider(Provider):
         save_artifact_to_cache_use_case: SaveArtifactToCacheUseCase,
         publish_artifact_to_broker_use_case: PublishArtifactToBrokerUseCase,
         publish_artifact_to_catalog_use_case: PublishArtifactToCatalogUseCase,
-    ) -> GetArtifactUseCase:
-        return GetArtifactUseCase(
+    ) -> ProcessArtifactUseCase:
+        return ProcessArtifactUseCase(
             get_artifact_from_cache_use_case=get_artifact_from_cache_use_case,
             get_artifact_from_repo_use_case=get_artifact_from_repo_use_case,
             fetch_artifact_from_museum_api_use_case=fetch_artifact_from_museum_api_use_case,

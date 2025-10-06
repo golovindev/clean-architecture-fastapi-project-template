@@ -422,7 +422,7 @@ The template includes comprehensive implementation examples that demonstrate bes
 - **Domain Services**: Examples of business logic that doesn't fit in entities
 
 #### Application Layer Examples
-- **Use Cases**: `src/application/use_cases/get_artifact.py` - Shows how to implement business logic using dependency injection and Protocol-based dependencies
+- **Use Cases**: `src/application/use_cases/process_artifact.py` - Shows how to implement business logic using dependency injection and Protocol-based dependencies
 - **DTOs**: `src/application/dtos/artifact.py` - Data transfer objects using plain dataclasses with validation in `__post_init__` methods (Pydantic-free)
 - **Interfaces**: Complete interface definitions for repositories, cache, HTTP clients, message brokers, mappers, and serialization
 - **Mappers**: `src/application/mappers.py` - Examples of converting between domain entities and DTOs (no serialization logic)
@@ -451,7 +451,7 @@ The template includes comprehensive implementation examples that demonstrate bes
 - **Unit Tests**: `tests/test_domain/test_entities/test_artifact.py` - Domain entity testing
 - **Integration Tests**: `tests/test_integration/test_api_integration.py` - API integration testing
 - **Repository Tests**: `tests/test_infrastructure/test_db/repositories/test_artifact_repository.py` - Database testing
-- **Use Case Tests**: `tests/test_application/test_use_cases/test_get_artifact.py` - Business logic testing
+- **Use Case Tests**: `tests/test_application/test_use_cases/test_process_artifact.py` - Business logic testing
 
 ### Adding New Dependencies
 
