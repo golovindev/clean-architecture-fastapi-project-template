@@ -25,7 +25,7 @@ from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEnti
 from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
-from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import ProcessArtifactUseCase
 from {{cookiecutter.project_slug}}.config.ioc.di import get_providers
 from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity, Material, Era
 from {{cookiecutter.project_slug}}.main import create_app
@@ -203,8 +203,8 @@ def get_artifact_use_case(
     mock_message_broker: AsyncMock,
     mock_mapper: MagicMock,
     mock_cache_client: AsyncMock,
-) -> GetArtifactUseCase:
-    return GetArtifactUseCase(
+) -> ProcessArtifactUseCase:
+    return ProcessArtifactUseCase(
         uow=mock_uow,
         museum_api_client=mock_museum_api,
         catalog_api_client=mock_catalog_api,

@@ -69,13 +69,13 @@ This project has been restructured to follow Python best practices for package o
 
 **Before:**
 ```python
-from src.application.use_cases.get_artifact import GetArtifactUseCase
+from src.application.use_cases.get_artifact import ProcessArtifactUseCase
 from src.domain.entities.artifact import ArtifactEntity
 ```
 
 **After:**
 ```python
-from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import ProcessArtifactUseCase
 from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
 ```
 
@@ -849,7 +849,7 @@ if TYPE_CHECKING:
     from src.domain.entities.artifact import ArtifactEntity
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class GetArtifactUseCaseWithIdentityMap:
+class ProcessArtifactUseCaseWithIdentityMap:
     repository: ArtifactRepositoryProtocol  # Already with Identity Map
     cache_client: CacheProtocol
     request_identity_map: IdentityMapProtocol[ArtifactEntity]  # For single request

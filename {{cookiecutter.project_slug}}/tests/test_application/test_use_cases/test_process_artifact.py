@@ -13,11 +13,11 @@ from {{cookiecutter.project_slug}}.application.exceptions import (
     FailedPublishArtifactInCatalogException,
     FailedPublishArtifactMessageBrokerException,
 )
-from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.process_artifact import ProcessArtifactUseCase
 from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
 
 
-class TestGetArtifactUseCase:
+class TestProcessArtifactUseCase:
     @pytest.fixture
     def mock_get_artifact_from_cache_use_case(self) -> AsyncMock:
         return AsyncMock()
@@ -56,8 +56,8 @@ class TestGetArtifactUseCase:
         mock_save_artifact_to_cache_use_case: AsyncMock,
         mock_publish_artifact_to_broker_use_case: AsyncMock,
         mock_publish_artifact_to_catalog_use_case: AsyncMock,
-    ) -> GetArtifactUseCase:
-        return GetArtifactUseCase(
+    ) -> ProcessArtifactUseCase:
+        return ProcessArtifactUseCase(
             get_artifact_from_cache_use_case=mock_get_artifact_from_cache_use_case,
             get_artifact_from_repo_use_case=mock_get_artifact_from_repo_use_case,
             fetch_artifact_from_museum_api_use_case=mock_fetch_artifact_from_museum_api_use_case,
@@ -70,7 +70,7 @@ class TestGetArtifactUseCase:
     @pytest.mark.asyncio
     async def test_execute_artifact_found_in_cache(
         self,
-        get_artifact_use_case: GetArtifactUseCase,
+        get_artifact_use_case: ProcessArtifactUseCase,
         mock_get_artifact_from_cache_use_case: AsyncMock,
         sample_artifact_dto: ArtifactDTO,
     ):
@@ -88,7 +88,7 @@ class TestGetArtifactUseCase:
     @pytest.mark.asyncio
     async def test_execute_artifact_found_in_repository(
         self,
-        get_artifact_use_case: GetArtifactUseCase,
+        get_artifact_use_case: ProcessArtifactUseCase,
         mock_get_artifact_from_cache_use_case: AsyncMock,
         mock_get_artifact_from_repo_use_case: AsyncMock,
         mock_save_artifact_to_cache_use_case: AsyncMock,
@@ -115,7 +115,7 @@ class TestGetArtifactUseCase:
     @pytest.mark.asyncio
     async def test_execute_artifact_fetched_from_external_api(
         self,
-        get_artifact_use_case: GetArtifactUseCase,
+        get_artifact_use_case: ProcessArtifactUseCase,
         mock_get_artifact_from_cache_use_case: AsyncMock,
         mock_get_artifact_from_repo_use_case: AsyncMock,
         mock_fetch_artifact_from_museum_api_use_case: AsyncMock,
@@ -147,7 +147,7 @@ class TestGetArtifactUseCase:
     @pytest.mark.asyncio
     async def test_execute_artifact_not_found_in_museum_api(
         self,
-        get_artifact_use_case: GetArtifactUseCase,
+        get_artifact_use_case: ProcessArtifactUseCase,
         mock_get_artifact_from_cache_use_case: AsyncMock,
         mock_get_artifact_from_repo_use_case: AsyncMock,
         mock_fetch_artifact_from_museum_api_use_case: AsyncMock,
@@ -173,7 +173,7 @@ class TestGetArtifactUseCase:
     @pytest.mark.asyncio
     async def test_execute_publish_to_broker_fails_but_continues(
         self,
-        get_artifact_use_case: GetArtifactUseCase,
+        get_artifact_use_case: ProcessArtifactUseCase,
         mock_get_artifact_from_cache_use_case: AsyncMock,
         mock_get_artifact_from_repo_use_case: AsyncMock,
         mock_fetch_artifact_from_museum_api_use_case: AsyncMock,
@@ -199,7 +199,7 @@ class TestGetArtifactUseCase:
     @pytest.mark.asyncio
     async def test_execute_publish_to_catalog_fails_but_continues(
         self,
-        get_artifact_use_case: GetArtifactUseCase,
+        get_artifact_use_case: ProcessArtifactUseCase,
         mock_get_artifact_from_cache_use_case: AsyncMock,
         mock_get_artifact_from_repo_use_case: AsyncMock,
         mock_fetch_artifact_from_museum_api_use_case: AsyncMock,

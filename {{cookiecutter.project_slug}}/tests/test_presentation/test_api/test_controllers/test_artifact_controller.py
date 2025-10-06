@@ -11,12 +11,12 @@ from {{cookiecutter.project_slug}}.application.exceptions import (
     FailedPublishArtifactInCatalogException,
     FailedPublishArtifactMessageBrokerException,
 )
-from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import ProcessArtifactUseCase
 
 
 class TestArtifactController:
     async def _call_controller_with_mock(
-        self, inventory_id: str, mock_use_case: GetArtifactUseCase
+        self, inventory_id: str, mock_use_case: ProcessArtifactUseCase
     ):
         """Helper method to call the controller function with a mock use case"""
         try:
