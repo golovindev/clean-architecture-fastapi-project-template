@@ -17,10 +17,23 @@ logger = structlog.get_logger(__name__)
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class PublishArtifactToBrokerUseCase:
+    """
+    Use case for publishing an artifact to a message broker.
+    """
+
     message_broker: MessageBrokerPublisherProtocol
     artifact_mapper: DtoEntityMapperProtocol
 
     async def execute(self, artifact_dto: ArtifactDTO) -> None:
+        """
+        Executes the use case to publish an artifact to the message broker.
+
+        Args:
+            artifact_dto: The ArtifactDTO to publish.
+
+        Raises:
+            FailedPublishArtifactMessageBrokerException: If publishing to the message broker fails.
+        """
         try:
             notification_dto = self.artifact_mapper.to_notification_dto(artifact_dto)
             await self.message_broker.publish_new_artifact(notification_dto)

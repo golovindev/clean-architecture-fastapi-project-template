@@ -7,6 +7,7 @@ from uuid import UUID
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class MaterialDTO:
+    """Data Transfer Object for Material."""
     value: Literal[
         "ceramic",
         "metal",
@@ -22,6 +23,7 @@ class MaterialDTO:
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class EraDTO:
+    """Data Transfer Object for Era."""
     value: Literal[
         "paleolithic",
         "neolithic",
@@ -55,6 +57,7 @@ class ArtifactDTO:
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ArtifactAdmissionNotificationDTO:
+    """DTO for artifact admission notifications."""
     inventory_id: UUID
     name: str
     acquisition_date: datetime
@@ -64,6 +67,7 @@ class ArtifactAdmissionNotificationDTO:
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ArtifactCatalogPublicationDTO:
+    """DTO for publishing artifacts to the catalog."""
     inventory_id: UUID
     name: str
     era: EraDTO

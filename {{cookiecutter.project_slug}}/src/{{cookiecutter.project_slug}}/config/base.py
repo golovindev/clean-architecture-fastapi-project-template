@@ -6,6 +6,41 @@ from pydantic_settings import BaseSettings
 
 @final
 class Settings(BaseSettings):
+    """
+    Application settings loaded from environment variables.
+
+    Attributes:
+        app_name (str): Name of the application.
+        environment (Literal["local", "dev", "prod"]): Application environment.
+        log_level (Literal["DEBUG", "INFO", "WARNING", "ERROR"]): Logging level.
+        debug (bool): Debug mode flag.
+        postgres_user (str): PostgreSQL username.
+        postgres_password (str): PostgreSQL password.
+        postgres_server (str): PostgreSQL server host.
+        postgres_port (int): PostgreSQL server port.
+        postgres_db (str): PostgreSQL database name.
+        museum_api_base (str): Base URL for the external museum API.
+        catalog_api_base (str): Base URL for the public catalog API.
+        external_api_base_url (str): Alias for museum_api_base.
+        catalog_api_base_url (str): Alias for catalog_api_base.
+        http_timeout (float): HTTP request timeout in seconds.
+        broker_url (str): Message broker URL.
+        broker_new_artifact_queue (str): Queue name for new artifact messages.
+        publish_retries (int): Number of retries for publishing operations.
+        publish_retry_backoff (float): Backoff factor for publish retries.
+        redis_url (RedisDsn): Redis connection URL.
+        redis_password (str): Redis password.
+        redis_port (int): Redis port.
+        redis_host (str): Redis host.
+        redis_db (int): Redis database number.
+        redis_cache_ttl (int): Time-to-live for Redis cache entries in seconds.
+        redis_cache_prefix (str): Prefix for Redis cache keys.
+        cors_origins (list[str]): List of allowed CORS origins.
+        cors_allow_credentials (bool): Whether CORS requests should support credentials.
+        cors_allow_methods (list[str]): List of allowed CORS HTTP methods.
+        cors_allow_headers (list[str]): List of allowed CORS HTTP headers.
+    """
+
     app_name: str = "Antiquarium Service"
     environment: Literal["local", "dev", "prod"] = "local"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
@@ -66,6 +101,12 @@ class Settings(BaseSettings):
 
     @computed_field
     def database_url(self) -> PostgresDsn:
+        """
+        Constructs the PostgreSQL database URL.
+
+        Returns:
+            PostgresDsn: The constructed database URL.
+        """
         return PostgresDsn.build(
             scheme="postgresql+asyncpg",
             username=self.postgres_user,
@@ -77,6 +118,12 @@ class Settings(BaseSettings):
 
     @computed_field
     def sqlalchemy_database_uri(self) -> PostgresDsn:
+        """
+        Returns the SQLAlchemy compatible database URI.
+
+        Returns:
+            PostgresDsn: The SQLAlchemy database URI.
+        """
         return cast("PostgresDsn", self.database_url)
 
     class Config:

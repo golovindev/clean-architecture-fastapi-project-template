@@ -4,6 +4,17 @@ from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactAdmi
 
 
 class MessageBrokerPublisherProtocol(Protocol):
+    """
+    Protocol for publishing messages to a message broker.
+    """
+
     async def publish_new_artifact(
         self, artifact: ArtifactAdmissionNotificationDTO
-    ) -> None: ...
+    ) -> None:
+        """
+        Publishes a new artifact admission notification to the message broker.
+
+        Args:
+            artifact: The ArtifactAdmissionNotificationDTO to publish.
+        """
+        ...

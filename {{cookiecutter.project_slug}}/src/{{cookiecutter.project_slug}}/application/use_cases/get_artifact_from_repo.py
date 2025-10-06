@@ -17,10 +17,23 @@ logger = structlog.get_logger(__name__)
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class GetArtifactFromRepoUseCase:
+    """
+    Use case for retrieving an artifact from the repository.
+    """
+
     uow: UnitOfWorkProtocol
     artifact_mapper: DtoEntityMapperProtocol
 
     async def execute(self, inventory_id: str | UUID) -> ArtifactDTO | None:
+        """
+        Executes the use case to get an artifact from the repository.
+
+        Args:
+            inventory_id: The ID of the artifact to retrieve.
+
+        Returns:
+            An ArtifactDTO if found in the repository, otherwise None.
+        """
         inventory_id_str = (
             str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
         )

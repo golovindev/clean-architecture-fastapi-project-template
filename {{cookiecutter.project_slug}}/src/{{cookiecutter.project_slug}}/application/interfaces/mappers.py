@@ -11,14 +11,22 @@ from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntit
 class DtoEntityMapperProtocol(Protocol):
     """Protocol for Application layer mapper (Domain Entity <-> Application DTO)."""
 
-    def to_dto(self, entity: ArtifactEntity) -> ArtifactDTO: ...
+    def to_dto(self, entity: ArtifactEntity) -> ArtifactDTO:
+        """Converts a Domain Entity to an Application DTO."""
+        ...
 
-    def to_entity(self, dto: ArtifactDTO) -> ArtifactEntity: ...
+    def to_entity(self, dto: ArtifactDTO) -> ArtifactEntity:
+        """Converts an Application DTO to a Domain Entity."""
+        ...
 
     def to_notification_dto(
         self, entity: ArtifactEntity
-    ) -> ArtifactAdmissionNotificationDTO: ...
+    ) -> ArtifactAdmissionNotificationDTO:
+        """Converts a Domain Entity to an ArtifactAdmissionNotificationDTO."""
+        ...
 
     def to_publication_dto(
         self, entity: ArtifactEntity
-    ) -> ArtifactCatalogPublicationDTO: ...
+    ) -> ArtifactCatalogPublicationDTO:
+        """Converts a Domain Entity to an ArtifactCatalogPublicationDTO."""
+        ...

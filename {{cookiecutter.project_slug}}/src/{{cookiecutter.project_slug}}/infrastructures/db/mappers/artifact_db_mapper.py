@@ -16,26 +16,22 @@ from {{cookiecutter.project_slug}}.infrastructures.db.models.artifact import Art
 @final
 @dataclass(frozen=True, slots=True)
 class ArtifactDBMapper:
-    """Mapper for converting between ArtifactEntity and ArtifactModel.
+    """
+    Mapper for converting between ArtifactEntity (Domain) and ArtifactModel (SQLAlchemy).
 
-    This class handles the bidirectional mapping between:
-    - Domain Entities (business logic representation)
-    - SQLAlchemy Models (database persistence representation)
-
-    Benefits of separating mapper from repository:
-    - Single Responsibility: Repository handles DB operations, Mapper handles conversions
-    - Testability: Mapper logic can be tested independently
-    - Reusability: Mapper can be used by multiple repositories if needed
+    This class provides methods for bidirectional mapping, ensuring separation of concerns
+    between the domain logic and database persistence.
     """
 
     def to_entity(self, model: ArtifactModel) -> ArtifactEntity:
-        """Convert SQLAlchemy model to Domain Entity.
+        """
+        Converts an SQLAlchemy ArtifactModel to a Domain ArtifactEntity.
 
         Args:
-            model: SQLAlchemy model from database.
+            model: The SQLAlchemy ArtifactModel instance.
 
         Returns:
-            Domain entity for business logic.
+            An ArtifactEntity instance.
         """
         return ArtifactEntity(
             inventory_id=model.inventory_id,
@@ -49,13 +45,14 @@ class ArtifactDBMapper:
         )
 
     def to_model(self, entity: ArtifactEntity) -> ArtifactModel:
-        """Convert Domain Entity to SQLAlchemy model.
+        """
+        Converts a Domain ArtifactEntity to an SQLAlchemy ArtifactModel.
 
         Args:
-            entity: Domain entity from business logic.
+            entity: The Domain ArtifactEntity instance.
 
         Returns:
-            SQLAlchemy model for database persistence.
+            An SQLAlchemy ArtifactModel instance.
         """
         return ArtifactModel(
             inventory_id=entity.inventory_id,
@@ -71,14 +68,14 @@ class ArtifactDBMapper:
     def update_model_from_entity(
         self, model: ArtifactModel, entity: ArtifactEntity
     ) -> None:
-        """Update existing SQLAlchemy model with data from Domain Entity.
+        """
+        Updates an existing SQLAlchemy ArtifactModel with data from a Domain ArtifactEntity.
 
-        This method is useful for update operations where you want to modify
-        an existing model instance rather than creating a new one.
+        This method is used for updating database records based on changes in the domain entity.
 
         Args:
-            model: Existing SQLAlchemy model to update.
-            entity: Domain entity with new data.
+            model: The existing SQLAlchemy ArtifactModel to update.
+            entity: The Domain ArtifactEntity containing the new data.
         """
         model.name = entity.name
         model.era = str(entity.era)

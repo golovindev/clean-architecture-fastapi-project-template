@@ -15,10 +15,20 @@ logger = structlog.get_logger(__name__)
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class SaveArtifactToRepoUseCase:
+    """
+    Use case for saving an artifact to the repository.
+    """
+
     uow: UnitOfWorkProtocol
     artifact_mapper: DtoEntityMapperProtocol
 
     async def execute(self, artifact_dto: ArtifactDTO) -> None:
+        """
+        Executes the use case to save an artifact to the repository.
+
+        Args:
+            artifact_dto: The ArtifactDTO to save.
+        """
         async with self.uow:
             artifact_entity = self.artifact_mapper.to_entity(artifact_dto)
             await self.uow.repository.save(artifact_entity)

@@ -11,9 +11,25 @@ class SerializationMapperProtocol(Protocol):
     """
 
     def to_dict(self, dto: ArtifactDTO) -> dict:
-        """Convert Application DTO to dict for serialization (e.g., caching)."""
+        """
+        Converts an Application DTO to a dictionary for serialization.
+
+        Args:
+            dto: The ArtifactDTO to convert.
+
+        Returns:
+            A dictionary representation of the DTO.
+        """
         ...
 
     def from_dict(self, data: dict) -> ArtifactDTO:
-        """Convert dict from deserialization to Application DTO."""
+        """
+        Converts a dictionary from deserialization back to an Application DTO.
+
+        Args:
+            data: The dictionary to convert.
+
+        Returns:
+            An ArtifactDTO object.
+        """
         ...

@@ -16,6 +16,11 @@ from {{cookiecutter.project_slug}}.infrastructures.mappers.artifact import Infra
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class KafkaPublisher(MessageBrokerPublisherProtocol):
+    """
+    Kafka implementation of the MessageBrokerPublisherProtocol.
+    Publishes artifact admission notifications to a Kafka topic.
+    """
+
     broker: KafkaBroker
     topic: str = field(default="new_artifacts")
     mapper: InfrastructureArtifactMapper
@@ -23,6 +28,15 @@ class KafkaPublisher(MessageBrokerPublisherProtocol):
     async def publish_new_artifact(
         self, artifact: ArtifactAdmissionNotificationDTO
     ) -> None:
+        """
+        Publishes a new artifact admission notification to Kafka.
+
+        Args:
+            artifact: The ArtifactAdmissionNotificationDTO to publish.
+
+        Raises:
+            Exception: If publishing the message fails.
+        """
         try:
             pydantic_artifact = self.mapper.to_admission_notification_pydantic(artifact)
             await self.broker.publish(

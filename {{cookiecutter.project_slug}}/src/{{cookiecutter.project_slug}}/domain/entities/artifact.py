@@ -26,10 +26,14 @@ class ArtifactEntity:
     description: str | None = None
 
     def __post_init__(self) -> None:
-        """Validate business invariants.
+        """
+        Validates business invariants of the ArtifactEntity.
 
         Domain entities must protect their invariants and ensure
         that invalid state cannot exist in the domain model.
+
+        Raises:
+            DomainValidationError: If any business invariant is violated.
         """
         if self.acquisition_date > datetime.now(UTC):
             raise DomainValidationError("Acquisition date cannot be in the future")

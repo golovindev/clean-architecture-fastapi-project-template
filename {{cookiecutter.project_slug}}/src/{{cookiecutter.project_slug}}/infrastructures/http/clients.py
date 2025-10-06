@@ -27,6 +27,9 @@ logger = structlog.get_logger(__name__)
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ExternalMuseumAPIClient(ExternalMuseumAPIProtocol):
+    """
+    Client for interacting with an external museum API to fetch artifact data.
+    """
     base_url: str
     client: httpx.AsyncClient
     mapper: InfrastructureArtifactMapper
@@ -38,6 +41,22 @@ class ExternalMuseumAPIClient(ExternalMuseumAPIProtocol):
         wait_jitter=1.0,
     )
     async def fetch_artifact(self, inventory_id: str | UUID) -> ArtifactDTO:
+        """
+        Fetches an artifact from the external museum API.
+
+        Args:
+            inventory_id: The ID of the artifact to fetch.
+
+        Returns:
+            An ArtifactDTO object if found.
+
+        Raises:
+            ArtifactNotFoundError: If the artifact is not found (404).
+            httpx.HTTPStatusError: For other HTTP errors.
+            httpx.RequestError: For network-related errors.
+            ValueError: If data validation fails.
+            Exception: For any other unexpected errors.
+        """
         inventory_id_str = (
             str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
         )
@@ -86,6 +105,9 @@ class ExternalMuseumAPIClient(ExternalMuseumAPIProtocol):
 @final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class PublicCatalogAPIClient(PublicCatalogAPIProtocol):
+    """
+    Client for interacting with a public catalog API to publish artifact data.
+    """
     base_url: str
     client: httpx.AsyncClient
     mapper: InfrastructureArtifactMapper
@@ -97,6 +119,21 @@ class PublicCatalogAPIClient(PublicCatalogAPIProtocol):
         wait_jitter=1.0,
     )
     async def publish_artifact(self, artifact: ArtifactCatalogPublicationDTO) -> str:
+        """
+        Publishes an artifact to the public catalog API.
+
+        Args:
+            artifact: The ArtifactCatalogPublicationDTO to publish.
+
+        Returns:
+            A string representing the public ID of the published artifact.
+
+        Raises:
+            httpx.HTTPStatusError: For HTTP errors during publication.
+            httpx.RequestError: For network-related errors.
+            ValueError: If the response data is missing the 'public_id'.
+            Exception: For any other unexpected errors.
+        """
         pydantic_artifact = self.mapper.to_catalog_publication_pydantic(artifact)
 
         url = f"{self.base_url}/items"

@@ -5,10 +5,38 @@ from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactCata
 
 
 class ExternalMuseumAPIProtocol(Protocol):
-    async def fetch_artifact(self, inventory_id: str | UUID) -> ArtifactDTO: ...
+    """
+    Protocol for interacting with an external museum API.
+    """
+
+    async def fetch_artifact(self, inventory_id: str | UUID) -> ArtifactDTO:
+        """
+        Fetches an artifact from the external museum API.
+
+        Args:
+            inventory_id: The ID of the artifact to fetch.
+
+        Returns:
+            An ArtifactDTO object.
+        """
+        ...
 
 
 class PublicCatalogAPIProtocol(Protocol):
+    """
+    Protocol for interacting with a public catalog API.
+    """
+
     async def publish_artifact(
         self, artifact: ArtifactCatalogPublicationDTO
-    ) -> str: ...
+    ) -> str:
+        """
+        Publishes an artifact to the public catalog API.
+
+        Args:
+            artifact: The ArtifactCatalogPublicationDTO to publish.
+
+        Returns:
+            A string representing the publication status or ID.
+        """
+        ...

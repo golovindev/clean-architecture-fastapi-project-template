@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class MaterialPydanticDTO(BaseModel):
+    """Pydantic DTO for Material, used in infrastructure layer for external communication."""
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",
@@ -24,6 +25,7 @@ class MaterialPydanticDTO(BaseModel):
 
 
 class EraPydanticDTO(BaseModel):
+    """Pydantic DTO for Era, used in infrastructure layer for external communication."""
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",
@@ -41,6 +43,7 @@ class EraPydanticDTO(BaseModel):
 
 
 class ArtifactPydanticDTO(BaseModel):
+    """Pydantic DTO for Artifact, used in infrastructure layer for external communication."""
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",
@@ -73,6 +76,7 @@ class ArtifactPydanticDTO(BaseModel):
 
 
 class ArtifactAdmissionNotificationPydanticDTO(BaseModel):
+    """Pydantic DTO for Artifact Admission Notification, used for message broker communication."""
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",
@@ -85,6 +89,7 @@ class ArtifactAdmissionNotificationPydanticDTO(BaseModel):
 
 
 class ArtifactCatalogPublicationPydanticDTO(BaseModel):
+    """Pydantic DTO for Artifact Catalog Publication, used for external catalog API communication."""
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",

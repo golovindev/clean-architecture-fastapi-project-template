@@ -5,8 +5,30 @@ from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntit
 
 
 class ArtifactRepositoryProtocol(Protocol):
+    """
+    Protocol for an artifact repository.
+    Defines methods for retrieving and saving artifact entities.
+    """
+
     async def get_by_inventory_id(
         self, inventory_id: str | UUID
-    ) -> ArtifactEntity | None: ...
+    ) -> ArtifactEntity | None:
+        """
+        Retrieves an artifact by its inventory ID.
 
-    async def save(self, artifact: ArtifactEntity) -> None: ...
+        Args:
+            inventory_id: The unique identifier of the artifact.
+
+        Returns:
+            The ArtifactEntity if found, otherwise None.
+        """
+        ...
+
+    async def save(self, artifact: ArtifactEntity) -> None:
+        """
+        Saves a new artifact or updates an existing one.
+
+        Args:
+            artifact: The ArtifactEntity to save.
+        """
+        ...

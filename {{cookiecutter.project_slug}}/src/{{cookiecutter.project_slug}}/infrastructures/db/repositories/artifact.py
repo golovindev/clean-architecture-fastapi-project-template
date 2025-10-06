@@ -31,16 +31,17 @@ class ArtifactRepositorySQLAlchemy(ArtifactRepositoryProtocol):
     async def get_by_inventory_id(
         self, inventory_id: str | UUID
     ) -> ArtifactEntity | None:
-        """Retrieve an artifact by its inventory ID.
+        """
+        Retrieves an artifact by its inventory ID from the database.
 
         Args:
-            inventory_id: Unique identifier of the artifact.
+            inventory_id: The unique identifier of the artifact.
 
         Returns:
-            Domain entity if found, None otherwise.
+            The ArtifactEntity if found, otherwise None.
 
         Raises:
-            RepositorySaveError: If database operation fails.
+            RepositorySaveError: If a database error occurs during retrieval.
         """
         try:
             stmt = select(ArtifactModel).where(
@@ -57,14 +58,15 @@ class ArtifactRepositorySQLAlchemy(ArtifactRepositoryProtocol):
             ) from e
 
     async def save(self, artifact: ArtifactEntity) -> None:
-        """Save or update an artifact in the database.
+        """
+        Saves a new artifact or updates an existing one in the database.
 
         Args:
-            artifact: Domain entity to persist.
+            artifact: The ArtifactEntity to persist.
 
         Raises:
-            RepositoryConflictError: If there's a constraint violation.
-            RepositorySaveError: If database operation fails.
+            RepositoryConflictError: If a unique constraint is violated during save.
+            RepositorySaveError: If a database error occurs during save.
         """
         try:
             stmt = select(ArtifactModel).where(

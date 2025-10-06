@@ -16,10 +16,23 @@ logger = structlog.get_logger(__name__)
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class PublishArtifactToCatalogUseCase:
+    """
+    Use case for publishing an artifact to a public catalog.
+    """
+
     catalog_api_client: PublicCatalogAPIProtocol
     artifact_mapper: DtoEntityMapperProtocol
 
     async def execute(self, artifact_dto: ArtifactDTO) -> None:
+        """
+        Executes the use case to publish an artifact to the public catalog.
+
+        Args:
+            artifact_dto: The ArtifactDTO to publish.
+
+        Raises:
+            FailedPublishArtifactInCatalogException: If publishing to the catalog fails.
+        """
         try:
             publication_dto = self.artifact_mapper.to_publication_dto(artifact_dto)
             public_id: str = await self.catalog_api_client.publish_artifact(

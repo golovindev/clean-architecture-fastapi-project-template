@@ -19,9 +19,26 @@ logger = structlog.get_logger(__name__)
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class FetchArtifactFromMuseumAPIUseCase:
+    """
+    Use case for fetching an artifact from an external museum API.
+    """
+
     museum_api_client: ExternalMuseumAPIProtocol
 
     async def execute(self, inventory_id: str | UUID) -> ArtifactDTO:
+        """
+        Executes the use case to fetch an artifact.
+
+        Args:
+            inventory_id: The ID of the artifact to fetch.
+
+        Returns:
+            An ArtifactDTO representing the fetched artifact.
+
+        Raises:
+            ArtifactNotFoundError: If the artifact is not found in the external API.
+            FailedFetchArtifactMuseumAPIException: If fetching the artifact fails due to other reasons.
+        """
         inventory_id_str = (
             str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
         )

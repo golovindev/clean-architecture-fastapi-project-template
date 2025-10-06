@@ -32,6 +32,9 @@ class InfrastructureArtifactMapper(PydanticMapperProtocol, SerializationMapperPr
     """
 
     def to_pydantic_dto(self, dto: ArtifactDTO) -> ArtifactPydanticDTO:
+        """
+        Converts an Application ArtifactDTO to an Infrastructure ArtifactPydanticDTO.
+        """
         return ArtifactPydanticDTO(
             inventory_id=dto.inventory_id,
             created_at=dto.created_at,
@@ -44,6 +47,9 @@ class InfrastructureArtifactMapper(PydanticMapperProtocol, SerializationMapperPr
         )
 
     def from_pydantic_dto(self, pydantic_dto: ArtifactPydanticDTO) -> ArtifactDTO:
+        """
+        Converts an Infrastructure ArtifactPydanticDTO to an Application ArtifactDTO.
+        """
         return ArtifactDTO(
             inventory_id=pydantic_dto.inventory_id,
             created_at=pydantic_dto.created_at,
@@ -58,6 +64,9 @@ class InfrastructureArtifactMapper(PydanticMapperProtocol, SerializationMapperPr
     def to_admission_notification_pydantic(
         self, dto: ArtifactAdmissionNotificationDTO
     ) -> ArtifactAdmissionNotificationPydanticDTO:
+        """
+        Converts an ArtifactAdmissionNotificationDTO to an ArtifactAdmissionNotificationPydanticDTO.
+        """
         return ArtifactAdmissionNotificationPydanticDTO(
             inventory_id=dto.inventory_id,
             name=dto.name,
@@ -68,6 +77,9 @@ class InfrastructureArtifactMapper(PydanticMapperProtocol, SerializationMapperPr
     def to_catalog_publication_pydantic(
         self, dto: ArtifactCatalogPublicationDTO
     ) -> ArtifactCatalogPublicationPydanticDTO:
+        """
+        Converts an ArtifactCatalogPublicationDTO to an ArtifactCatalogPublicationPydanticDTO.
+        """
         return ArtifactCatalogPublicationPydanticDTO(
             inventory_id=dto.inventory_id,
             name=dto.name,
@@ -77,7 +89,9 @@ class InfrastructureArtifactMapper(PydanticMapperProtocol, SerializationMapperPr
         )
 
     def to_dict(self, dto: ArtifactDTO) -> dict:
-        """Convert Application DTO to dict for JSON serialization (e.g., caching)."""
+        """
+        Converts an Application ArtifactDTO to a dictionary for JSON serialization (e.g., caching).
+        """
         return {
             "inventory_id": str(dto.inventory_id),
             "created_at": dto.created_at.isoformat(),
@@ -90,7 +104,9 @@ class InfrastructureArtifactMapper(PydanticMapperProtocol, SerializationMapperPr
         }
 
     def from_dict(self, data: dict) -> ArtifactDTO:
-        """Convert dict from JSON deserialization to Application DTO."""
+        """
+        Converts a dictionary from JSON deserialization to an Application ArtifactDTO.
+        """
         return ArtifactDTO(
             inventory_id=UUID(data["inventory_id"]),
             created_at=datetime.fromisoformat(data["created_at"]),

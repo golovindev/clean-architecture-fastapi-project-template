@@ -36,6 +36,11 @@ logger = structlog.get_logger(__name__)
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ProcessArtifactUseCase:
+    """
+    Use case for processing an artifact, including fetching from cache, repository,
+    or external API, saving, and publishing.
+    """
+
     get_artifact_from_cache_use_case: GetArtifactFromCacheUseCase
     get_artifact_from_repo_use_case: GetArtifactFromRepoUseCase
     fetch_artifact_from_museum_api_use_case: FetchArtifactFromMuseumAPIUseCase
@@ -45,6 +50,15 @@ class ProcessArtifactUseCase:
     publish_artifact_to_catalog_use_case: PublishArtifactToCatalogUseCase
 
     async def execute(self, inventory_id: str | UUID) -> ArtifactDTO:
+        """
+        Executes the artifact processing flow.
+
+        Args:
+            inventory_id: The ID of the artifact to process.
+
+        Returns:
+            An ArtifactDTO representing the processed artifact.
+        """
         inventory_id_str = (
             str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
         )

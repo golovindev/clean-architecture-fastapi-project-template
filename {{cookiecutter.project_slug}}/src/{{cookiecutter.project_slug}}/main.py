@@ -18,12 +18,27 @@ logger = structlog.get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    """
+    Asynchronous context manager for managing the lifespan of the FastAPI application.
+
+    Args:
+        _: The FastAPI application instance.
+
+    Yields:
+        None
+    """
     logger.info("Starting application...")
     yield
     logger.info("Shutting down application...")
 
 
 def create_app() -> FastAPI:
+    """
+    Creates and configures the FastAPI application.
+
+    Returns:
+        FastAPI: The configured FastAPI application instance.
+    """
     app = FastAPI(
         title="{{ cookiecutter.api_title }}",
         version="{{ cookiecutter.api_version }}",

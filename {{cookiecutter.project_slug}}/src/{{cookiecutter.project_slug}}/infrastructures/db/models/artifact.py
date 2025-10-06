@@ -10,6 +10,11 @@ mapper_registry = registry()
 
 @mapper_registry.mapped
 class ArtifactModel:
+    """
+    SQLAlchemy model for storing artifact data.
+
+    Maps to the 'artifacts' table in the database.
+    """
     __tablename__ = "artifacts"
     __table_args__ = (
         Index("ix_artifacts_name", "name"),
@@ -28,6 +33,19 @@ class ArtifactModel:
             material: str,
             description: str | None = None,
     ) -> None:
+        """
+        Initializes a new ArtifactModel instance.
+
+        Args:
+            inventory_id: Unique identifier for the artifact.
+            created_at: Timestamp when the artifact record was created.
+            acquisition_date: Date when the artifact was acquired.
+            name: Name of the artifact.
+            department: Department where the artifact is located.
+            era: Historical era of the artifact.
+            material: Primary material of the artifact.
+            description: Optional description of the artifact.
+        """
         self.inventory_id = inventory_id
         self.created_at = created_at
         self.acquisition_date = acquisition_date
@@ -58,6 +76,9 @@ class ArtifactModel:
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     def __repr__(self) -> str:
+        """
+        Returns a string representation of the ArtifactModel.
+        """
         return (
             f"<ArtifactModel(inventory_id={self.inventory_id!s}, "
             f"name={self.name!r}, department={self.department!r})>"

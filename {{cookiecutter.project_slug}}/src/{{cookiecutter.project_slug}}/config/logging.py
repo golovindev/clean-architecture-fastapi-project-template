@@ -5,6 +5,12 @@ import structlog
 
 
 def setup_logging(level: str = "INFO") -> None:
+    """
+    Sets up structlog and standard library logging.
+
+    Args:
+        level: The logging level (e.g., "INFO", "DEBUG").
+    """
     structlog.configure(
         processors=[
             structlog.stdlib.filter_by_level,

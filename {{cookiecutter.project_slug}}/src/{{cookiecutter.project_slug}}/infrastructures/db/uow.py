@@ -24,17 +24,31 @@ class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
     repository: ArtifactRepositoryProtocol
 
     async def __aenter__(self) -> "UnitOfWorkSQLAlchemy":
+        """
+        Enters the asynchronous context manager.
+        Returns this UOW instance.
+        """
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        """
+        Exits the asynchronous context manager.
+        Commits changes if no exception occurred, otherwise rolls back.
+        """
         if exc_type is not None:
             await self.rollback()
         else:
             await self.commit()
 
     async def commit(self) -> None:
+        """
+        Commits the current transaction to the database.
+        """
         await self.session.commit()
 
     async def rollback(self) -> None:
+        """
+        Rolls back the current transaction in the database.
+        """
         logger.debug("Rolling back transaction")
         await self.session.rollback()
