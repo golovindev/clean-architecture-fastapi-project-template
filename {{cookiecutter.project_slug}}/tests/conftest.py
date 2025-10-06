@@ -2,10 +2,10 @@ from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
-from uuid import uuid4
 
 from dishka import AsyncContainer, make_async_container
 from fastapi.testclient import TestClient
+from polyfactory.factories import ModelFactory
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -27,13 +27,70 @@ from {{cookiecutter.project_slug}}.application.interfaces.repositories import Ar
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
 from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import GetArtifactUseCase
 from {{cookiecutter.project_slug}}.config.ioc.di import get_providers
-from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
-from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
-from {{cookiecutter.project_slug}}.domain.value_objects.material import Material
+from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity, Material, Era
 from {{cookiecutter.project_slug}}.main import create_app
 from tests.test_infrastructure.test_db.models.test_artifact_model import (
     test_mapper_registry,
 )
+
+
+_faker = Faker()
+
+
+class MaterialDTOFactory(ModelFactory[MaterialDTO]):
+    value = PostProcessedField(
+        lambda: ModelFactory.__random__.choice([
+            "ceramic", "metal", "stone", "glass", "bone", "wood", "textile", "other"
+        ])
+    )
+
+
+class EraDTOFactory(ModelFactory[EraDTO]):
+    value = PostProcessedField(
+        lambda: ModelFactory.__random__.choice([
+            "paleolithic", "neolithic", "bronze_age", "iron_age", "antiquity",
+            "middle_ages", "modern"
+        ])
+    )
+
+
+class ArtifactDTOFactory(ModelFactory[ArtifactDTO]):
+    inventory_id = PostProcessedField(lambda: _faker.uuid4())
+    acquisition_date = PostProcessedField(lambda: _faker.date_time_this_century(tzinfo=UTC))
+    name = PostProcessedField(lambda: _faker.word())
+    department = PostProcessedField(lambda: _faker.word())
+    era = ModelFactory.create_factory(EraDTOFactory)
+    material = ModelFactory.create_factory(MaterialDTOFactory)
+    description = PostProcessedField(lambda: _faker.text())
+    created_at = PostProcessedField(lambda: _faker.date_time_this_century(tzinfo=UTC))
+
+
+class MaterialFactory(ModelFactory[Material]):
+    value = PostProcessedField(
+        lambda: ModelFactory.__random__.choice([
+            "ceramic", "metal", "stone", "glass", "bone", "wood", "textile", "other"
+        ])
+    )
+
+
+class EraFactory(ModelFactory[Era]):
+    value = PostProcessedField(
+        lambda: ModelFactory.__random__.choice([
+            "paleolithic", "neolithic", "bronze_age", "iron_age", "antiquity",
+            "middle_ages", "modern"
+        ])
+    )
+
+
+class ArtifactEntityFactory(ModelFactory[ArtifactEntity]):
+    inventory_id = PostProcessedField(lambda: _faker.uuid4())
+    created_at = PostProcessedField(lambda: _faker.date_time_this_century(tzinfo=UTC))
+    acquisition_date = PostProcessedField(lambda: _faker.date_time_this_century(tzinfo=UTC))
+    name = PostProcessedField(lambda: _faker.word())
+    department = PostProcessedField(lambda: _faker.word())
+    era = ModelFactory.create_factory(EraFactory)
+    material = ModelFactory.create_factory(MaterialFactory)
+    description = PostProcessedField(lambda: _faker.text())
 
 
 @pytest.fixture(scope="session")
@@ -78,29 +135,12 @@ def client() -> TestClient:
 
 @pytest.fixture
 def sample_artifact_dto() -> ArtifactDTO:
-    return ArtifactDTO(
-        inventory_id=uuid4(),
-        created_at=datetime.now(UTC),
-        acquisition_date=datetime(2023, 1, 1, tzinfo=UTC),
-        name="Ancient Vase",
-        department="Archaeology",
-        era=EraDTO(value="antiquity"),
-        material=MaterialDTO(value="ceramic"),
-        description="A beautiful ancient vase",
-    )
+    return ArtifactDTOFactory.build()
 
 
 @pytest.fixture
 def sample_artifact_entity() -> ArtifactEntity:
-    return ArtifactEntity(
-        inventory_id=uuid4(),
-        acquisition_date=datetime(2023, 1, 1, tzinfo=UTC),
-        name="Ancient Vase",
-        department="Archaeology",
-        era=Era(value="antiquity"),
-        material=Material(value="ceramic"),
-        description="A beautiful ancient vase",
-    )
+    return ArtifactEntityFactory.build()
 
 
 @pytest.fixture
@@ -177,19 +217,19 @@ def get_artifact_use_case(
 @pytest.fixture
 def sample_notification_dto() -> ArtifactAdmissionNotificationDTO:
     return ArtifactAdmissionNotificationDTO(
-        inventory_id=uuid4(),
-        name="Ancient Vase",
-        acquisition_date=datetime(2023, 1, 1, tzinfo=UTC),
-        department="Archaeology",
+        inventory_id=_faker.uuid4(),
+        name=_faker.word(),
+        acquisition_date=_faker.date_time_this_century(tzinfo=UTC),
+        department=_faker.word(),
     )
 
 
 @pytest.fixture
 def sample_publication_dto() -> ArtifactCatalogPublicationDTO:
     return ArtifactCatalogPublicationDTO(
-        inventory_id=uuid4(),
-        name="Ancient Vase",
-        era=EraDTO(value="antiquity"),
-        material=MaterialDTO(value="ceramic"),
-        description="A beautiful ancient vase",
+        inventory_id=_faker.uuid4(),
+        name=_faker.word(),
+        era=EraDTOFactory.build(),
+        material=MaterialDTOFactory.build(),
+        description=_faker.text(),
     )
