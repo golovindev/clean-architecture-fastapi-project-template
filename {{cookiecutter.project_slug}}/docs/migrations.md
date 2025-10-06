@@ -10,7 +10,7 @@ This project uses Alembic to manage PostgreSQL database migrations.
 make migration msg="Description of changes"
 
 # Or directly with alembic
-uv run alembic revision --autogenerate -m "Description of changes"
+poetry run alembic revision --autogenerate -m "Description of changes"
 ```
 
 ### Applying migrations
@@ -19,7 +19,7 @@ uv run alembic revision --autogenerate -m "Description of changes"
 make migrate
 
 # Or directly
-uv run alembic upgrade head
+poetry run alembic upgrade head
 ```
 
 ### Rolling back migrations
@@ -28,7 +28,7 @@ uv run alembic upgrade head
 make migrate-downgrade
 
 # Or directly
-uv run alembic downgrade -1
+poetry run alembic downgrade -1
 ```
 
 ### Viewing migration history
@@ -46,7 +46,7 @@ make migrate-current
 make migrate-stamp
 
 # Show SQL for a migration (without applying it)
-uv run alembic upgrade head --sql
+poetry run alembic upgrade head --sql
 ```
 
 ## File structure

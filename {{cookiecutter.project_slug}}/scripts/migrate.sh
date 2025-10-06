@@ -6,6 +6,6 @@ sleep 10
 
 # Run migrations
 echo "Running database migrations..."
-uv run alembic upgrade head
+poetry run alembic upgrade head
 
 echo "Migrations completed successfully!"

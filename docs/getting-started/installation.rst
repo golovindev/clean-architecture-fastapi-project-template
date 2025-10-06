@@ -111,8 +111,8 @@ After creating your project:
 
 .. code-block:: bash
 
-   # Using uv (recommended)
-   uv sync --dev
+   # Using Poetry
+   poetry install
 
    # Or using pip
    pip install -e ".[dev]"
@@ -133,7 +133,7 @@ After creating your project:
 
    # Or locally
    make migrate
-   uv run python -m your_project_slug.main
+   poetry run python -m your_project_slug.main
 
 Next Steps
 ----------

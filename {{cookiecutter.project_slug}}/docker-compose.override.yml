@@ -12,7 +12,7 @@ x-dev-volumes: &dev-volumes
   - ./alembic.ini:/app/alembic.ini
 
 x-dev-command: &dev-command
-  command: ["uv", "run", "granian", "--target", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--workers", "1"]
+  command: ["poetry", "run", "granian", "--target", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--workers", "1"]
 
 x-dev-database-env: &dev-database-env
   POSTGRES_DB: antiques_dev

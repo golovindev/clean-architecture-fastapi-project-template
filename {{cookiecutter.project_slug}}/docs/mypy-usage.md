@@ -4,10 +4,10 @@
 
 ```bash
 # Install dev dependencies (including MyPy)
-uv sync --dev
+poetry install --no-root
 
 # Or install only MyPy
-uv add --dev mypy
+poetry add --group dev mypy
 ```
 
 ## Main commands
@@ -16,19 +16,19 @@ uv add --dev mypy
 
 ```bash
 # Check the entire project
-uv run mypy src/
+poetry run mypy src/
 
 # Check a specific file
-uv run mypy src/main.py
+poetry run mypy src/main.py
 
 # Check with detailed error codes
-uv run mypy src/ --show-error-codes
+poetry run mypy src/ --show-error-codes
 
 # Check with error context
-uv run mypy src/ --show-error-context
+poetry run mypy src/ --show-error-context
 
 # Check only specific modules
-uv run mypy src/application/ src/domain/
+poetry run mypy src/application/ src/domain/
 ```
 
 ### Using Makefile

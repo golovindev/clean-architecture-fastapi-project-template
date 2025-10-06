@@ -4,10 +4,10 @@
 
 ```bash
 # Install dev dependencies (including Ruff)
-uv sync --dev
+poetry install --no-root
 
 # Or install only Ruff
-uv add --dev ruff
+poetry add --group dev ruff
 ```
 
 ## Main commands
@@ -16,56 +16,56 @@ uv add --dev ruff
 
 ```bash
 # Lint the entire project
-uv run ruff check src/ tests/
+poetry run ruff check src/ tests/
 
 # Lint a specific file
-uv run ruff check src/main.py
+poetry run ruff check src/main.py
 
 # Lint with verbose output
-uv run ruff check src/ tests/ --verbose
+poetry run ruff check src/ tests/ --verbose
 
 # Lint only with specific rules
-uv run ruff check src/ --select E,F,W
+poetry run ruff check src/ --select E,F,W
 
 # Ignore specific rules
-uv run ruff check src/ --ignore E501,W503
+poetry run ruff check src/ --ignore E501,W503
 ```
 
 ### Automatic fixing
 
 ```bash
 # Fix all automatically fixable issues
-uv run ruff check --fix src/ tests/
+poetry run ruff check --fix src/ tests/
 
 # Fix only specific rules
-uv run ruff check --fix --select E,F src/
+poetry run ruff check --fix --select E,F src/
 
 # Show what would be fixed without actually fixing
-uv run ruff check --fix --diff src/
+poetry run ruff check --fix --diff src/
 ```
 
 ### Code formatting
 
 ```bash
 # Format the entire project
-uv run ruff format src/ tests/
+poetry run ruff format src/ tests/
 
 # Check formatting without making changes
-uv run ruff format --check src/ tests/
+poetry run ruff format --check src/ tests/
 
 # Show formatting diff
-uv run ruff format --diff src/
+poetry run ruff format --diff src/
 ```
 
 ### Full check
 
 ```bash
 # Check and fix all issues
-uv run ruff check --fix src/ tests/
-uv run ruff format src/ tests/
+poetry run ruff check --fix src/ tests/
+poetry run ruff format src/ tests/
 
 # Or with a single command (if configured in pyproject.toml)
-uv run ruff check --fix src/ tests/ && uv run ruff format src/ tests/
+poetry run ruff check --fix src/ tests/ && poetry run ruff format src/ tests/
 ```
 
 ## Using Makefile

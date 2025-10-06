@@ -15,7 +15,7 @@ Install production dependencies.
 
    make install
 
-Uses ``uv sync`` to install all production dependencies defined in ``pyproject.toml``.
+Uses ``poetry install --no-root --no-interaction --no-ansi`` to install all production dependencies defined in ``pyproject.toml``.
 
 install-dev
 ~~~~~~~~~~~

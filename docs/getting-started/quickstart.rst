@@ -100,7 +100,7 @@ Local Development
    make migrate
 
    # Start the application
-   uv run python -m todo_api.main
+   poetry run python -m todo_api.main
 
 Exploring the API
 -----------------

@@ -5,33 +5,33 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 install: ## Install production dependencies
-	uv sync
+	poetry install --no-root --sync
 
 install-dev: ## Install development dependencies
-	uv sync --dev
+	poetry install --no-root --sync
 
 lint: ## Run linting with ruff
-	uv run ruff check src/{{cookiecutter.project_slug}}/
+	poetry run ruff check src/{{cookiecutter.project_slug}}/
 
 lint-fix: ## Run linting with ruff and fix auto-fixable issues
-	uv run ruff check --fix src/{{cookiecutter.project_slug}}/
+	poetry run ruff check --fix src/{{cookiecutter.project_slug}}/
 
 format: ## Format code with ruff
-	uv run ruff format src/{{cookiecutter.project_slug}}/
+	poetry run ruff format src/{{cookiecutter.project_slug}}/
 
 type-check: ## Run type checking with mypy
-	uv run mypy src/{{cookiecutter.project_slug}}/
+	poetry run mypy src/{{cookiecutter.project_slug}}/
 
 check: ## Run all checks (lint + format check + type check)
-	uv run ruff check src/{{cookiecutter.project_slug}}/
-	uv run ruff format --check src/{{cookiecutter.project_slug}}/
-	uv run mypy src/{{cookiecutter.project_slug}}/
+	poetry run ruff check src/{{cookiecutter.project_slug}}/
+	poetry run ruff format --check src/{{cookiecutter.project_slug}}/
+	poetry run mypy src/{{cookiecutter.project_slug}}/
 
 test: ## Run tests
-	uv run pytest tests/ -v
+	poetry run pytest tests/ -v
 
 test-cov: ## Run tests with coverage
-	uv run pytest tests/ -v --cov=src/{{cookiecutter.project_slug}} --cov-report=html --cov-report=term
+	poetry run pytest tests/ -v --cov=src/{{cookiecutter.project_slug}} --cov-report=html --cov-report=term
 
 clean: ## Clean up cache and temporary files
 	find . -type d -name "__pycache__" -exec rm -rf {} +
@@ -48,22 +48,22 @@ dev-setup: install-dev ## Set up development environment
 
 # Database migration commands
 migration: ## Create a new migration file
-	uv run alembic revision --autogenerate -m "$(msg)"
+	poetry run alembic revision --autogenerate -m "$(msg)"
 
 migrate: ## Apply all pending migrations
-	uv run alembic upgrade head
+	poetry run alembic upgrade head
 
 migrate-downgrade: ## Downgrade to previous migration
-	uv run alembic downgrade -1
+	poetry run alembic downgrade -1
 
 migrate-history: ## Show migration history
-	uv run alembic history
+	poetry run alembic history
 
 migrate-current: ## Show current migration
-	uv run alembic current
+	poetry run alembic current
 
 migrate-stamp: ## Stamp database with current migration (without applying)
-	uv run alembic stamp head
+	poetry run alembic stamp head
 
 # Docker commands
 docker-build: ## Build Docker image for production

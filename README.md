@@ -208,8 +208,8 @@ cp env.template .env
 ### 4. Install Dependencies
 
 ```bash
-# Using uv (recommended)
-uv sync
+# Using poetry (recommended)
+poetry install --no-root --sync
 
 # Or using pip
 pip install -e .
@@ -238,7 +238,7 @@ docker-compose up -d postgres redis mysql
 make migrate
 
 # Start the application
-uv run python -m src.main
+poetry run python -m src.main
 ```
 
 ## 📚 API Documentation

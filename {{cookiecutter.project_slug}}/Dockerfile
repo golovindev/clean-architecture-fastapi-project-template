@@ -8,8 +8,8 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    UV_CACHE_DIR=/opt/uv-cache \
-    UV_COMPILE_BYTECODE=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_NO_INTERACTION=1 \
     UV_LINK_MODE=copy
 
 # Install system dependencies
@@ -19,10 +19,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv package manager
-RUN pip install uv
+RUN pip install poetry
 
-# Create cache directory with proper permissions
-RUN mkdir -p /opt/uv-cache && chmod 777 /opt/uv-cache
+# Create virtual environment directory
+RUN poetry env use python3.12
 
 # Create non-root user
 RUN groupadd --gid 1000 appuser && \
@@ -37,13 +37,12 @@ FROM base AS deps
 WORKDIR /app
 
 # Copy dependency files and README (required by hatchling)
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml poetry.lock README.md ./
 
 # Install dependencies using uv
-RUN uv sync --frozen --no-dev
+RUN poetry install --no-root --no-dev --no-interaction --no-ansi
 
 # Clean up cache to avoid permission issues
-RUN rm -rf /opt/uv-cache/*
 
 # =============================================================================
 # Stage 3: Development dependencies (optional)
@@ -51,10 +50,9 @@ RUN rm -rf /opt/uv-cache/*
 FROM deps AS deps-dev
 
 # Install development dependencies
-RUN uv sync --frozen
+RUN poetry install --no-root --no-interaction --no-ansi
 
 # Clean up cache to avoid permission issues
-RUN rm -rf /opt/uv-cache/*
 
 # =============================================================================
 # Stage 4: Production image
@@ -77,7 +75,6 @@ RUN mkdir -p /app/logs /app/htmlcov && \
 USER appuser
 
 # Set runtime environment variables
-ENV UV_CACHE_DIR=/tmp/uv-cache
 
 # Expose port
 EXPOSE 8000
@@ -87,7 +84,7 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/api/docs || exit 1
 
 # Default command
-CMD ["uv", "run", "granian", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+CMD ["poetry", "run", "granian", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
 
 # =============================================================================
 # Stage 5: Development image
@@ -113,13 +110,12 @@ RUN mkdir -p /app/logs /app/htmlcov && \
 USER appuser
 
 # Set runtime environment variables
-ENV UV_CACHE_DIR=/tmp/uv-cache
 
 # Expose port
 EXPOSE 8000
 
 # Default command for development
-CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["poetry", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 # =============================================================================
 # Stage 6: Testing image
@@ -144,17 +140,14 @@ RUN mkdir -p /app/logs /app/htmlcov && \
 USER appuser
 
 # Set runtime environment variables
-ENV UV_CACHE_DIR=/tmp/uv-cache
 
 # Ensure dev dependencies are installed (including pytest-cov and pytest-asyncio)
-RUN uv sync --dev
+RUN poetry install --no-root --no-interaction --no-ansi
 
 # Install setuptools to provide distutils module for aioredis compatibility with Python 3.12
 ENV SETUPTOOLS_USE_DISTUTILS=stdlib
-RUN uv pip install setuptools
 
 # Explicitly install redis, pytest-cov, pytest-asyncio, and aiosqlite to ensure they're available
-RUN uv pip install pytest-cov pytest-asyncio aiosqlite
 
 # Default command for testing
-CMD ["uv", "run", "pytest", "tests/", "-v", "--cov=src", "--cov-report=html", "--cov-report=term"]
+CMD ["poetry", "run", "pytest", "tests/", "-v", "--cov=src", "--cov-report=html", "--cov-report=term"]

@@ -85,10 +85,10 @@ from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntit
 
 ```bash
 # Method 1: Module execution (recommended for development)
-uv run python -m {{cookiecutter.project_slug}}.main
+poetry run python -m {{cookiecutter.project_slug}}.main
 
 # Method 2: Entry point script (after installation)
-uv sync  # Install the package
+poetry install  # Install the package
 {{cookiecutter.project_slug}}  # Run using entry point
 
 # Method 3: Direct execution (if main.py has shebang)
@@ -217,7 +217,7 @@ This restructuring ensures the project follows modern Python packaging standards
 
 - Python {{ cookiecutter.python_version }}+
 {% if cookiecutter.add_docker == "y" %}- Docker and Docker Compose{% endif %}
-- uv (recommended) or pip
+- Poetry (recommended) or pip
 
 ### 🚀 Installation and Setup
 
@@ -229,8 +229,8 @@ cd {{ cookiecutter.project_slug }}
 
 #### 2. Install Dependencies
 ```bash
-# Recommended way with uv
-uv sync
+# Recommended way with Poetry
+poetry install
 
 # Alternative way with pip
 pip install -e .
@@ -261,7 +261,7 @@ make docker-up-dev
 make migrate
 
 # Start the application (new package structure)
-uv run python -m {{cookiecutter.project_slug}}.main
+poetry run python -m {{cookiecutter.project_slug}}.main
 
 # Alternative: run using the entry point script after installation
 {{cookiecutter.project_slug}}
@@ -468,7 +468,7 @@ Below is a detailed directory tree reflecting the architectural structure with t
 ├── Makefile                         # Makefile with commands
 ├── pyproject.toml                   # Project configuration and dependencies
 ├── README.md                        # Project documentation
-└── uv.lock                          # uv dependency lock file
+└── poetry.lock                      # Poetry dependency lock file
 ```
 
 ### 🎯 Domain Layer
