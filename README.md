@@ -11,11 +11,12 @@ A comprehensive cookiecutter template for creating modern FastAPI applications w
 - **Alembic**: Database migration management
 - **Docker**: Complete containerization with Docker Compose
 - **Caching System**: Optional caching support (Redis/KeyDB/Tarantool/Dragonfly)
-- **Message Broker**: Optional message broker support (Kafka/RabbitMQ/NATS)
+- **Message Broker**: Optional message broker support (Kafka/RabbitMQ/NATS) via [FastStream](https://github.com/ag2ai/faststream)
 - **Testing**: Comprehensive test suite with pytest
 - **Code Quality**: Ruff for linting, MyPy for type checking
 - **Pre-commit**: Git hooks for code quality
 - **Documentation**: Auto-generated API docs with Swagger/OpenAPI
+- **DI**: Powered by [dishka](https://github.com/reagento/dishka)
 
 ## 📚 Documentation
 
@@ -35,24 +36,6 @@ open _build/html/index.html  # macOS
 xdg-open _build/html/index.html  # Linux
 ```
 
-### Documentation Contents
-
-- **Getting Started**: Installation, quickstart, template variables
-- **User Guide**: Architecture, project structure
-- **Reference**: Makefile commands, environment variables, FAQ
-
-## 📦 Dependency Management
-
-The template uses **strict version pinning** for all dependencies to ensure reproducible builds and prevent breaking changes from automatic updates.
-
-### Dependency Structure
-
-- **Main Dependencies**: Production dependencies with exact versions (`==`)
-- **Dev Dependencies**: Development tools organized in `[dependency-groups]`:
-  - 🎨 **Linting & Formatting**: ruff, black, isort
-  - 🔍 **Type Checking**: mypy, types-* packages
-  - 🧪 **Testing**: pytest and extensions
-
 ### Installing Dependencies
 
 ```bash
@@ -65,13 +48,6 @@ pip install --dependency-group dev
 # Or install everything at once
 pip install -e ".[dev]"  # Alternative syntax
 ```
-
-### Benefits of Strict Versioning
-
-- ✅ **Reproducible builds** across all environments
-- ✅ **Prevents breaking changes** from automatic updates
-- ✅ **Stable development environment** for all team members
-- ⚠️ **Manual updates required** for security patches and bug fixes
 
 ## 📋 Prerequisites
 
@@ -402,17 +378,7 @@ Services included:
 - **Message Broker**: Message broker support (Kafka/Zookeeper, RabbitMQ, or NATS, optional)
 - **Application**: FastAPI application
 
-## 📝 Customization
-
-### Adding New Features
-
-1. **Domain**: Add entities/value objects in `src/domain/`
-2. **Use Cases**: Add use cases in `src/application/use_cases/`
-3. **Unit of Work**: Add transaction coordination in `src/application/uow/`
-4. **API**: Add controllers in `src/presentation/api/`
-5. **Infrastructure**: Add implementations in `src/infrastructures/`
-
-### Implementation Examples
+## 📝 Implementation Examples
 
 The template includes comprehensive implementation examples that demonstrate best practices:
 
@@ -494,20 +460,10 @@ dev = [
 - Update dependencies manually when needed
 - Test thoroughly after dependency updates
 
-### Customizing Docker
-
-Modify `docker-compose.yml` to:
-- Add new services
-- Change service configurations
-- Adjust networking and volumes
 
 ## 🤝 Contributing
 
 Want to contribute? Check out our [contribution guide](CONTRIBUTING.md) for guidelines.
-
-## 📄 License
-
-This template is available under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
