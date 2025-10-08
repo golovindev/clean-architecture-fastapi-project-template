@@ -1,5 +1,16 @@
 # Clean Architecture FastAPI Project Cookiecutter Template
 
+[![Python 3.10](https://img.shields.io/badge/Python-3.10-000000?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3100/)
+[![GitHub Stars](https://img.shields.io/github/stars/Peopl3s/clean-architecture-fastapi-project-template?style=for-the-badge&logo=github&logoColor=white&color=000000)](https://github.com/Peopl3s/clean-architecture-fastapi-project-template/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/Peopl3s/clean-architecture-fastapi-project-template?style=for-the-badge&color=000000)](https://github.com/Peopl3s/clean-architecture-fastapi-project-template/commits/main)
+[![License](https://img.shields.io/github/license/Peopl3s/clean-architecture-fastapi-project-template?style=for-the-badge&color=000000)](./LICENSE)
+
+![FastAPI](https://img.shields.io/badge/FastAPI-000000?style=for-the-badge&logo=fastapi&logoColor=white)
+![FastStream](https://img.shields.io/badge/FastStream-000000?style=for-the-badge&logo=faststream&logoColor=white)
+![Dishka](https://img.shields.io/badge/Dishka-000000?style=for-the-badge&logoColor=white)
+![Clean Architecture](https://img.shields.io/badge/Clean_Architecture-000000?style=for-the-badge&logo=python&logoColor=white)
+
+
 A comprehensive cookiecutter template for creating modern FastAPI applications with clean architecture, Docker support, and best practices included.
 
 ## 🚀 Features
