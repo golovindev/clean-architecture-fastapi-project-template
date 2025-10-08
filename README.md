@@ -1,4 +1,4 @@
-# :electric_plug: :jigsaw: Clean Architecture FastAPI Project Cookiecutter Template
+# :electric_plug: :jigsaw: Clean Architecture FastAPI Project Template
 
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-000000?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3100/)
 [![GitHub Stars](https://img.shields.io/github/stars/Peopl3s/clean-architecture-fastapi-project-template?style=for-the-badge&logo=github&logoColor=white&color=000000)](https://github.com/Peopl3s/clean-architecture-fastapi-project-template/stargazers)
