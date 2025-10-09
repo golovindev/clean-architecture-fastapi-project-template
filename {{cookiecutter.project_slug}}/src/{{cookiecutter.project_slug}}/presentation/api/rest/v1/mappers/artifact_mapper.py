@@ -3,9 +3,9 @@ from typing import final
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactDTO
 from {{cookiecutter.project_slug}}.presentation.api.rest.v1.schemas.responses import (
-    ArtifactResponse,
-    EraResponse,
-    MaterialResponse,
+    ArtifactResponseSchema,
+    EraResponseSchema,
+    MaterialResponseSchema,
 )
 
 
@@ -18,15 +18,15 @@ class ArtifactPresentationMapper:
     following Clean Architecture principles.
     """
 
-    def to_response(self, dto: ArtifactDTO) -> ArtifactResponse:
+    def to_response(self, dto: ArtifactDTO) -> ArtifactResponseSchema:
         """Convert Application DTO to API Response model."""
-        return ArtifactResponse(
+        return ArtifactResponseSchema(
             inventory_id=dto.inventory_id,
             created_at=dto.created_at,
             acquisition_date=dto.acquisition_date,
             name=dto.name,
             department=dto.department,
-            era=EraResponse(value=dto.era.value),
-            material=MaterialResponse(value=dto.material.value),
+            era=EraResponseSchema(value=dto.era.value),
+            material=MaterialResponseSchema(value=dto.material.value),
             description=dto.description,
         )

@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class MaterialResponse(BaseModel):
+class MaterialResponseSchema(BaseModel):
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",
@@ -12,7 +12,7 @@ class MaterialResponse(BaseModel):
     value: str
 
 
-class EraResponse(BaseModel):
+class EraResponseSchema(BaseModel):
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",
@@ -20,7 +20,7 @@ class EraResponse(BaseModel):
     value: str
 
 
-class ArtifactResponse(BaseModel):
+class ArtifactResponseSchema(BaseModel):
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",
@@ -39,8 +39,8 @@ class ArtifactResponse(BaseModel):
         ...,
         description="Department responsible for the artifact",
     )
-    era: EraResponse = Field(..., description="Historical era of the artifact")
-    material: MaterialResponse = Field(..., description="Material of the artifact")
+    era: EraResponseSchema = Field(..., description="Historical era of the artifact")
+    material: MaterialResponseSchema = Field(..., description="Material of the artifact")
     description: str | None = Field(
         None, description="Optional description of the artifact"
     )
