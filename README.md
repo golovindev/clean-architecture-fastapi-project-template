@@ -156,7 +156,15 @@ cookiecutter . --no-input \
 │   │   └── 📁 broker/               # Message broker implementations
 │   │   └── 📁 mappers/              # Infrastructure mappers
 │   └── 📁 config/                   # Configuration
-│       └── 📁 ioc/                  # Dependency injection
+│       ├── 📁 ioc/                  # Dependency injection
+│       ├── app.py                   # Core application settings
+│       ├── database.py              # Database configuration
+│       ├── redis.py                 # Redis cache configuration
+│       ├── external_apis.py         # External API settings
+│       ├── broker.py                # Message broker configuration
+│       ├── cors.py                  # CORS configuration
+│       ├── settings.py              # Main settings facade
+│       └── base.py                  # Backward compatibility wrapper
 ├── 📁 tests/                        # Test suite
 ├── 📁 alembic/                      # Database migrations
 ├── 📁 docs/                         # Documentation

@@ -569,7 +569,15 @@ Below is a detailed directory tree reflecting the architectural structure with t
 - **`ioc/` (Inversion of Control)**: Dependency container.
   - `di.py`: DI container setup and assembly (using the `dishka` library).
   - `providers.py`: Dependency providers that "tell" the container how to create class instances (e.g., which `ArtifactRepository` implementation to use).
-- **`base.py`**: Base settings and application configuration (reading `.env`, logging parameters, etc.).
+- **Configuration Modules**: Modular configuration system with separate settings for different domains:
+  - `app.py`: Core application settings (app name, environment, debug mode, etc.)
+  - `database.py`: Database configuration (PostgreSQL connection settings, URL generation)
+  - `redis.py`: Redis cache configuration (connection, TTL, prefixes)
+  - `external_apis.py`: External API settings (museum API, catalog API, timeouts)
+  - `broker.py`: Message broker configuration (Kafka/RabbitMQ settings, retry policies)
+  - `cors.py`: CORS configuration (allowed origins, methods, headers)
+  - `settings.py`: Main settings facade that combines all configuration modules
+  - `base.py`: Backward compatibility wrapper that re-exports the new Settings
 - **`logging.py`**: Logging system configuration.
 
 ### 🔄 Data Flow in Application (Example: GET /api/v1/artifacts/{id})
