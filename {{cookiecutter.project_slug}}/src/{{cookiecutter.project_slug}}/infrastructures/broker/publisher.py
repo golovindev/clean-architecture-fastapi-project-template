@@ -7,9 +7,6 @@ from faststream.kafka import KafkaBroker
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactAdmissionNotificationDTO
 from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
-from {{cookiecutter.project_slug}}.infrastructures.dtos.artifact import (
-    ArtifactAdmissionNotificationPydanticDTO,
-)
 from {{cookiecutter.project_slug}}.infrastructures.mappers.artifact import InfrastructureArtifactMapper
 
 
@@ -38,10 +35,10 @@ class KafkaPublisher(MessageBrokerPublisherProtocol):
             Exception: If publishing the message fails.
         """
         try:
-            pydantic_artifact = self.mapper.to_admission_notification_pydantic(artifact)
+            artifact_dict = self.mapper.to_admission_notification_dict(artifact)
             await self.broker.publish(
-                key=pydantic_artifact.inventory_id,
-                message=json.dumps(pydantic_artifact.model_dump(), ensure_ascii=False),
+                key=artifact_dict["inventory_id"],
+                message=json.dumps(artifact_dict, ensure_ascii=False),
                 topic=self.topic,
             )
         except Exception as e:

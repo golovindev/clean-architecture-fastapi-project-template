@@ -15,10 +15,6 @@ from {{cookiecutter.project_slug}}.application.interfaces.http_clients import (
     ExternalMuseumAPIProtocol,
     PublicCatalogAPIProtocol,
 )
-from {{cookiecutter.project_slug}}.infrastructures.dtos.artifact import (
-    ArtifactCatalogPublicationPydanticDTO,
-    ArtifactPydanticDTO,
-)
 from {{cookiecutter.project_slug}}.infrastructures.mappers.artifact import InfrastructureArtifactMapper
 
 logger = structlog.get_logger(__name__)
@@ -74,10 +70,9 @@ class ExternalMuseumAPIClient(ExternalMuseumAPIProtocol):
             response.raise_for_status()
             data = response.json()
 
-            pydantic_artifact = ArtifactPydanticDTO.model_validate(data)
-            logger.debug("Successfully fetched artifact", artifact=pydantic_artifact)
+            logger.debug("Successfully fetched artifact", data=data)
 
-            return self.mapper.from_pydantic_dto(pydantic_artifact)
+            return self.mapper.from_dict(data)
 
         except (httpx.HTTPStatusError, httpx.RequestError) as e:
             logger.exception(
@@ -134,10 +129,9 @@ class PublicCatalogAPIClient(PublicCatalogAPIProtocol):
             ValueError: If the response data is missing the 'public_id'.
             Exception: For any other unexpected errors.
         """
-        pydantic_artifact = self.mapper.to_catalog_publication_pydantic(artifact)
+        payload = self.mapper.to_catalog_publication_dict(artifact)
 
         url = f"{self.base_url}/items"
-        payload = pydantic_artifact.model_dump()
         logger.debug("Publishing artifact to URL", url=url, payload=payload)
 
         try:

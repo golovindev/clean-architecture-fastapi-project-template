@@ -154,7 +154,7 @@ cookiecutter . --no-input \
 │   │   ├── 📁 db/                   # Database implementations
 │   │   ├── 📁 cache/                # Cache implementations
 │   │   └── 📁 broker/               # Message broker implementations
-│   │   └── 📁 dtos/                 # DTO c Pydantic
+│   │   └── 📁 mappers/              # Infrastructure mappers
 │   └── 📁 config/                   # Configuration
 │       └── 📁 ioc/                  # Dependency injection
 ├── 📁 tests/                        # Test suite
@@ -315,10 +315,9 @@ The template follows **Clean Architecture** principles with clear separation of 
 ### Infrastructure Layer
 - **Repositories**: Data access implementations
 - **Cache**: Caching service implementations
-- **Message Brokers**: External service integrations using Pydantic models
-- **HTTP Clients**: External API integrations using Pydantic models
-- **Infrastructure DTOs**: Pydantic models for external communication (no business validation)
-- **Infrastructure Mappers**: Convert between application DTOs and infrastructure Pydantic models, handle JSON serialization
+- **Message Brokers**: External service integrations using dictionary serialization
+- **HTTP Clients**: External API integrations using dictionary serialization
+- **Infrastructure Mappers**: Convert between application DTOs and dictionaries for external API communication, handle JSON serialization
 
 ## 🔧 Configuration
 
@@ -406,10 +405,9 @@ The template includes comprehensive implementation examples that demonstrate bes
 #### Infrastructure Layer Examples
 - **Repository Implementation**: `src/infrastructures/db/repositories/artifact.py` - Shows how to implement repository pattern with SQLAlchemy
 - **Cache Implementation**: `src/infrastructures/cache/redis_client.py` - Redis caching implementation with error handling
-- **HTTP Clients**: `src/infrastructures/http/clients.py` - External API integration examples using Pydantic models for external communication
+- **HTTP Clients**: `src/infrastructures/http/clients.py` - External API integration examples using dictionary serialization
 - **Database Models**: `src/infrastructures/db/models/artifact.py` - SQLAlchemy model examples
-- **Infrastructure DTOs**: `src/infrastructures/dtos/artifact.py` - Pydantic models for external API communication (no business validation)
-- **Infrastructure Mappers**: `src/infrastructures/mappers/artifact.py` - Mappers for converting between application DTOs and infrastructure Pydantic models, plus JSON serialization/deserialization
+- **Infrastructure Mappers**: `src/infrastructures/mappers/artifact.py` - Mappers for converting between application DTOs and dictionaries for external API communication, plus JSON serialization/deserialization
 
 #### Presentation Layer Examples
 - **REST Controllers**: `src/presentation/api/rest/v1/controllers/artifact_controller.py` - API endpoint implementation with proper dependency injection

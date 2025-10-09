@@ -406,6 +406,8 @@ Below is a detailed directory tree reflecting the architectural structure with t
 │       │   │   └── __init__.py
 │       │   ├── 📁 http/            # HTTP clients
 │       │   │   └── clients.py      # HTTP client implementations
+│       │   ├── 📁 mappers/         # Infrastructure mappers
+│       │   │   └── artifact.py     # Mapper for DTO conversion
 │       │   └── __init__.py
 │       │
 │       ├── 📁 config/             # Configuration
@@ -549,13 +551,11 @@ Below is a detailed directory tree reflecting the architectural structure with t
 - **`cache/`**: Caching implementation.
   - `redis_client.py`: Specific caching implementation using Redis, implementing the `application/interfaces/cache.py` interface.
 - **`http/`**: HTTP clients for interacting with external services.
-  - `clients.py`: Client implementations implementing `application/interfaces/http_clients.py` using Pydantic models for external communication.
+  - `clients.py`: Client implementations implementing `application/interfaces/http_clients.py` using dictionary serialization for external communication.
 - **`broker/`**: Working with message brokers (RabbitMQ, Kafka, etc.).
-  - `publisher.py`: Message publishing implementation using Pydantic models for serialization.
-- **`dtos/`**: Infrastructure-specific Pydantic models for external communication.
-  - `artifact.py`: Pydantic models for external API communication and serialization.
-- **`mappers/`**: Infrastructure mappers for converting between application DTOs and Pydantic models.
-  - `artifact.py`: Mapper for DTO ↔ Pydantic conversion.
+  - `publisher.py`: Message publishing implementation using dictionary serialization.
+- **`mappers/`**: Infrastructure mappers for converting between application DTOs and dictionaries for external API communication.
+  - `artifact.py`: Mapper for DTO ↔ dictionary conversion and JSON serialization.
 
 **Principles**:
 - **Implementation**: Contains "dirty" work for interacting with external systems.
