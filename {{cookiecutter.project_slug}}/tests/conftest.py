@@ -4,8 +4,10 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 from dishka import AsyncContainer, make_async_container
+from faker import Faker
 from fastapi.testclient import TestClient
 from polyfactory.factories import ModelFactory
+from polyfactory.field_meta import PostProcessedField
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -25,7 +27,7 @@ from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEnti
 from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
-from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import ProcessArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.process_artifact import ProcessArtifactUseCase
 from {{cookiecutter.project_slug}}.config.ioc.di import get_providers
 from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity, Material, Era
 from {{cookiecutter.project_slug}}.main import create_app

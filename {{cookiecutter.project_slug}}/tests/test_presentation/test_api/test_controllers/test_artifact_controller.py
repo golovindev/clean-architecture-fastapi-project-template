@@ -11,7 +11,7 @@ from {{cookiecutter.project_slug}}.application.exceptions import (
     FailedPublishArtifactInCatalogException,
     FailedPublishArtifactMessageBrokerException,
 )
-from {{cookiecutter.project_slug}}.application.use_cases.get_artifact import ProcessArtifactUseCase
+from {{cookiecutter.project_slug}}.application.use_cases.process_artifact import ProcessArtifactUseCase
 
 
 class TestArtifactController:
