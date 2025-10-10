@@ -327,6 +327,139 @@ The template follows **Clean Architecture** principles with clear separation of 
 - **HTTP Clients**: External API integrations using dictionary serialization
 - **Infrastructure Mappers**: Convert between application DTOs and dictionaries for external API communication, handle JSON serialization
 
+## 🔄 Alternative Naming Conventions in Clean Architecture
+
+### 📋 Overview
+
+Clean Architecture, while conceptually consistent, has evolved various naming conventions across different teams, organizations, and architectural schools. This section helps developers understand the terminology they might encounter when working with different codebases or reading architectural literature.
+
+### 🏗️ Layer Alternative Names
+
+#### **Domain Layer** (Core/Business Layer)
+| Common Name | Alternative Names | Context/Usage |
+|-------------|-------------------|---------------|
+| **Domain Layer** | Core Layer, Business Layer | Most common in enterprise applications |
+| **Entities** | Business Objects, Domain Models | "Business Objects" is common in older systems |
+| **Value Objects** | Immutable Objects, Value Types | "Immutable Objects" emphasizes the immutability aspect |
+| **Domain Services** | Business Services, Core Services | "Business Services" is more descriptive for non-technical stakeholders |
+| **Aggregates** | Aggregate Roots, Bounded Contexts | "Bounded Contexts" is from DDD, broader concept |
+
+#### **Application Layer** (Use Cases/Service Layer)
+| Common Name | Alternative Names | Context/Usage |
+|-------------|-------------------|---------------|
+| **Application Layer** | Service Layer, Use Case Layer | "Service Layer" is very common in enterprise Java |
+| **Use Cases** | **Interactors**, Application Services, Operations | "Interactors" is popular in iOS/Mac development |
+| **DTOs** | Data Transfer Objects, View Models, Request/Response Models | "View Models" is common in MVC/MVVM patterns |
+| **Application Services** | Orchestrators, Coordinators, Workflow Services | "Orchestrators" emphasizes coordination role |
+| **Mappers** | Converters, Transformers, Adapters | "Converters" is simpler and more direct |
+
+#### **Presentation Layer** (Interface/Adapter Layer)
+| Common Name | Alternative Names | Context/Usage |
+|-------------|-------------------|---------------|
+| **Presentation Layer** | Interface Layer, Adapter Layer, UI Layer | "Interface Layer" is from original Clean Architecture |
+| **Controllers** | Handlers, Presenters, Endpoints | "Handlers" is common in message-based systems |
+| **APIs** | Endpoints, Routes, Resources | "Endpoints" is common in REST API documentation |
+| **Middleware** | Interceptors, Filters, Pipes | "Interceptors" is common in Java EE frameworks |
+| **Serializers** | Marshallers, Parsers, Formatters | "Marshallers" is common in XML/JSON processing |
+
+#### **Infrastructure Layer** (Data/External Layer)
+| Common Name | Alternative Names | Context/Usage |
+|-------------|-------------------|---------------|
+| **Infrastructure Layer** | Data Layer, External Layer, Technical Layer | "Data Layer" is common in simple CRUD applications |
+| **Repositories** | **Gateways**, Data Access Objects (DAO), Stores | "Gateways" is from original Clean Architecture |
+| **Database Models** | Entity Models, Persistence Models, Table Models | "Persistence Models" emphasizes the persistence aspect |
+| **External Services** | Third-party Services, External APIs, Integrations | "Integrations" is common in enterprise systems |
+| **Caching** | Cache Store, Memory Store, Performance Layer | "Cache Store" is more specific about implementation |
+
+### 🔄 Component Alternative Names
+
+#### **Data Access Patterns**
+| Pattern | Alternative Names | When to Use |
+|---------|-------------------|-------------|
+| **Repository** | Gateway, DAO, Store, Persistence Layer | "Gateway" for abstract data access, "DAO" for database-specific |
+| **Unit of Work** | Transaction Manager, Session Manager, Context | "Transaction Manager" when focusing on ACID properties |
+| **Query Object** | Specification, Criteria, Query Builder | "Specification" when following DDD patterns |
+| **Data Mapper** | Object Mapper, Entity Mapper, Converter | "Object Mapper" is more generic |
+
+#### **Business Logic Patterns**
+| Pattern | Alternative Names | When to Use |
+|---------|-------------------|-------------|
+| **Use Case** | Interactor, Application Service, Operation | "Interactor" in mobile apps, "Application Service" in enterprise |
+| **Domain Service** | Business Service, Core Service, Rule Engine | "Business Service" for clarity with business stakeholders |
+| **Aggregate** | Aggregate Root, Bounded Context, Entity Cluster | "Bounded Context" for larger domain boundaries |
+| **Factory** | Builder, Creator, Constructor | "Builder" when complex object construction is needed |
+
+#### **Integration Patterns**
+| Pattern | Alternative Names | When to Use |
+|---------|-------------------|-------------|
+| **Message Broker** | Event Bus, Message Queue, Pub/Sub System | "Event Bus" for event-driven architectures |
+| **API Client** | HTTP Client, Service Client, External Client | "Service Client" when working with multiple services |
+| **Cache Client** | Cache Store, Memory Cache, Performance Layer | "Cache Store" for specific implementation focus |
+| **Serializer** | Marshaller, Parser, Formatter, Encoder/Decoder | "Marshaller" for XML/JSON, "Parser" for text data |
+
+### 📚 Architectural School Variations
+
+#### **Robert C. Martin (Uncle Bob) - Original Clean Architecture**
+- Emphasizes "Entities" and "Use Cases"
+- Uses "Interface Adapters" for presentation
+- "Frameworks & Drivers" for infrastructure
+- Focus on dependency rule: "Dependencies point inward"
+
+#### **Domain-Driven Design (DDD)**
+- Emphasizes "Aggregates" and "Bounded Contexts"
+- "Domain Services" for business logic
+- "Application Services" for use case coordination
+- "Repositories" for aggregate persistence
+
+#### **Hexagonal Architecture (Ports & Adapters)**
+- "Ports" instead of interfaces
+- "Adapters" instead of implementations
+- "Application Core" instead of domain/application layers
+- Focus on "inside-out" development
+
+#### **Onion Architecture**
+- "Domain Model" at center
+- "Domain Services" surrounding domain
+- "Application Services" outer layer
+- "Infrastructure" outermost layer
+
+### 🎯 Choosing the Right Terminology
+
+#### **For Your Team**
+1. **Be Consistent**: Choose one naming convention and stick to it
+2. **Document Your Choice**: Add a glossary to your project documentation
+3. **Consider Your Background**: Use terminology familiar to your team
+4. **Think About Newcomers**: Choose names that are self-explanatory
+
+#### **For Different Contexts**
+1. **Business Stakeholders**: Use "Business Services", "Data Stores", "User Interfaces"
+2. **Technical Team**: Use "Use Cases", "Repositories", "Controllers"
+3. **Cross-Team Communication**: Use more generic terms like "Services", "Data Layer", "API Layer"
+
+#### **Best Practices**
+1. **Create a Glossary**: Document your naming conventions
+2. **Use Code Comments**: Explain non-obvious naming choices
+3. **Review Regularly**: Ensure consistency across the codebase
+4. **Educate New Team Members**: Include architectural terminology in onboarding
+
+### 📖 Quick Reference
+
+| Layer | Primary Name | Common Alternatives | Most Popular Alternative |
+|-------|--------------|---------------------|--------------------------|
+| Domain | Domain Layer | Core Layer, Business Layer | **Core Layer** |
+| Application | Application Layer | Service Layer, Use Case Layer | **Service Layer** |
+| Presentation | Presentation Layer | Interface Layer, UI Layer | **Interface Layer** |
+| Infrastructure | Infrastructure Layer | Data Layer, Technical Layer | **Data Layer** |
+
+| Component | Primary Name | Common Alternatives | Most Popular Alternative |
+|-----------|--------------|---------------------|--------------------------|
+| Use Case | Use Case | Interactor, Application Service | **Interactor** |
+| Repository | Repository | Gateway, DAO | **Gateway** |
+| Controller | Controller | Handler, Endpoint | **Handler** |
+| DTO | DTO | View Model, Request/Response Model | **View Model** |
+
+This reference helps when reading different architectural blogs, books, or when joining new teams that might use different terminology for the same concepts.
+
 ## 🔧 Configuration
 
 ### Environment Variables
