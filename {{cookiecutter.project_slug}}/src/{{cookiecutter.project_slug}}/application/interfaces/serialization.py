@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Protocol
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import ArtifactDTO
@@ -10,6 +11,7 @@ class SerializationMapperProtocol(Protocol):
     without depending on Infrastructure implementations.
     """
 
+    @abstractmethod
     def to_dict(self, dto: ArtifactDTO) -> dict:
         """
         Converts an Application DTO to a dictionary for serialization.
@@ -22,6 +24,7 @@ class SerializationMapperProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     def from_dict(self, data: dict) -> ArtifactDTO:
         """
         Converts a dictionary from deserialization back to an Application DTO.

@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Protocol
 from uuid import UUID
 
@@ -10,6 +11,7 @@ class ArtifactRepositoryProtocol(Protocol):
     Defines methods for retrieving and saving artifact entities.
     """
 
+    @abstractmethod
     async def get_by_inventory_id(
         self, inventory_id: str | UUID
     ) -> ArtifactEntity | None:
@@ -24,6 +26,7 @@ class ArtifactRepositoryProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     async def save(self, artifact: ArtifactEntity) -> None:
         """
         Saves a new artifact or updates an existing one.

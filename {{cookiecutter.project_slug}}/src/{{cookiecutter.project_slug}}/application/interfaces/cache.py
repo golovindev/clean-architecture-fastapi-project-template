@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Any, Protocol, TypeVar
 
 T = TypeVar("T")
@@ -10,6 +11,7 @@ class CacheProtocol(Protocol):
     Values are stored as Any type to support various serialization formats.
     """
 
+    @abstractmethod
     async def get(self, key: str) -> dict[str, Any] | None:
         """Retrieve a value from cache by key.
 
@@ -21,6 +23,7 @@ class CacheProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     async def set(self, key: str, value: dict[str, Any], ttl: int | None = None) -> bool:
         """Store a value in cache with optional TTL.
 
@@ -34,6 +37,7 @@ class CacheProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     async def delete(self, key: str) -> bool:
         """Delete a value from cache.
 
@@ -45,6 +49,7 @@ class CacheProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     async def exists(self, key: str) -> bool:
         """Check if a key exists in cache.
 
@@ -56,6 +61,7 @@ class CacheProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     async def clear(self, pattern: str) -> int:
         """Clear cache entries matching a pattern.
 

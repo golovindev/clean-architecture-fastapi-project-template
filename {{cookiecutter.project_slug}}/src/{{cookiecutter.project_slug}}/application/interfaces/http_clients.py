@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Protocol
 from uuid import UUID
 
@@ -9,6 +10,7 @@ class ExternalMuseumAPIProtocol(Protocol):
     Protocol for interacting with an external museum API.
     """
 
+    @abstractmethod
     async def fetch_artifact(self, inventory_id: str | UUID) -> ArtifactDTO:
         """
         Fetches an artifact from the external museum API.
@@ -27,6 +29,7 @@ class PublicCatalogAPIProtocol(Protocol):
     Protocol for interacting with a public catalog API.
     """
 
+    @abstractmethod
     async def publish_artifact(
         self, artifact: ArtifactCatalogPublicationDTO
     ) -> str:

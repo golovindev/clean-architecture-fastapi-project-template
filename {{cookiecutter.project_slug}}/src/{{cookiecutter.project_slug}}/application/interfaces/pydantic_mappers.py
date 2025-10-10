@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Any, Protocol
 
 from {{cookiecutter.project_slug}}.application.dtos.artifact import (
@@ -17,6 +18,7 @@ class PydanticMapperProtocol(Protocol):
     maintaining Clean Architecture dependency rules (Application should not depend on Infrastructure).
     """
 
+    @abstractmethod
     def to_pydantic_dto(self, dto: ArtifactDTO) -> Any:
         """Convert Application DTO to Pydantic DTO.
 
@@ -25,6 +27,7 @@ class PydanticMapperProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     def from_pydantic_dto(self, pydantic_dto: Any) -> ArtifactDTO:
         """Convert Pydantic DTO to Application DTO.
 
@@ -36,6 +39,7 @@ class PydanticMapperProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     def to_admission_notification_pydantic(
         self, dto: ArtifactAdmissionNotificationDTO
     ) -> Any:
@@ -46,6 +50,7 @@ class PydanticMapperProtocol(Protocol):
         """
         ...
 
+    @abstractmethod
     def to_catalog_publication_pydantic(
         self, dto: ArtifactCatalogPublicationDTO
     ) -> Any:
