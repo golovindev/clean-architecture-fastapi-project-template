@@ -9,6 +9,16 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
 )
 
+from {{cookiecutter.project_slug}}.application.interfaces.cache import CacheProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.http_clients import (
+    ExternalMuseumAPIProtocol,
+    PublicCatalogAPIProtocol,
+)
+from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEntityMapperProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.pydantic_mappers import PydanticMapperProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
 from {{cookiecutter.project_slug}}.application.mappers import ArtifactMapper
 from {{cookiecutter.project_slug}}.application.use_cases.fetch_artifact_from_museum_api import (
     FetchArtifactFromMuseumAPIUseCase,
@@ -132,9 +142,9 @@ class RepositoryProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_artifact_repository(
         self, session: AsyncSession, db_mapper: ArtifactDBMapper
-    ) -> ArtifactRepositorySQLAlchemy:
+    ) -> ArtifactRepositoryProtocol:
         """
-        Provides an ArtifactRepositorySQLAlchemy instance.
+        Provides an ArtifactRepositoryProtocol implementation.
         """
         return ArtifactRepositorySQLAlchemy(session=session, mapper=db_mapper)
 
@@ -148,10 +158,10 @@ class UnitOfWorkProvider(Provider):
     def get_unit_of_work(
         self,
         session: AsyncSession,
-        repository: ArtifactRepositorySQLAlchemy,
-    ) -> UnitOfWorkSQLAlchemy:
+        repository: ArtifactRepositoryProtocol,
+    ) -> UnitOfWorkProtocol:
         """
-        Provides a UnitOfWorkSQLAlchemy instance.
+        Provides a UnitOfWorkProtocol implementation.
         """
         return UnitOfWorkSQLAlchemy(session=session, repository=repository)
 
@@ -166,10 +176,10 @@ class ServiceProvider(Provider):
         self,
         client: AsyncClient,
         settings: Settings,
-        infrastructure_mapper: InfrastructureArtifactMapper,
-    ) -> ExternalMuseumAPIClient:
+        infrastructure_mapper: PydanticMapperProtocol,
+    ) -> ExternalMuseumAPIProtocol:
         """
-        Provides an ExternalMuseumAPIClient instance.
+        Provides an ExternalMuseumAPIProtocol implementation.
         """
         return ExternalMuseumAPIClient(
             base_url=settings.external_api_base_url,
@@ -182,10 +192,10 @@ class ServiceProvider(Provider):
         self,
         client: AsyncClient,
         settings: Settings,
-        infrastructure_mapper: InfrastructureArtifactMapper,
-    ) -> PublicCatalogAPIClient:
+        infrastructure_mapper: PydanticMapperProtocol,
+    ) -> PublicCatalogAPIProtocol:
         """
-        Provides a PublicCatalogAPIClient instance.
+        Provides a PublicCatalogAPIProtocol implementation.
         """
         return PublicCatalogAPIClient(
             base_url=settings.catalog_api_base_url,
@@ -197,10 +207,10 @@ class ServiceProvider(Provider):
     def get_message_broker(
         self,
         broker: KafkaBroker,
-        infrastructure_mapper: InfrastructureArtifactMapper,
-    ) -> KafkaPublisher:
+        infrastructure_mapper: PydanticMapperProtocol,
+    ) -> MessageBrokerPublisherProtocol:
         """
-        Provides a KafkaPublisher instance.
+        Provides a MessageBrokerPublisherProtocol implementation.
         """
         return KafkaPublisher(
             broker=broker,
@@ -214,7 +224,7 @@ class MapperProvider(Provider):
     """
 
     @provide(scope=Scope.APP)
-    def get_artifact_mapper(self) -> ArtifactMapper:
+    def get_artifact_mapper(self) -> DtoEntityMapperProtocol:
         """
         Provides the Application layer mapper (Domain Entity <-> Application DTO).
         """
@@ -228,7 +238,7 @@ class MapperProvider(Provider):
         return ArtifactDBMapper()
 
     @provide(scope=Scope.REQUEST)
-    def get_infrastructure_artifact_mapper(self) -> InfrastructureArtifactMapper:
+    def get_infrastructure_artifact_mapper(self) -> PydanticMapperProtocol:
         """
         Provides the Infrastructure mapper (Application DTO <-> Pydantic/JSON).
         """
@@ -250,9 +260,9 @@ class CacheProvider(Provider):
     @provide(scope=Scope.APP)
     async def get_cache_service(
         self, settings: Settings
-    ) -> AsyncIterator[RedisCacheClient]:
+    ) -> AsyncIterator[CacheProtocol]:
         """
-        Provides a RedisCacheClient instance.
+        Provides a CacheProtocol implementation.
         """
         redis_client = await redis.from_url(
             str(settings.redis_url),
@@ -281,8 +291,8 @@ class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_get_artifact_from_cache_use_case(
         self,
-        cache_client: RedisCacheClient,
-        serialization_mapper: InfrastructureArtifactMapper,
+        cache_client: CacheProtocol,
+        serialization_mapper: PydanticMapperProtocol,
     ) -> GetArtifactFromCacheUseCase:
         """
         Provides a GetArtifactFromCacheUseCase instance.
@@ -293,7 +303,7 @@ class UseCaseProvider(Provider):
 
     @provide(scope=Scope.REQUEST)
     def get_get_artifact_from_repo_use_case(
-        self, uow: UnitOfWorkSQLAlchemy, artifact_mapper: ArtifactMapper
+        self, uow: UnitOfWorkProtocol, artifact_mapper: DtoEntityMapperProtocol
     ) -> GetArtifactFromRepoUseCase:
         """
         Provides a GetArtifactFromRepoUseCase instance.
@@ -303,7 +313,7 @@ class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_fetch_artifact_from_museum_api_use_case(
         self,
-        museum_api_client: ExternalMuseumAPIClient,
+        museum_api_client: ExternalMuseumAPIProtocol,
     ) -> FetchArtifactFromMuseumAPIUseCase:
         """
         Provides a FetchArtifactFromMuseumAPIUseCase instance.
@@ -312,7 +322,7 @@ class UseCaseProvider(Provider):
 
     @provide(scope=Scope.REQUEST)
     def get_save_artifact_to_repo_use_case(
-        self, uow: UnitOfWorkSQLAlchemy, artifact_mapper: ArtifactMapper
+        self, uow: UnitOfWorkProtocol, artifact_mapper: DtoEntityMapperProtocol
     ) -> SaveArtifactToRepoUseCase:
         """
         Provides a SaveArtifactToRepoUseCase instance.
@@ -322,8 +332,8 @@ class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_save_artifact_to_cache_use_case(
         self,
-        cache_client: RedisCacheClient,
-        serialization_mapper: InfrastructureArtifactMapper,
+        cache_client: CacheProtocol,
+        serialization_mapper: PydanticMapperProtocol,
     ) -> SaveArtifactToCacheUseCase:
         """
         Provides a SaveArtifactToCacheUseCase instance.
@@ -335,8 +345,8 @@ class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_publish_artifact_to_broker_use_case(
         self,
-        message_broker: KafkaPublisher,
-        artifact_mapper: ArtifactMapper,
+        message_broker: MessageBrokerPublisherProtocol,
+        artifact_mapper: DtoEntityMapperProtocol,
     ) -> PublishArtifactToBrokerUseCase:
         """
         Provides a PublishArtifactToBrokerUseCase instance.
@@ -348,8 +358,8 @@ class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_publish_artifact_to_catalog_use_case(
         self,
-        catalog_api_client: PublicCatalogAPIClient,
-        artifact_mapper: ArtifactMapper,
+        catalog_api_client: PublicCatalogAPIProtocol,
+        artifact_mapper: DtoEntityMapperProtocol,
     ) -> PublishArtifactToCatalogUseCase:
         """
         Provides a PublishArtifactToCatalogUseCase instance.
