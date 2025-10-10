@@ -1,11 +1,11 @@
 from pydantic_settings import BaseSettings
 
-from .app import AppSettings
-from .broker import BrokerSettings
-from .cors import CORSSettings
-from .database import DatabaseSettings
-from .external_apis import ExternalAPISettings
-from .redis import RedisSettings
+from {{cookiecutter.project_slug}}.config.app import AppSettings
+from {{cookiecutter.project_slug}}.config.broker import BrokerSettings
+from {{cookiecutter.project_slug}}.config.cors import CORSSettings
+from {{cookiecutter.project_slug}}.config.database import DatabaseSettings
+from {{cookiecutter.project_slug}}.config.external_apis import ExternalAPISettings
+from {{cookiecutter.project_slug}}.config.redis import RedisSettings
 
 
 class Settings(BaseSettings):
