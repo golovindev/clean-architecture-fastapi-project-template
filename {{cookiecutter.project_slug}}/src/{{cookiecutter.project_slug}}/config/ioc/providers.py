@@ -16,8 +16,8 @@ from {{cookiecutter.project_slug}}.application.interfaces.http_clients import (
 )
 from {{cookiecutter.project_slug}}.application.interfaces.mappers import DtoEntityMapperProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.message_broker import MessageBrokerPublisherProtocol
-from {{cookiecutter.project_slug}}.application.interfaces.pydantic_mappers import PydanticMapperProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.repositories import ArtifactRepositoryProtocol
+from {{cookiecutter.project_slug}}.application.interfaces.serialization import SerializationMapperProtocol
 from {{cookiecutter.project_slug}}.application.interfaces.uow import UnitOfWorkProtocol
 from {{cookiecutter.project_slug}}.application.mappers import ArtifactMapper
 from {{cookiecutter.project_slug}}.application.use_cases.fetch_artifact_from_museum_api import (
@@ -176,7 +176,7 @@ class ServiceProvider(Provider):
         self,
         client: AsyncClient,
         settings: Settings,
-        infrastructure_mapper: PydanticMapperProtocol,
+        infrastructure_mapper: SerializationMapperProtocol,
     ) -> ExternalMuseumAPIProtocol:
         """
         Provides an ExternalMuseumAPIProtocol implementation.
@@ -192,7 +192,7 @@ class ServiceProvider(Provider):
         self,
         client: AsyncClient,
         settings: Settings,
-        infrastructure_mapper: PydanticMapperProtocol,
+        infrastructure_mapper: SerializationMapperProtocol,
     ) -> PublicCatalogAPIProtocol:
         """
         Provides a PublicCatalogAPIProtocol implementation.
@@ -207,7 +207,7 @@ class ServiceProvider(Provider):
     def get_message_broker(
         self,
         broker: KafkaBroker,
-        infrastructure_mapper: PydanticMapperProtocol,
+        infrastructure_mapper: SerializationMapperProtocol,
     ) -> MessageBrokerPublisherProtocol:
         """
         Provides a MessageBrokerPublisherProtocol implementation.
@@ -238,7 +238,7 @@ class MapperProvider(Provider):
         return ArtifactDBMapper()
 
     @provide(scope=Scope.REQUEST)
-    def get_infrastructure_artifact_mapper(self) -> PydanticMapperProtocol:
+    def get_infrastructure_artifact_mapper(self) -> SerializationMapperProtocol:
         """
         Provides the Infrastructure mapper (Application DTO <-> Pydantic/JSON).
         """
@@ -292,7 +292,7 @@ class UseCaseProvider(Provider):
     def get_get_artifact_from_cache_use_case(
         self,
         cache_client: CacheProtocol,
-        serialization_mapper: PydanticMapperProtocol,
+        serialization_mapper: SerializationMapperProtocol,
     ) -> GetArtifactFromCacheUseCase:
         """
         Provides a GetArtifactFromCacheUseCase instance.
@@ -333,7 +333,7 @@ class UseCaseProvider(Provider):
     def get_save_artifact_to_cache_use_case(
         self,
         cache_client: CacheProtocol,
-        serialization_mapper: PydanticMapperProtocol,
+        serialization_mapper: SerializationMapperProtocol,
     ) -> SaveArtifactToCacheUseCase:
         """
         Provides a SaveArtifactToCacheUseCase instance.
