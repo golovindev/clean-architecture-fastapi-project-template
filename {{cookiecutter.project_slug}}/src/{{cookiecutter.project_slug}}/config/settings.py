@@ -1,4 +1,4 @@
-from typing import final
+from pydantic_settings import BaseSettings
 
 from .app import AppSettings
 from .broker import BrokerSettings
@@ -8,8 +8,7 @@ from .external_apis import ExternalAPISettings
 from .redis import RedisSettings
 
 
-@final
-class Settings:
+class Settings(BaseSettings):
     """
     Main application settings that combines all configuration objects.
 
