@@ -8,7 +8,7 @@ x-dev-environment: &dev-environment
 x-dev-volumes: &dev-volumes
   - ./src:/app/src
   - ./tests:/app/tests
-  - ./alembic:/app/alembic
+  - ./src/{{cookiecutter.project_slug}}/infrastructures/db/migrations:/app/src/{{cookiecutter.project_slug}}/infrastructures/db/migrations
   - ./alembic.ini:/app/alembic.ini
 
 x-dev-command: &dev-command

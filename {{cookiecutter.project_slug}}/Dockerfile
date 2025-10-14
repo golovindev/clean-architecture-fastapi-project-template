@@ -64,7 +64,6 @@ WORKDIR /app
 
 # Copy application code
 COPY --chown=appuser:appuser src/ ./src/
-COPY --chown=appuser:appuser alembic/ ./alembic/
 COPY --chown=appuser:appuser alembic.ini ./
 
 # Create necessary directories
@@ -96,7 +95,6 @@ WORKDIR /app
 
 # Copy application code
 COPY --chown=appuser:appuser src/ ./src/
-COPY --chown=appuser:appuser alembic/ ./alembic/
 COPY --chown=appuser:appuser alembic.ini ./
 COPY --chown=appuser:appuser tests/ ./tests/
 COPY --chown=appuser:appuser docs/ ./docs/
@@ -128,7 +126,6 @@ WORKDIR /app
 # Copy application code and tests
 COPY --chown=appuser:appuser src/ ./src/
 COPY --chown=appuser:appuser tests/ ./tests/
-COPY --chown=appuser:appuser alembic/ ./alembic/
 COPY --chown=appuser:appuser alembic.ini ./
 COPY --chown=appuser:appuser Makefile ./
 

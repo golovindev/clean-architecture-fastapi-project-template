@@ -421,7 +421,7 @@ services:
     volumes:
       - ./src:/app/src:ro
       - ./tests:/app/tests:ro
-      - ./alembic:/app/alembic:ro
+      - ./src/{{cookiecutter.project_slug}}/infrastructures/db/migrations:/app/src/{{cookiecutter.project_slug}}/infrastructures/db/migrations:ro
       - ./alembic.ini:/app/alembic.ini:ro
       - app_logs:/app/logs
     restart: unless-stopped
@@ -548,7 +548,7 @@ services:
     volumes:
       - ./src:/app/src:ro
       - ./tests:/app/tests:ro
-      - ./alembic:/app/alembic:ro
+      - ./src/{{cookiecutter.project_slug}}/infrastructures/db/migrations:/app/src/{{cookiecutter.project_slug}}/infrastructures/db/migrations:ro
       - ./alembic.ini:/app/alembic.ini:ro
       - test_reports:/app/htmlcov
     networks:

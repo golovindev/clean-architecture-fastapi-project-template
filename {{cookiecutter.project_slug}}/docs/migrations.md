@@ -52,6 +52,6 @@ poetry run alembic upgrade head --sql
 ## File structure
 
 - `alembic.ini` - Alembic configuration
-- `alembic/env.py` - migration environment settings
-- `alembic/versions/` - directory with migration files
-- `alembic/script.py.mako` - template for new migrations
+- `src/{{cookiecutter.project_slug}}/infrastructures/db/migrations/env.py` - migration environment settings
+- `src/{{cookiecutter.project_slug}}/infrastructures/db/migrations/versions/` - directory with migration files
+- `src/{{cookiecutter.project_slug}}/infrastructures/db/migrations/script.py.mako` - template for new migrations

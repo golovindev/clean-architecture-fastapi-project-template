@@ -51,10 +51,12 @@ Your generated project will have this structure:
    │       ├── domain/              # Business entities
    │       ├── application/         # Use cases
    │       ├── infrastructure/      # External services
+   │       │   └── db/              # Database components
+   │       │       └── migrations/  # Database migrations
    │       ├── presentation/        # API endpoints
    │       └── config/             # Configuration
    ├── tests/                      # Test suite
-   ├── alembic/                    # Database migrations
+   ├── alembic.ini                 # Alembic configuration
    ├── docker-compose.yml          # Docker services
    ├── Dockerfile                  # Application container
    ├── pyproject.toml             # Dependencies

@@ -400,6 +400,10 @@ Below is a detailed directory tree reflecting the architectural structure with t
 │       │   │   │   └── artifact.py # "Artifact" model
 │       │   │   ├── 📁 repositories/ # Repositories
 │       │   │   │   └── artifact.py # "Artifact" repository
+│       │   │   ├── 📁 migrations/  # Database migrations
+│       │   │   │   └── versions/   # Migration files
+│       │   │   │   └── env.py      # Alembic environment
+│       │   │   │   └── script.py.mako # Migration template
 │       │   │   ├── uow.py          # SQLAlchemy Unit of Work
 │       │   │   ├── exceptions.py   # Database exceptions
 │       │   │   ├── session.py      # Database session management
@@ -437,11 +441,6 @@ Below is a detailed directory tree reflecting the architectural structure with t
 │   ├── 📁 test_integration/         # Integration tests
 │   ├── conftest.py                  # pytest fixtures
 │   └── __init__.py
-│
-├── 📁 alembic/                      # Database migrations
-│   ├── versions/                    # Migration files
-│   ├── env.py                       # Alembic environment
-│   └── script.py.mako               # Migration template
 │
 ├── 📁 docs/                         # Documentation
 │   ├── caching.md                   # Caching documentation
