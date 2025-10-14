@@ -131,7 +131,7 @@ class BrokerProvider(Provider):
         try:
             yield broker
         finally:
-            await broker.close()
+            await broker.stop()
 
 
 class RepositoryProvider(Provider):
@@ -267,7 +267,7 @@ class CacheProvider(Provider):
         redis_client = await redis.from_url(
             str(settings.redis_url),
             encoding="utf-8",
-            decode_responses=False,
+            decode_responses=True,
             health_check_interval=30,
             max_connections=10,
             retry_on_timeout=True,

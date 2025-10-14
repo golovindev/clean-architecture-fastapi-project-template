@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-from uuid import UUID
+from typing import TYPE_CHECKING, final
 
 import structlog
 
@@ -34,6 +33,7 @@ if TYPE_CHECKING:
 logger = structlog.get_logger(__name__)
 
 
+@final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ProcessArtifactUseCase:
     """
@@ -49,7 +49,7 @@ class ProcessArtifactUseCase:
     publish_artifact_to_broker_use_case: PublishArtifactToBrokerUseCase
     publish_artifact_to_catalog_use_case: PublishArtifactToCatalogUseCase
 
-    async def execute(self, inventory_id: str | UUID) -> ArtifactDTO:
+    async def execute(self, inventory_id: str) -> ArtifactDTO:
         """
         Executes the artifact processing flow.
 
@@ -59,29 +59,23 @@ class ProcessArtifactUseCase:
         Returns:
             An ArtifactDTO representing the processed artifact.
         """
-        inventory_id_str = (
-            str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
-        )
-
-        artifact_dto = await self.get_artifact_from_cache_use_case.execute(inventory_id_str)
-        if artifact_dto:
+        if artifact_dto := await self.get_artifact_from_cache_use_case.execute(inventory_id):
             return artifact_dto
 
-        artifact_dto = await self.get_artifact_from_repo_use_case.execute(inventory_id_str)
-        if artifact_dto:
-            await self.save_artifact_to_cache_use_case.execute(inventory_id_str, artifact_dto)
+        if artifact_dto := await self.get_artifact_from_repo_use_case.execute(inventory_id):
+            await self.save_artifact_to_cache_use_case.execute(inventory_id, artifact_dto)
             return artifact_dto
 
         artifact_dto = await self.fetch_artifact_from_museum_api_use_case.execute(inventory_id)
         await self.save_artifact_to_repo_use_case.execute(artifact_dto)
-        await self.save_artifact_to_cache_use_case.execute(inventory_id_str, artifact_dto)
+        await self.save_artifact_to_cache_use_case.execute(inventory_id, artifact_dto)
 
         try:
             await self.publish_artifact_to_broker_use_case.execute(artifact_dto)
         except Exception:
             logger.warning(
                 "Failed to publish artifact notification to message broker (non-critical)",
-                inventory_id=inventory_id_str,
+                inventory_id=inventory_id,
             )
 
         try:
@@ -89,11 +83,11 @@ class ProcessArtifactUseCase:
         except Exception:
             logger.warning(
                 "Failed to publish artifact to public catalog (non-critical)",
-                inventory_id=inventory_id_str,
+                inventory_id=inventory_id,
             )
 
         logger.info(
             "Artifact successfully fetched and processed",
-            inventory_id=inventory_id_str,
+            inventory_id=inventory_id,
         )
         return artifact_dto

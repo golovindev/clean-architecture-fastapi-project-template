@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-from uuid import UUID
+from typing import TYPE_CHECKING, final
 
 import structlog
 
@@ -14,6 +13,7 @@ if TYPE_CHECKING:
 logger = structlog.get_logger(__name__)
 
 
+@final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class GetArtifactFromCacheUseCase:
     """
@@ -23,7 +23,7 @@ class GetArtifactFromCacheUseCase:
     cache_client: CacheProtocol
     serialization_mapper: SerializationMapperProtocol
 
-    async def execute(self, inventory_id: str | UUID) -> ArtifactDTO | None:
+    async def execute(self, inventory_id: str) -> ArtifactDTO | None:
         """
         Executes the use case to get an artifact from the cache.
 
@@ -33,13 +33,9 @@ class GetArtifactFromCacheUseCase:
         Returns:
             An ArtifactDTO if found in cache, otherwise None.
         """
-        inventory_id_str = (
-            str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
-        )
-
-        cached_artifact_data: dict | None = await self.cache_client.get(inventory_id_str)
+        cached_artifact_data: dict | None = await self.cache_client.get(inventory_id)
         if cached_artifact_data:
-            logger.info("Artifact found in cache", inventory_id=inventory_id_str)
+            logger.info("Artifact found in cache", inventory_id=inventory_id)
             return self.serialization_mapper.from_dict(cached_artifact_data)
-        logger.info("Artifact not found in cache", inventory_id=inventory_id_str)
+        logger.info("Artifact not found in cache", inventory_id=inventory_id)
         return None

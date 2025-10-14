@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-from uuid import UUID
+from typing import TYPE_CHECKING, final
 
 import structlog
 
@@ -17,6 +16,7 @@ if TYPE_CHECKING:
 logger = structlog.get_logger(__name__)
 
 
+@final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class FetchArtifactFromMuseumAPIUseCase:
     """
@@ -25,7 +25,7 @@ class FetchArtifactFromMuseumAPIUseCase:
 
     museum_api_client: ExternalMuseumAPIProtocol
 
-    async def execute(self, inventory_id: str | UUID) -> ArtifactDTO:
+    async def execute(self, inventory_id: str) -> ArtifactDTO:
         """
         Executes the use case to fetch an artifact.
 
@@ -39,28 +39,25 @@ class FetchArtifactFromMuseumAPIUseCase:
             ArtifactNotFoundError: If the artifact is not found in the external API.
             FailedFetchArtifactMuseumAPIException: If fetching the artifact fails due to other reasons.
         """
-        inventory_id_str = (
-            str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
-        )
         logger.info(
             "Artifact not found locally, fetching from external museum API...",
-            inventory_id=inventory_id_str,
+            inventory_id=inventory_id,
         )
         try:
             artifact_dto = await self.museum_api_client.fetch_artifact(inventory_id)
-            logger.info("Artifact fetched from museum API", inventory_id=inventory_id_str)
+            logger.info("Artifact fetched from museum API", inventory_id=inventory_id)
             return artifact_dto
         except ArtifactNotFoundError as e:
             logger.error(
                 "Artifact not found in external museum API",
-                inventory_id=inventory_id_str,
+                inventory_id=inventory_id,
                 error=str(e),
             )
             raise
         except Exception as e:
             logger.exception(
                 "Failed to fetch artifact from external museum API",
-                inventory_id=inventory_id_str,
+                inventory_id=inventory_id,
                 error=str(e),
             )
             raise FailedFetchArtifactMuseumAPIException(

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-from uuid import UUID
+from typing import TYPE_CHECKING, final
 
 import structlog
 
@@ -15,6 +14,7 @@ if TYPE_CHECKING:
 logger = structlog.get_logger(__name__)
 
 
+@final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class GetArtifactFromRepoUseCase:
     """
@@ -24,7 +24,7 @@ class GetArtifactFromRepoUseCase:
     uow: UnitOfWorkProtocol
     artifact_mapper: DtoEntityMapperProtocol
 
-    async def execute(self, inventory_id: str | UUID) -> ArtifactDTO | None:
+    async def execute(self, inventory_id: str) -> ArtifactDTO | None:
         """
         Executes the use case to get an artifact from the repository.
 
@@ -34,15 +34,11 @@ class GetArtifactFromRepoUseCase:
         Returns:
             An ArtifactDTO if found in the repository, otherwise None.
         """
-        inventory_id_str = (
-            str(inventory_id) if isinstance(inventory_id, UUID) else inventory_id
-        )
-
         artifact_entity: (
             ArtifactEntity | None
-        ) = await self.uow.repository.get_by_inventory_id(inventory_id_str)
+        ) = await self.uow.repository.get_by_inventory_id(inventory_id)
         if artifact_entity:
-            logger.info("Artifact found in repository", inventory_id=inventory_id_str)
+            logger.info("Artifact found in repository", inventory_id=inventory_id)
             return self.artifact_mapper.to_dto(artifact_entity)
-        logger.info("Artifact not found in repository", inventory_id=inventory_id_str)
+        logger.info("Artifact not found in repository", inventory_id=inventory_id)
         return None

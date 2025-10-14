@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-from uuid import UUID
+from typing import TYPE_CHECKING, final
 
 import structlog
 
@@ -15,6 +14,7 @@ if TYPE_CHECKING:
 logger = structlog.get_logger(__name__)
 
 
+@final
 @dataclass(frozen=True, slots=True, kw_only=True)
 class PublishArtifactToBrokerUseCase:
     """
