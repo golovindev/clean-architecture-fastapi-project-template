@@ -38,8 +38,8 @@ class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
         """
         if exc_type is not None:
             logger.warning(
-                "Transaction rolled back due to exception: %s - %s", 
-                exc_type.__name__, 
+                "Transaction rolled back due to exception: %s - %s",
+                exc_type.__name__,
                 str(exc_val)
             )
             await self.rollback()
