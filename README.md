@@ -28,6 +28,33 @@ A comprehensive cookiecutter template for creating modern FastAPI applications w
 - **Documentation**: Auto-generated API docs with Swagger/OpenAPI
 - **DI**: Powered by [dishka](https://github.com/reagento/dishka)
 
+## 🚀 Quick Start
+
+```bash
+ cookiecutter . --no-input \
+  project_name="My Awesome API" \
+  project_description="An awesome API for my project" \
+  author_name="John Doe" \
+  author_email="john@example.com" \
+  github_username="johndoe" \
+  domain_name="awesomeapi.com" \
+  use_broker="kafka" \
+  use_cache="redis" \
+  use_database="postgresql" \
+  add_docker="y" \
+  add_tests="y" \
+  add_docs="y" \
+  add_precommit="y" \
+  license_type="MIT"
+
+  cd my_awesome_api
+
+  make dev-setup-docker
+
+  make docker-up-dev
+
+```
+
 ## 📚 Documentation
 
 ### Building Documentation Locally
@@ -154,32 +181,6 @@ cookiecutter . --no-input \
 └── README.md                        # Project documentation
 ```
 
-## 🚀 Quick Start
-
-```bash
- cookiecutter . --no-input \
-  project_name="My Awesome API" \
-  project_description="An awesome API for my project" \
-  author_name="John Doe" \
-  author_email="john@example.com" \
-  github_username="johndoe" \
-  domain_name="awesomeapi.com" \
-  use_broker="kafka" \
-  use_cache="redis" \
-  use_database="postgresql" \
-  add_docker="y" \
-  add_tests="y" \
-  add_docs="y" \
-  add_precommit="y" \
-  license_type="MIT"
-
-  cd my_awesome_api
-
-  make dev-setup-docker
-
-  make docker-up-dev
-
-```
 
 ## 📚 API Documentation
 
