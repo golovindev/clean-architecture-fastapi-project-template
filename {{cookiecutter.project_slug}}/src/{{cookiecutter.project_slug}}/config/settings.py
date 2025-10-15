@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 from {{cookiecutter.project_slug}}.config.app import AppSettings
@@ -17,32 +18,12 @@ class Settings(BaseSettings):
     for a specific domain (database, redis, cors, etc.).
     """
 
-    def __init__(
-        self,
-        app: AppSettings | None = None,
-        database: DatabaseSettings | None = None,
-        redis: RedisSettings | None = None,
-        external_apis: ExternalAPISettings | None = None,
-        broker: BrokerSettings | None = None,
-        cors: CORSSettings | None = None,
-    ) -> None:
-        """
-        Initialize settings with optional configuration objects.
-
-        Args:
-            app: Application core settings.
-            database: Database configuration settings.
-            redis: Redis configuration settings.
-            external_apis: External API configuration settings.
-            broker: Message broker configuration settings.
-            cors: CORS configuration settings.
-        """
-        self.app = app or AppSettings()
-        self.database = database or DatabaseSettings()
-        self.redis = redis or RedisSettings()
-        self.external_apis = external_apis or ExternalAPISettings()
-        self.broker = broker or BrokerSettings()
-        self.cors = cors or CORSSettings()
+    app: AppSettings = Field(default_factory=AppSettings)
+    database: DatabaseSettings = Field(default_factory=DatabaseSettings)
+    redis: RedisSettings = Field(default_factory=RedisSettings)
+    external_apis: ExternalAPISettings = Field(default_factory=ExternalAPISettings)
+    broker: BrokerSettings = Field(default_factory=BrokerSettings)
+    cors: CORSSettings = Field(default_factory=CORSSettings)
 
     # Convenience properties for backward compatibility
     @property
