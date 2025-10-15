@@ -28,6 +28,7 @@ class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
         Enters the asynchronous context manager.
         Returns this UOW instance.
         """
+        logger.debug("Starting database transaction")
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
@@ -36,6 +37,7 @@ class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
         Commits changes if no exception occurred, otherwise rolls back.
         """
         if exc_type is not None:
+            logger.warning("Transaction rolled back due to exception", exc_type=exc_type.__name__, exc_val=str(exc_val))
             await self.rollback()
         else:
             await self.commit()
@@ -44,7 +46,9 @@ class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
         """
         Commits the current transaction to the database.
         """
+        logger.debug("Committing transaction")
         await self.session.commit()
+        logger.debug("Transaction committed successfully")
 
     async def rollback(self) -> None:
         """
@@ -52,3 +56,4 @@ class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
         """
         logger.debug("Rolling back transaction")
         await self.session.rollback()
+        logger.debug("Transaction rolled back successfully")

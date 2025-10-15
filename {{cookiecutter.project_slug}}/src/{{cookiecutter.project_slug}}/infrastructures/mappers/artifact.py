@@ -16,15 +16,18 @@ from {{cookiecutter.project_slug}}.application.interfaces.serialization import S
 @final
 @dataclass(frozen=True, slots=True)
 class InfrastructureArtifactMapper(SerializationMapperProtocol):
-    """Mapper for converting Application DTOs to dictionaries for external API communication.
+    """Mapper for converting Application DTOs to
+    dictionaries for external API communication.
 
     This mapper implements:
-    - SerializationMapperProtocol: JSON serialization/deserialization for caching and external APIs
+    - SerializationMapperProtocol: JSON serialization/deserialization
+    for caching and external APIs
     """
 
     def to_dict(self, dto: ArtifactDTO) -> dict:
         """
-        Converts an Application ArtifactDTO to a dictionary for JSON serialization (e.g., caching, external APIs).
+        Converts an Application ArtifactDTO to a dictionary for JSON serialization
+        (e.g., caching, external APIs).
         """
         return {
             "inventory_id": str(dto.inventory_id),
@@ -56,7 +59,8 @@ class InfrastructureArtifactMapper(SerializationMapperProtocol):
         self, dto: ArtifactAdmissionNotificationDTO
     ) -> dict:
         """
-        Converts an ArtifactAdmissionNotificationDTO to a dictionary for message broker communication.
+        Converts an ArtifactAdmissionNotificationDTO to
+        a dictionary for message broker communication.
         """
         return {
             "inventory_id": str(dto.inventory_id),
@@ -69,7 +73,8 @@ class InfrastructureArtifactMapper(SerializationMapperProtocol):
         self, dto: ArtifactCatalogPublicationDTO
     ) -> dict:
         """
-        Converts an ArtifactCatalogPublicationDTO to a dictionary for external catalog API communication.
+        Converts an ArtifactCatalogPublicationDTO to a dictionary
+        for external catalog API communication.
         """
         return {
             "inventory_id": str(dto.inventory_id),

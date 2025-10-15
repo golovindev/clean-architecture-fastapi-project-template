@@ -34,11 +34,12 @@ class GetArtifactFromRepoUseCase:
         Returns:
             An ArtifactDTO if found in the repository, otherwise None.
         """
-        artifact_entity: (
-            ArtifactEntity | None
-        ) = await self.uow.repository.get_by_inventory_id(inventory_id)
-        if artifact_entity:
-            logger.info("Artifact found in repository", inventory_id=inventory_id)
-            return self.artifact_mapper.to_dto(artifact_entity)
-        logger.info("Artifact not found in repository", inventory_id=inventory_id)
-        return None
+        async with self.uow:
+            artifact_entity: (
+                ArtifactEntity | None
+            ) = await self.uow.repository.get_by_inventory_id(inventory_id)
+            if artifact_entity:
+                logger.info("Artifact found in repository", inventory_id=inventory_id)
+                return self.artifact_mapper.to_dto(artifact_entity)
+            logger.info("Artifact not found in repository", inventory_id=inventory_id)
+            return None
