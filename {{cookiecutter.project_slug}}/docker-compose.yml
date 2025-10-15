@@ -11,11 +11,6 @@ x-common-healthcheck: &common-healthcheck
 x-common-volume: &common-volume
   driver: local
 
-x-app-build: &app-build
-  build:
-    context: .
-    dockerfile: Dockerfile
-
 x-app-environment: &app-environment
   ENVIRONMENT: ${ENVIRONMENT:-production}
   LOG_LEVEL: ${LOG_LEVEL:-INFO}
@@ -371,7 +366,8 @@ services:
 
   app-dev:
     build:
-      <<: *app-build
+      context: .
+      dockerfile: Dockerfile
       target: development
     container_name: {{ cookiecutter.project_slug }}-app-dev
     environment:
@@ -498,7 +494,8 @@ services:
 {% if cookiecutter.add_tests == "y" %}
   test:
     build:
-      <<: *app-build
+      context: .
+      dockerfile: Dockerfile
       target: testing
     container_name: {{ cookiecutter.project_slug }}-test
     environment:

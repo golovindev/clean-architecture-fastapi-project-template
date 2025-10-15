@@ -180,59 +180,29 @@ cookiecutter . --no-input \
 
 ## 🚀 Quick Start
 
-### 1. Create Your Project
-
 ```bash
-cookiecutter https://github.com/Peopl3s/clean-architecture-fastapi-project-template.git
-```
+ cookiecutter . --no-input \
+  project_name="My Awesome API" \
+  project_description="An awesome API for my project" \
+  author_name="John Doe" \
+  author_email="john@example.com" \
+  github_username="johndoe" \
+  domain_name="awesomeapi.com" \
+  use_broker="kafka" \
+  use_cache="redis" \
+  use_database="postgresql" \
+  add_docker="y" \
+  add_tests="y" \
+  add_docs="y" \
+  add_precommit="y" \
+  license_type="MIT"
 
-### 2. Navigate to Your Project
+  cd my_awesome_api
 
-```bash
-cd {{cookiecutter.project_slug}}
-```
+  make dev-setup-docker
 
-### 3. Set Up Environment
+  make docker-up-dev
 
-```bash
-cp env.template .env
-# Edit .env with your configuration
-```
-
-### 4. Install Dependencies
-
-```bash
-# Using poetry (recommended)
-poetry install --no-root --sync
-
-# Or using pip
-pip install -e .
-
-# Install development dependencies
-pip install --dependency-group dev
-```
-
-### 5. Run with Docker (Recommended)
-
-```bash
-# Start all services
-docker-compose --profile dev up -d
-
-# View logs
-docker-compose logs -f
-```
-
-### 6. Run Locally
-
-```bash
-# Start dependencies (if using Docker for services)
-docker-compose up -d postgres redis mysql
-
-# Run migrations
-make migrate
-
-# Start the application
-poetry run python -m src.main
 ```
 
 ## 📚 API Documentation
