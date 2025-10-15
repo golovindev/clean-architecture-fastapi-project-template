@@ -30,11 +30,6 @@ A comprehensive cookiecutter template for creating modern FastAPI applications w
 
 ## 📚 Documentation
 
-Comprehensive documentation is available:
-
-- **Online**: [Read the Docs](https://clean-architecture-fastapi-project-template.readthedocs.io/) (coming soon)
-- **Local Build**: See instructions below
-
 ### Building Documentation Locally
 
 ```bash
@@ -45,25 +40,6 @@ open _build/html/index.html  # macOS
 # or
 xdg-open _build/html/index.html  # Linux
 ```
-
-### Installing Dependencies
-
-```bash
-# Install main dependencies
-pip install -e .
-
-# Install development dependencies
-pip install --dependency-group dev
-
-# Or install everything at once
-pip install -e ".[dev]"  # Alternative syntax
-```
-
-## 📋 Prerequisites
-
-- Python 3.12
-- Cookiecutter: `pip install cookiecutter`
-- Docker and Docker Compose (optional, for containerized development)
 
 ## 🛠️ Usage
 
