@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 # Import your models here
-from src.infrastructures.db.models.artifact import mapper_registry
+from {{cookiecutter.project_slug}}.infrastructures.db.models.artifact import mapper_registry
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

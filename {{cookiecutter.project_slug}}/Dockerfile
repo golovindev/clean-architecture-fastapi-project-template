@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     POETRY_NO_INTERACTION=1 \
-    UV_LINK_MODE=copy
+    PYTHONPATH="/app/src"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv package manager
+# Install Poetry
 RUN pip install poetry
 
 # Create virtual environment directory
@@ -37,12 +37,10 @@ FROM base AS deps
 WORKDIR /app
 
 # Copy dependency files and README (required by hatchling)
-COPY pyproject.toml poetry.lock README.md ./
+COPY pyproject.toml README.md ./
 
-# Install dependencies using uv
-RUN poetry install --no-root --no-dev --no-interaction --no-ansi
-
-# Clean up cache to avoid permission issues
+# Install dependencies using Poetry (without lock file)
+RUN poetry install --no-root --only main --no-interaction --no-ansi
 
 # =============================================================================
 # Stage 3: Development dependencies (optional)
@@ -51,8 +49,6 @@ FROM deps AS deps-dev
 
 # Install development dependencies
 RUN poetry install --no-root --no-interaction --no-ansi
-
-# Clean up cache to avoid permission issues
 
 # =============================================================================
 # Stage 4: Production image
@@ -73,8 +69,6 @@ RUN mkdir -p /app/logs /app/htmlcov && \
 # Switch to non-root user
 USER appuser
 
-# Set runtime environment variables
-
 # Expose port
 EXPOSE 8000
 
@@ -83,7 +77,7 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/api/docs || exit 1
 
 # Default command
-CMD ["poetry", "run", "granian", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+CMD ["poetry", "run", "python", "src/{{cookiecutter.project_slug}}/main.py"]
 
 # =============================================================================
 # Stage 5: Development image
@@ -106,8 +100,6 @@ RUN mkdir -p /app/logs /app/htmlcov && \
 
 # Switch to non-root user
 USER appuser
-
-# Set runtime environment variables
 
 # Expose port
 EXPOSE 8000
@@ -135,16 +127,6 @@ RUN mkdir -p /app/logs /app/htmlcov && \
 
 # Switch to non-root user
 USER appuser
-
-# Set runtime environment variables
-
-# Ensure dev dependencies are installed (including pytest-cov and pytest-asyncio)
-RUN poetry install --no-root --no-interaction --no-ansi
-
-# Install setuptools to provide distutils module for aioredis compatibility with Python 3.12
-ENV SETUPTOOLS_USE_DISTUTILS=stdlib
-
-# Explicitly install redis, pytest-cov, pytest-asyncio, and aiosqlite to ensure they're available
 
 # Default command for testing
 CMD ["poetry", "run", "pytest", "tests/", "-v", "--cov=src", "--cov-report=html", "--cov-report=term"]

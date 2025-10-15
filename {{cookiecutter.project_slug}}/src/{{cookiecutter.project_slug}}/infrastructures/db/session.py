@@ -24,6 +24,7 @@ def create_engine(url: str, is_echo: bool = True) -> AsyncEngine:
         max_overflow=30,
         pool_pre_ping=True,
         pool_recycle=3600,
+        connect_args={},
     )
 
 

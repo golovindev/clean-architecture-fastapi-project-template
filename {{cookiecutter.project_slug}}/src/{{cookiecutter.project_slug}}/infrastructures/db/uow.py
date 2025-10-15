@@ -37,7 +37,11 @@ class UnitOfWorkSQLAlchemy(UnitOfWorkProtocol):
         Commits changes if no exception occurred, otherwise rolls back.
         """
         if exc_type is not None:
-            logger.warning("Transaction rolled back due to exception", exc_type=exc_type.__name__, exc_val=str(exc_val))
+            logger.warning(
+                "Transaction rolled back due to exception: %s - %s", 
+                exc_type.__name__, 
+                str(exc_val)
+            )
             await self.rollback()
         else:
             await self.commit()
