@@ -1,8 +1,6 @@
 from datetime import UTC, datetime
 from uuid import uuid4
 
-import pytest
-
 from {{cookiecutter.project_slug}}.domain.entities.artifact import ArtifactEntity
 from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
 from {{cookiecutter.project_slug}}.domain.value_objects.material import Material

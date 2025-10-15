@@ -1,5 +1,3 @@
-import pytest
-
 from {{cookiecutter.project_slug}}.domain.exceptions import InvalidEraException
 from {{cookiecutter.project_slug}}.domain.value_objects.era import Era
 
