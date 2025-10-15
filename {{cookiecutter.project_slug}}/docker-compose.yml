@@ -308,7 +308,8 @@ services:
 {% if cookiecutter.add_docker == "y" %}
   app:
     build:
-      <<: *app-build
+      context: .
+      dockerfile: Dockerfile
       target: production
     container_name: {{ cookiecutter.project_slug }}-app
     environment:
