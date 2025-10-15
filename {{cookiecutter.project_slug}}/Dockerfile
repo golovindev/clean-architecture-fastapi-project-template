@@ -21,9 +21,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Poetry
 RUN pip install poetry
 
-# Create virtual environment directory
-RUN poetry env use python3.12
-
 # Create non-root user
 RUN groupadd --gid 1000 appuser && \
     useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser
@@ -39,8 +36,11 @@ WORKDIR /app
 # Copy dependency files and README (required by hatchling)
 COPY pyproject.toml README.md ./
 
-# Install dependencies using Poetry (without lock file)
-RUN poetry install --no-root --only main --no-interaction --no-ansi
+# Create virtual environment and install dependencies
+RUN poetry config virtualenvs.create true && \
+    poetry config virtualenvs.in-project true && \
+    poetry env use python3.12 && \
+    poetry install --no-root --only main --no-interaction --no-ansi
 
 # =============================================================================
 # Stage 3: Development dependencies (optional)
