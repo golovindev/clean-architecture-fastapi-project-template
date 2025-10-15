@@ -20,7 +20,7 @@ class TestArtifactController:
     ):
         """Helper method to call the controller function with a mock use case"""
         try:
-            return await mock_use_case.execute(inventory_id)
+            return await mock_use_case(inventory_id)
         except ArtifactNotFoundError as err:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -58,9 +58,9 @@ class TestArtifactController:
         )
 
         mock_use_case = AsyncMock()
-        mock_use_case.execute.return_value = expected_dto
+        mock_use_case.return_value = expected_dto
 
         result = await self._call_controller_with_mock(inventory_id, mock_use_case)
 
         assert result == expected_dto
-        mock_use_case.execute.assert_called_once_with(inventory_id)
+        mock_use_case.assert_called_once_with(inventory_id)

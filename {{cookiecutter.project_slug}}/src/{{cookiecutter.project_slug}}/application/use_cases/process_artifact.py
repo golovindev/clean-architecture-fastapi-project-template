@@ -49,7 +49,7 @@ class ProcessArtifactUseCase:
     publish_artifact_to_broker_use_case: PublishArtifactToBrokerUseCase
     publish_artifact_to_catalog_use_case: PublishArtifactToCatalogUseCase
 
-    async def execute(self, inventory_id: str) -> ArtifactDTO:
+    async def __call__(self, inventory_id: str) -> ArtifactDTO:
         """
         Executes the artifact processing flow.
 
@@ -59,19 +59,19 @@ class ProcessArtifactUseCase:
         Returns:
             An ArtifactDTO representing the processed artifact.
         """
-        if artifact_dto := await self.get_artifact_from_cache_use_case.execute(inventory_id):
+        if artifact_dto := await self.get_artifact_from_cache_use_case(inventory_id):
             return artifact_dto
 
-        if artifact_dto := await self.get_artifact_from_repo_use_case.execute(inventory_id):
-            await self.save_artifact_to_cache_use_case.execute(inventory_id, artifact_dto)
+        if artifact_dto := await self.get_artifact_from_repo_use_case(inventory_id):
+            await self.save_artifact_to_cache_use_case(inventory_id, artifact_dto)
             return artifact_dto
 
-        artifact_dto = await self.fetch_artifact_from_museum_api_use_case.execute(inventory_id)
-        await self.save_artifact_to_repo_use_case.execute(artifact_dto)
-        await self.save_artifact_to_cache_use_case.execute(inventory_id, artifact_dto)
+        artifact_dto = await self.fetch_artifact_from_museum_api_use_case(inventory_id)
+        await self.save_artifact_to_repo_use_case(artifact_dto)
+        await self.save_artifact_to_cache_use_case(inventory_id, artifact_dto)
 
         try:
-            await self.publish_artifact_to_broker_use_case.execute(artifact_dto)
+            await self.publish_artifact_to_broker_use_case(artifact_dto)
         except Exception:
             logger.warning(
                 "Failed to publish artifact notification to message broker (non-critical)",
@@ -79,7 +79,7 @@ class ProcessArtifactUseCase:
             )
 
         try:
-            await self.publish_artifact_to_catalog_use_case.execute(artifact_dto)
+            await self.publish_artifact_to_catalog_use_case(artifact_dto)
         except Exception:
             logger.warning(
                 "Failed to publish artifact to public catalog (non-critical)",

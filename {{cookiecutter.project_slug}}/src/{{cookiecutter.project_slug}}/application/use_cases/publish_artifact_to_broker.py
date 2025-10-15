@@ -24,7 +24,7 @@ class PublishArtifactToBrokerUseCase:
     message_broker: MessageBrokerPublisherProtocol
     artifact_mapper: DtoEntityMapperProtocol
 
-    async def execute(self, artifact_dto: ArtifactDTO) -> None:
+    async def __call__(self, artifact_dto: ArtifactDTO) -> None:
         """
         Executes the use case to publish an artifact to the message broker.
 

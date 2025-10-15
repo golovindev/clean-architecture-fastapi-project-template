@@ -25,7 +25,7 @@ class FetchArtifactFromMuseumAPIUseCase:
 
     museum_api_client: ExternalMuseumAPIProtocol
 
-    async def execute(self, inventory_id: str) -> ArtifactDTO:
+    async def __call__(self, inventory_id: str) -> ArtifactDTO:
         """
         Executes the use case to fetch an artifact.
 

@@ -23,7 +23,7 @@ class GetArtifactFromCacheUseCase:
     cache_client: CacheProtocol
     serialization_mapper: SerializationMapperProtocol
 
-    async def execute(self, inventory_id: str) -> ArtifactDTO | None:
+    async def __call__(self, inventory_id: str) -> ArtifactDTO | None:
         """
         Executes the use case to get an artifact from the cache.
 

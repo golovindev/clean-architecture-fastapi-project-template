@@ -24,7 +24,7 @@ class PublishArtifactToCatalogUseCase:
     catalog_api_client: PublicCatalogAPIProtocol
     artifact_mapper: DtoEntityMapperProtocol
 
-    async def execute(self, artifact_dto: ArtifactDTO) -> None:
+    async def __call__(self, artifact_dto: ArtifactDTO) -> None:
         """
         Executes the use case to publish an artifact to the public catalog.
 

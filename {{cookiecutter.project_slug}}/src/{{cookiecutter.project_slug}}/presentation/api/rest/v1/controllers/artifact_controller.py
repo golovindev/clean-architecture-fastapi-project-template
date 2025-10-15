@@ -28,5 +28,5 @@ async def get_artifact(
     use_case: FromDishka[ProcessArtifactUseCase] = None,
     presentation_mapper: FromDishka[ArtifactPresentationMapper] = None,
 ) -> ArtifactResponseSchema:
-    artifact_dto = await use_case.execute(str(inventory_id))
+    artifact_dto = await use_case(str(inventory_id))
     return presentation_mapper.to_response(artifact_dto)

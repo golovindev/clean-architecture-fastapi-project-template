@@ -23,7 +23,7 @@ class SaveArtifactToCacheUseCase:
     cache_client: CacheProtocol
     serialization_mapper: SerializationMapperProtocol
 
-    async def execute(self, inventory_id: str, artifact_dto: ArtifactDTO) -> None:
+    async def __call__(self, inventory_id: str, artifact_dto: ArtifactDTO) -> None:
         """
         Executes the use case to save an artifact to the cache.
 
