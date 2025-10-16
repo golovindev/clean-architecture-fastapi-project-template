@@ -31,10 +31,10 @@ class MaterialDTOFactory(BaseFactory):
         """Override to support frozen dataclasses"""
         if not is_dataclass(cls.__model__):
             return []
-        
+
         model_fields = []
         type_hints = get_type_hints(cls.__model__)
-        
+
         for field in fields(cls.__model__):
             field_type = type_hints.get(field.name, field.type)
             model_fields.append(
@@ -44,7 +44,7 @@ class MaterialDTOFactory(BaseFactory):
                     default=field.default,
                 )
             )
-        
+
         return model_fields
 
     @classmethod
@@ -70,10 +70,10 @@ class EraDTOFactory(BaseFactory):
         """Override to support frozen dataclasses"""
         if not is_dataclass(cls.__model__):
             return []
-        
+
         model_fields = []
         type_hints = get_type_hints(cls.__model__)
-        
+
         for field in fields(cls.__model__):
             field_type = type_hints.get(field.name, field.type)
             model_fields.append(
@@ -83,7 +83,7 @@ class EraDTOFactory(BaseFactory):
                     default=field.default,
                 )
             )
-        
+
         return model_fields
 
     @classmethod
@@ -110,10 +110,10 @@ class ArtifactDTOFactory(BaseFactory):
         """Override to support frozen dataclasses"""
         if not is_dataclass(cls.__model__):
             return []
-        
+
         model_fields = []
         type_hints = get_type_hints(cls.__model__)
-        
+
         for field in fields(cls.__model__):
             field_type = type_hints.get(field.name, field.type)
             model_fields.append(
@@ -123,7 +123,7 @@ class ArtifactDTOFactory(BaseFactory):
                     default=field.default,
                 )
             )
-        
+
         return model_fields
 
     @classmethod
@@ -161,10 +161,10 @@ class MaterialFactory(BaseFactory):
         """Override to support frozen dataclasses"""
         if not is_dataclass(cls.__model__):
             return []
-        
+
         model_fields = []
         type_hints = get_type_hints(cls.__model__)
-        
+
         for field in fields(cls.__model__):
             field_type = type_hints.get(field.name, field.type)
             model_fields.append(
@@ -174,7 +174,7 @@ class MaterialFactory(BaseFactory):
                     default=field.default,
                 )
             )
-        
+
         return model_fields
 
     @classmethod
@@ -200,10 +200,10 @@ class EraFactory(BaseFactory):
         """Override to support frozen dataclasses"""
         if not is_dataclass(cls.__model__):
             return []
-        
+
         model_fields = []
         type_hints = get_type_hints(cls.__model__)
-        
+
         for field in fields(cls.__model__):
             field_type = type_hints.get(field.name, field.type)
             model_fields.append(
@@ -213,7 +213,7 @@ class EraFactory(BaseFactory):
                     default=field.default,
                 )
             )
-        
+
         return model_fields
 
     @classmethod
@@ -240,10 +240,10 @@ class ArtifactEntityFactory(BaseFactory):
         """Override to support frozen dataclasses"""
         if not is_dataclass(cls.__model__):
             return []
-        
+
         model_fields = []
         type_hints = get_type_hints(cls.__model__)
-        
+
         for field in fields(cls.__model__):
             field_type = type_hints.get(field.name, field.type)
             model_fields.append(
@@ -253,7 +253,7 @@ class ArtifactEntityFactory(BaseFactory):
                     default=field.default,
                 )
             )
-        
+
         return model_fields
 
     @classmethod
