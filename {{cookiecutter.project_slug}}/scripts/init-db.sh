@@ -18,9 +18,9 @@ fi
 # Default database connection parameters
 DB_HOST=${POSTGRES_SERVER:-localhost}
 DB_PORT=${POSTGRES_PORT:-5432}
-DB_USER=${POSTGRES_USER:-my_awesome_api_user}
-DB_PASSWORD=${POSTGRES_PASSWORD:-my_awesome_api_password}
-DB_NAME=${POSTGRES_DB:-my_awesome_api}
+DB_USER=${POSTGRES_USER:-{{ cookiecutter.database_user }}}
+DB_PASSWORD=${POSTGRES_PASSWORD:-{{ cookiecutter.database_password }}}
+DB_NAME=${POSTGRES_DB:-{{ cookiecutter.database_name }}}
 
 # Construct database URL
 DB_URL="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/postgres"
@@ -37,7 +37,7 @@ while [ $attempt -le $max_attempts ]; do
         echo "✅ Database is ready!"
         break
     fi
-    
+
     echo "🔄 Attempt ${attempt}/${max_attempts}: Database not ready, waiting 2 seconds..."
     sleep 2
     attempt=$((attempt + 1))

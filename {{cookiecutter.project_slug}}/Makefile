@@ -113,10 +113,12 @@ setup-env: ## Create .env file from template
 	./scripts/setup-env.sh
 
 # Development helpers
+
 dev-setup-docker: setup-env ## Set up development environment with Docker
 	docker-compose --profile dev up -d postgres redis
 	@echo "Waiting for services to be ready..."
 	@sleep 10
+	./scripts/init-db.sh
 	make docker-migrate
 	@echo "Development environment is ready!"
 	@echo "Run 'make docker-up-dev' to start the application"
