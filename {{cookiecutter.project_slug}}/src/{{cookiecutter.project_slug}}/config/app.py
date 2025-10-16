@@ -11,13 +11,13 @@ class AppSettings(BaseSettings):
 
     Attributes:
         app_name (str): Name of the application.
-        environment (Literal["local", "dev", "prod"]): Application environment.
+        environment (Literal["local", "dev", "development", "prod"]): Application environment.
         log_level (Literal["DEBUG", "INFO", "WARNING", "ERROR"]): Logging level.
         debug (bool): Debug mode flag.
     """
 
     app_name: str = "Antiquarium Service"
-    environment: Literal["local", "dev", "prod"] = "local"
+    environment: Literal["local", "dev", "development", "prod"] = "local"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     debug: bool = Field(False, alias="DEBUG")
 
