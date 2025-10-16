@@ -182,7 +182,7 @@ class ServiceProvider(Provider):
         Provides an ExternalMuseumAPIProtocol implementation.
         """
         return ExternalMuseumAPIClient(
-            base_url=settings.external_api_base_url,
+            base_url=settings.museum_api_base,
             client=client,
             mapper=infrastructure_mapper,
         )
