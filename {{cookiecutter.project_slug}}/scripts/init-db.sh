@@ -33,7 +33,7 @@ max_attempts=30
 attempt=1
 
 while [ $attempt -le $max_attempts ]; do
-    if PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d postgres -c "SELECT 1;" > /dev/null 2>&1; then
+    if docker-compose exec -T postgres psql -U "${DB_USER}" -d postgres -c "SELECT 1;" > /dev/null 2>&1; then
         echo "✅ Database is ready!"
         break
     fi
@@ -50,22 +50,22 @@ fi
 
 # Check if database already exists
 echo "🔍 Checking if database '${DB_NAME}' exists..."
-DB_EXISTS=$(PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'")
+DB_EXISTS=$(docker-compose exec -T postgres psql -U "${DB_USER}" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'")
 
 if [ "$DB_EXISTS" = "1" ]; then
     echo "⚠️  Database '${DB_NAME}' already exists. Skipping initialization."
     echo "💡 If you want to reinitialize the database, drop it first:"
-    echo "   PGPASSWORD=\"${DB_PASSWORD}\" psql -h \"${DB_HOST}\" -p \"${DB_PORT}\" -U \"${DB_USER}\" -d postgres -c \"DROP DATABASE IF EXISTS ${DB_NAME};\""
+    echo "   docker-compose exec postgres psql -U \"${DB_USER}\" -d postgres -c \"DROP DATABASE IF EXISTS ${DB_NAME};\""
     exit 0
 fi
 
 # Create database
 echo "🏗️  Creating database '${DB_NAME}'..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d postgres -c "CREATE DATABASE ${DB_NAME};"
+docker-compose exec -T postgres psql -U "${DB_USER}" -d postgres -c "CREATE DATABASE ${DB_NAME};"
 
 # Connect to the new database and create extensions
 echo "🔧 Creating extensions in database '${DB_NAME}'..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -c "
+docker-compose exec -T postgres psql -U "${DB_USER}" -d "${DB_NAME}" -c "
     CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";
     CREATE EXTENSION IF NOT EXISTS \"pg_trgm\";
     SET timezone = 'UTC';
@@ -74,14 +74,14 @@ PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}"
 # Run the init-db.sql script if it exists
 if [ -f "scripts/init-db.sql" ]; then
     echo "📄 Running init-db.sql script..."
-    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -f scripts/init-db.sql
+    docker-compose exec -T postgres psql -U "${DB_USER}" -d "${DB_NAME}" < scripts/init-db.sql
 else
     echo "ℹ️  init-db.sql not found, skipping custom initialization script"
 fi
 
 # Grant privileges
 echo "🔐 Setting up privileges..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" -c "
+docker-compose exec -T postgres psql -U "${DB_USER}" -d "${DB_NAME}" -c "
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${DB_USER};
     GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${DB_USER};
     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ${DB_USER};
