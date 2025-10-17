@@ -171,7 +171,6 @@ cookiecutter . --no-input \
 │       ├── settings.py              # Main settings facade
 │       └── base.py                  # Backward compatibility wrapper
 ├── 📁 tests/                        # Test suite
-├── 📁 alembic/                      # Database migrations
 ├── 📁 docs/                         # Documentation
 ├── 📁 scripts/                      # Utility scripts
 ├── pyproject.toml                   # Project configuration
