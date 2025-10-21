@@ -89,26 +89,6 @@ cd clean-architecture-fastapi-project-template
 cookiecutter .
 ```
 
-### Non-interactive Usage
-
-```bash
-cookiecutter . --no-input \
-  project_name="My Awesome API" \
-  project_description="An awesome API for my project" \
-  author_name="John Doe" \
-  author_email="john@example.com" \
-  github_username="johndoe" \
-  domain_name="awesomeapi.com" \
-  use_broker="kafka" \
-  use_cache="redis" \
-  use_database="postgresql" \
-  add_docker="y" \
-  add_tests="y" \
-  add_docs="y" \
-  add_precommit="y" \
-  license_type="MIT"
-```
-
 ## ⚙️ Template Variables
 
 | Variable | Description | Default | Required |
