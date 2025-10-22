@@ -1,0 +1,25 @@
+version: 2
+updates:
+- package-ecosystem: uv
+  directories:
+    - "/{{cookiecutter.project_slug}}"
+  schedule:
+    interval: daily
+    time: "02:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directories:
+    - "/{{cookiecutter.project_slug}}"
+  schedule:
+    interval: daily
+    time: "02:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: github-actions
+  directories:
+    - "/"
+  schedule:
+    interval: daily
+    time: "02:00"
+  open-pull-requests-limit: 10
