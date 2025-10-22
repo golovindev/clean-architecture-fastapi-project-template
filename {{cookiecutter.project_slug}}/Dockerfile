@@ -42,6 +42,27 @@ RUN poetry config virtualenvs.create true && \
     poetry env use python3.12 && \
     poetry install --no-root --only main --no-interaction --no-ansi
 
+# Install optional extras chosen via Cookiecutter
+{% if cookiecutter.use_cache in ["redis", "keydb", "dragonfly"] %}
+RUN uv pip install ".[redis]"
+{% elif cookiecutter.use_cache == "tarantool" %}
+RUN uv pip install ".[tarantool]"
+{% endif %}
+{% if cookiecutter.use_broker == "kafka" %}
+RUN uv pip install ".[kafka]"
+{% elif cookiecutter.use_broker == "rabbitmq" %}
+RUN uv pip install ".[rabbitmq]"
+{% elif cookiecutter.use_broker == "nats" %}
+RUN uv pip install ".[nats]"
+{% endif %}
+{% if cookiecutter.use_database == "postgresql" %}
+RUN uv pip install ".[postgresql]"
+{% elif cookiecutter.use_database == "sqlite" %}
+RUN uv pip install ".[sqlite]"
+{% elif cookiecutter.use_database == "mysql" %}
+RUN uv pip install ".[mysql]"
+{% endif %}
+
 # =============================================================================
 # Stage 3: Development dependencies (optional)
 # =============================================================================
