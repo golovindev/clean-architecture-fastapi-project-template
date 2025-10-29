@@ -16,17 +16,17 @@
     {
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions updates",
-      "schedule": ["0 2 * * *"]
+      "schedule": ["0 0 2 * * *"]
     },
     {
       "matchManagers": ["dockerfile"],
       "groupName": "Docker image updates",
-      "schedule": ["0 2 * * *"]
+      "schedule": ["0 0 2 * * *"]
     },
     {
       "matchManagers": ["pip_requirements"],
       "groupName": "Python dependencies",
-      "schedule": ["0 2 * * *"]
+      "schedule": ["0 0 2 * * *"]
     }
   ]
 }
